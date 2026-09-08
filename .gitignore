@@ -209,6 +209,9 @@ tempCodeRunnerFile.py
 # PyPI configuration file
 .pypirc
 
+# Experiment results and activation tensors
+results/
+
 # Marimo
 marimo/_static/
 marimo/_lsp/
