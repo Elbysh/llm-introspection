@@ -324,7 +324,7 @@ def main():
     # Determine concepts to test
     if args.concept == 'all':
         concepts = ALL_CONCEPTS
-    elif args.concept == 'Random':
+    elif args.concept == 'random':
         concepts = [f'random_s{i}' for i in range(args.num_vectors)]
     else:
         concepts = [args.concept]

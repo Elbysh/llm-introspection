@@ -14,6 +14,5 @@ set -euo pipefail
 source ".venv/bin/activate"
 
 cd data && PYTHONPATH=../code/utils uv run python ../code/utils/save_random_vectors.py \
-  --save_dir saved_vectors/llama \
-  --device cuda
+  --save_dir saved_vectors/llama 
 

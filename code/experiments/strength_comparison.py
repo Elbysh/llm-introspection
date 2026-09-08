@@ -481,7 +481,7 @@ def main():
     # Select concepts
     if 'all' in args.concepts:
         concepts = ALL_CONCEPTS
-    elif 'Random' in args.concepts:
+    elif 'random' in args.concepts:
         concepts = [f'random_s{i}' for i in range(args.num_vectors)]
     else:
         concepts = args.concepts

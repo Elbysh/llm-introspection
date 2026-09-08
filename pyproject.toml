@@ -2,6 +2,9 @@
 requires = ["setuptools>=84.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+packages = []
+
 [project]
 name = "llama-introspection"
 version = "0.1.0"
@@ -9,7 +12,7 @@ description = "LLaMA model introspection experiments"
 authors = [
     {name = "Thomas Gegout", email = "thomasgegout7@gmail.com"}
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.12"
 dependencies = [
     "accelerate==1.14.0",
     "annotated-doc==0.0.5",
