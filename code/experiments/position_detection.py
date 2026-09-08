@@ -295,7 +295,10 @@ def save_results(results, concept, output_dir):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--concept', type=str, default='Dust', help='Concept to test (or "all")')
+    parser.add_argument('--concepts', type=str, nargs='+', default=['Dust'],
+                       help='Concepts to test. Use "all" for all concepts. Use "Random" for random directions.')
+    parser.add_argument("--num_vectors", type=int, default=1,
+                       help='Number of random vectors to use.')
     parser.add_argument('--layers', type=int, nargs='+', default=LAYERS, help='Layers to test')
     parser.add_argument('--strengths', type=float, nargs='+', default=STRENGTHS, help='Strengths to test')
     parser.add_argument('--num_trials', type=int, default=10, help='Trials per condition')
@@ -321,8 +324,12 @@ def main():
     # Determine concepts to test
     if args.concept == 'all':
         concepts = ALL_CONCEPTS
+    elif args.concept == 'Random':
+        concepts = [f'random_s{i}' for i in range(args.num_vectors)]
     else:
         concepts = [args.concept]
+
+    
     
     all_results = {}
     

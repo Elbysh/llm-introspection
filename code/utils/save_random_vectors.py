@@ -7,13 +7,10 @@ layout and schema as save_vectors.py (<save_dir>/<name>_<layer>_<vec_type>.pt), 
 are drop-in for the existing experiments:
 
     python code/experiments/position_detection.py --concept random_s0 --strengths 1 2 3 4 5
-
-Dropout and Gaussian noise are stateless, resampled per token, and have nothing to
-precompute -- they live in gaussian_dropout_hooks.py.
 """
 
 import argparse
-import zlib
+import hashlib
 from pathlib import Path
 
 import torch
@@ -24,10 +21,10 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SAVE_DIR = _REPO_ROOT / "data" / "saved_vectors" / "llama"
 
 
-def derive_seed(base_seed, *parts):
+def derive_seed(base_seed, *args):
     """Deterministic sub-seed, so each (family, layer, sample) draws independently."""
-    key = "|".join(str(p) for p in parts).encode("utf-8")
-    return (base_seed * 0x9E3779B1 + zlib.crc32(key)) % (2**31 - 1)
+    key = "|".join(str(p) for p in (base_seed, *args)).encode("utf-8")
+    return int.from_bytes(hashlib.blake2b(key, digest_size=7).digest(), "big")
 
 
 def unit_normalize(vector):

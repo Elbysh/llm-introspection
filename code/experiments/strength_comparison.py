@@ -457,7 +457,9 @@ def main():
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--concepts', type=str, nargs='+', default=['Dust'],
-                       help='Concepts to test. Use "all" for all concepts.')
+                       help='Concepts to test. Use "all" for all concepts. Use "Random" for random directions.')
+    parser.add_argument("--num_vectors", type=int, default=1,
+                       help='Number of random vectors to use.')
     parser.add_argument('--layers', type=int, nargs='+', default=[0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30])
     parser.add_argument('--num_trials', type=int, default=30)
     parser.add_argument('--vec_type', type=str, default='avg')
@@ -479,6 +481,8 @@ def main():
     # Select concepts
     if 'all' in args.concepts:
         concepts = ALL_CONCEPTS
+    elif 'Random' in args.concepts:
+        concepts = [f'random_s{i}' for i in range(args.num_vectors)]
     else:
         concepts = args.concepts
     
