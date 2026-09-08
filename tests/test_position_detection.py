@@ -4,6 +4,7 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+import time
 
 import pytest
 import torch
@@ -15,6 +16,7 @@ sys.path.insert(0, str(ROOT / "code" / "utils"))
 from position_detection_utils import (
     PREFIX, SUFFIX, accuracy, build_prompt, condition_metrics, forward_counts, select_pairs,
 )
+from experiment_progress import RunProgress
 
 
 def load_module(name, path):
@@ -26,6 +28,7 @@ def load_module(name, path):
 
 runner = load_module("position_detection", ROOT / "code" / "experiments" / "position_detection.py")
 analysis = load_module("position_analysis", ROOT / "code" / "analysis" / "compute_position_detection_accuracy.py")
+monitor = load_module("position_monitor", ROOT / "code" / "utils" / "monitor_position_detection.py")
 
 
 class CharacterTokenizer:
@@ -223,6 +226,11 @@ def test_cli_run_resume_and_configuration_guard(monkeypatch, tmp_path):
     with pytest.warns(UserWarning):
         runner.main()
     assert len(calls) == 16  # 4 prompts * (control + two injections + one restoration)
+    progress = json.loads((out / "progress.json").read_text())
+    assert progress["phase"] == "completed"
+    assert progress["forward_evaluations"] == progress["total_forward_evaluations"] == 16
+    assert progress["completed_conditions"] == 4
+    assert "completed" in (out / "run.log").read_text()
     assert analysis.analyze(out)["complete"]
     records = list((out / "conditions").glob("*/*.json"))
     assert len(records) == 4
@@ -231,14 +239,71 @@ def test_cli_run_resume_and_configuration_guard(monkeypatch, tmp_path):
     with pytest.warns(UserWarning):
         runner.main()
     assert len(calls) == 16  # completed conditions and controls are reused
+    progress = json.loads((out / "progress.json").read_text())
+    assert progress["session_forward_evaluations"] == 0
+    assert progress["reused_forward_evaluations"] == 16
     assert original == {p: p.read_bytes() for p in records}
     # Simulate interruption after matrix write but before condition JSON commit.
     records[0].unlink()
     with pytest.warns(UserWarning):
         runner.main()
     assert len(calls) == 19  # only the incomplete condition is rerun
+    progress = json.loads((out / "progress.json").read_text())
+    assert progress["session_forward_evaluations"] == 3
+    assert progress["forward_evaluations"] == 16
     assert analysis.analyze(out)["complete"]
     monkeypatch.setattr(sys, "argv", argv + ["--resume", "--seed", "43"])
     with pytest.raises(ValueError, match="Resume configuration"):
         runner.main()
     handle.remove()
+
+
+def test_failure_progress_is_saved_without_counting_partial_condition(tmp_path):
+    manifest = {"prompts": [{"prompt_id": "p"}],
+                "config": {"concepts": ["Dust"], "layers": [31], "alphas": [1.]},
+                "forward_passes": {"total": 4}}
+    with pytest.raises(RuntimeError, match="test failure"):
+        with RunProgress(tmp_path, manifest, show_bar=False) as progress:
+            progress.start_running()
+            progress.advance("first injection")
+            raise RuntimeError("test failure")
+    snapshot = json.loads((tmp_path / "progress.json").read_text())
+    assert snapshot["phase"] == "failed"
+    assert snapshot["forward_evaluations"] == 1
+    assert snapshot["completed_conditions"] == 0
+    assert snapshot["error"] == "RuntimeError: test failure"
+    assert "Traceback" in (tmp_path / "run.log").read_text()
+    # A fresh resume does not count that uncommitted forward pass as saved work.
+    with RunProgress(tmp_path, manifest, show_bar=False) as progress:
+        assert progress.evaluations == 0
+
+
+def test_monitor_uses_accounting_after_job_leaves_queue(monkeypatch):
+    def fake_command(arguments):
+        if arguments[0] == "squeue":
+            return None, "Invalid job id specified"
+        return "123|TIMEOUT|1-00:00:00|1-00:00:00|0:15|", None
+    monkeypatch.setattr(monitor, "run_command", fake_command)
+    state, message = monitor.scheduler_status("123")
+    assert state == "TIMEOUT" and "0:15" in message
+
+
+def test_monitor_handles_missing_and_stale_progress(tmp_path):
+    assert "Waiting for progress.json" in monitor.render(tmp_path, {}, "PENDING")
+    value = {"forward_evaluations": 2, "total_forward_evaluations": 10,
+             "completed_conditions": 0, "total_conditions": 1, "completed_controls": 1,
+             "updated_at": time.time() - 120, "phase": "running", "job_id": "123",
+             "forward_evaluations_per_second": 2, "eta_seconds": 4}
+    text = monitor.render(tmp_path, value, "RUNNING", "123")
+    assert "20.00%" in text and "No recent update" in text
+    text = monitor.render(tmp_path, value, "PENDING", "124")
+    assert "different job" in text
+    assert "No recent update" not in text
+
+
+def test_monitor_read_only_once_and_keyboard_interrupt(monkeypatch, tmp_path, capsys):
+    monkeypatch.setattr(sys, "argv", ["monitor", str(tmp_path), "--once", "--job-id", "123"])
+    monkeypatch.setattr(monitor, "scheduler_status", lambda job: ("PENDING", "Job 123: PENDING"))
+    assert monitor.main() == 0
+    assert "PENDING" in capsys.readouterr().out
+    assert not list(tmp_path.iterdir())

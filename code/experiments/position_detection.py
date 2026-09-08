@@ -17,6 +17,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "code" / "utils"))
 from all_prompts import LOCALIZATION_SENTENCES
+from experiment_progress import RunProgress
 from position_detection_utils import (
     ALPHAS, CONCEPTS, LAYERS, SCHEMA_VERSION, condition_metrics, digest,
     forward_counts, select_pairs,
@@ -164,7 +165,8 @@ def forward(model, prompt, *, injection=None, capture_layers=(), restoration=Non
             handle.remove()
 
 
-def run_condition(model, prompt, control, clean, vector, concept, layer, alpha, epsilon):
+def run_condition(model, prompt, control, clean, vector, concept, layer, alpha, epsilon,
+                  on_forward=None):
     injections = []
     first_activations = None
     for position in (1, 2):
@@ -172,6 +174,8 @@ def run_condition(model, prompt, control, clean, vector, concept, layer, alpha, 
             model, prompt, injection=(layer, position, vector, alpha),
             capture_layers=range(layer, len(model.model.layers)) if position == 1 else (),
         )
+        if on_forward is not None:
+            on_forward(f"injected sentence {position}")
         target = prompt["sentences"][position - 1]
         injections.append({
             **score, **perturbation, "target_position": position,
@@ -191,6 +195,8 @@ def run_condition(model, prompt, control, clean, vector, concept, layer, alpha, 
             model, prompt, injection=(layer, 1, vector, alpha),
             restoration=(restore_layer, original),
         )
+        if on_forward is not None:
+            on_forward(f"restored block {restore_layer}")
         diagnostics.append({
             "layer": restore_layer, "P": numerator / (denominator + epsilon),
             "difference_frobenius_norm": numerator, "control_frobenius_norm": denominator,
@@ -223,6 +229,9 @@ def main():
     parser.add_argument("--epsilon", type=float, default=1e-8, help="Only for the contamination ratio P")
     parser.add_argument("--prepare-only", action="store_true", help="Save pair/prompt manifest without loading weights")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--log-interval", type=float, default=30,
+                        help="Seconds between progress.json and log updates")
+    parser.add_argument("--no-progress", action="store_true", help="Disable the interactive tqdm bar")
     args = parser.parse_args()
     args.concepts = CONCEPTS.copy() if args.concepts == ["all"] else args.concepts
     if any(c not in CONCEPTS for c in args.concepts):
@@ -233,6 +242,8 @@ def main():
         parser.error("Alphas must be finite and nonnegative.")
     if not math.isfinite(args.epsilon) or args.epsilon <= 0:
         parser.error("Epsilon must be finite and positive.")
+    if not math.isfinite(args.log_interval) or args.log_interval <= 0:
+        parser.error("Log interval must be finite and positive.")
     for values in (args.layers, args.alphas, args.concepts):
         if len(values) != len(set(values)):
             parser.error("Duplicate layers, alphas or concepts would duplicate conditions.")
@@ -284,6 +295,12 @@ def main():
     if args.prepare_only:
         print(f"Prepared {manifest_path}; no model weights loaded.", flush=True)
         return
+    with RunProgress(out, manifest, args.log_interval, not args.no_progress) as progress:
+        execute(args, manifest, inventory, progress)
+
+
+def execute(args, manifest, inventory, progress):
+    out = args.output_dir
     torch.manual_seed(args.seed)
     model_kwargs = {"revision": args.revision, "torch_dtype": getattr(torch, args.dtype),
                     "attn_implementation": "eager"}
@@ -306,6 +323,7 @@ def main():
         raise ValueError("Resume model/runtime changed; use a new output directory.")
     vectors = {(i["concept"], i["layer"]): load_vector(i, args, model.config.hidden_size) for i in inventory}
     atomic_json(runtime_path, runtime)
+    progress.start_running()
     expected = len(manifest["prompts"]) * len(args.concepts) * len(args.layers) * len(args.alphas)
     completed = 0
     for prompt in manifest["prompts"]:
@@ -316,10 +334,12 @@ def main():
             control = json.loads(control_path.read_text())
             clean = torch.load(clean_path, map_location="cpu", weights_only=True)["second_sentence"]
         else:
+            progress.set_condition(prompt_id=pid, stage="control")
             control, clean, _ = forward(model, prompt, capture_layers=range(min(args.layers), 32))
             control.update(prompt_id=pid, activation_file=str(clean_path.relative_to(out)))
             atomic_tensor(clean_path, {"prompt_id": pid, "second_sentence": clean})
             atomic_json(control_path, control)
+            progress.control_saved()
         for concept in args.concepts:
             for layer in args.layers:
                 for alpha_index, alpha in enumerate(args.alphas):
@@ -329,9 +349,10 @@ def main():
                     if record_path.exists() and activation_path.exists():
                         completed += 1
                         continue
+                    progress.set_condition(prompt_id=pid, concept=concept, layer=layer, alpha=alpha)
                     row, captured = run_condition(
                         model, prompt, control, clean, vectors[concept, layer],
-                        concept, layer, alpha, args.epsilon,
+                        concept, layer, alpha, args.epsilon, on_forward=progress.advance,
                     )
                     row.update(control_file=str(control_path.relative_to(out)),
                                activation_file=str(activation_path.relative_to(out)),
@@ -341,7 +362,7 @@ def main():
                                                    "injection_layer": layer, "second_sentence": captured})
                     atomic_json(record_path, row)
                     completed += 1
-                    print(f"[{completed}/{expected}] {pid} {name} S={row['S']:+.4f}", flush=True)
+                    progress.condition_saved()
     atomic_json(out / "completed.json", {"conditions": completed, "expected": expected})
     print(f"Finished. Analyze with code/analysis/compute_position_detection_accuracy.py --input-dir {out}")
 

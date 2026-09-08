@@ -194,3 +194,80 @@ downloads. They verify token targeting, matched metrics, reproducible pairs,
 counterbalancing, direct scoring, causal propagation, independent restoration,
 zero-alpha identity, hook cleanup on failure, saved analysis and workload counts.
 The large pretrained experiment must be run separately on the intended hardware.
+
+## Live progress and monitoring on Ruche
+
+The runner shows a tqdm progress bar in an interactive terminal. In a batch job,
+terminal animation is disabled automatically; timestamped progress messages go
+to both standard output (the Slurm `.out` file) and `OUTPUT_DIR/run.log`.
+Progress is measured in **forward evaluations**, including every independent
+restoration pass. The display also tracks completed conditions and controls.
+
+`OUTPUT_DIR/progress.json` is atomically refreshed every 30 seconds during
+computation and at phase changes. It includes the Slurm job ID, latest stage,
+completed and total evaluations, durable conditions, current-session throughput,
+and an approximate ETA. Set `--log-interval 10` for more frequent updates.
+`--no-progress` suppresses the interactive bar while retaining logs and snapshots.
+The log records Python exceptions and appends across resumptions.
+
+On resume, the runner counts actual saved artifacts rather than trusting the
+previous progress snapshot. Evaluations in an interrupted, unsaved condition
+are repeated and are not counted as durable progress. The ETA uses only work
+performed in the current session, excluding model loading; differing costs across
+injection layers and filesystem IO make it an approximation.
+
+After logging into Ruche manually, from the repository root:
+
+```bash
+source .venv/bin/activate
+python code/utils/monitor_position_detection.py results/position_detection --job-id 123456
+```
+
+Replace `123456` with the ID returned by `sbatch`. Providing the ID allows the
+monitor to show a queued job before the experiment creates progress.json.
+Once the experiment starts, the job ID can be inferred from progress.json.
+For a custom output directory, pass that directory instead.
+
+Alternatively, from your own machine, in the local repository:
+
+```bash
+bash jobs/monitor_ruche.sh 123456
+```
+
+This opens one SSH connection to `aurouxw@ruche.mesocentre.universite-paris-saclay.fr`.
+**Enter the password directly in the terminal when SSH asks for it.** The script
+does not store or handle passwords. It expects the remote checkout at
+`$WORKDIR/llm-introspection`, with its `.venv`, and the default results directory.
+It runs the monitor remotely, so polling does not require repeated logins.
+Update the remote checkout to this branch before using the new scripts.
+
+The monitor refreshes every 10 seconds, shows recent run.log lines, and queries
+`squeue`, falling back to `sacct` when a job leaves the queue. Slurm TIMEOUT,
+CANCELLED, FAILED and similar states are displayed separately from the last
+experiment phase. Hard kills cannot update progress.json, so stale timestamps
+are shown explicitly. No recent update alone does not prove a failure: model
+loading or a long forward pass can also delay updates. Early preparation errors
+appear in Slurm's `.out`/`.err` files, before run.log is initialized.
+
+Useful commands on Ruche:
+
+```bash
+# A single snapshot, including while no GPU job is running.
+python code/utils/monitor_position_detection.py results/position_detection --once
+
+# Follow the batch streams (use your actual job ID).
+tail -f logs/position-detection-123456.out logs/position-detection-123456.err
+
+# Follow just the persistent experiment log.
+tail -f results/position_detection/run.log
+```
+
+The monitor is read-only, requires only the Python standard library, and can run
+on a login node. Ctrl+C stops monitoring without cancelling the experiment. It
+also stops automatically on experiment completion/failure or a terminal Slurm
+state; use `--once` for a non-watching snapshot. It does not submit, cancel or
+resubmit jobs.
+
+Install these instrumentation changes **before starting a new experiment**.
+Existing manifests record source hashes and intentionally reject changed runner
+code; do not replace the code of an existing checkpointed run to add monitoring.

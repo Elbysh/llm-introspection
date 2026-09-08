@@ -9,7 +9,10 @@
 
 # Submit from the repository root. Use the cluster's GPU resource options.
 set -euo pipefail
+cd "${SLURM_SUBMIT_DIR:-$PWD}"
 source .venv/bin/activate
+export PYTHONUNBUFFERED=1
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-8}"
 
 run_dir="${POSITION_DETECTION_OUTPUT:-results/position_detection}"
 resume_args=()
