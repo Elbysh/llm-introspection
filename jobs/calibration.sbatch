@@ -2,10 +2,12 @@
 
 
 #SBATCH --job-name=calibration
-#SBATCH --partition=prod40
+#SBATCH --partition=gpua100
+#SBATCH --gres=gpu:1
 #SBATCH --time=04:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
+#SBATCH --mem=64G
 #SBATCH --output=logs/calibration-%j.out
 #SBATCH --error=logs/calibration-%j.err
 
