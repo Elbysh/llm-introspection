@@ -101,6 +101,61 @@ def parse_scale_0_10(text: str) -> int | None:
     return None
 
 
+_LETTER_CHOICE_RE = re.compile(r"\b([A-J])\b")
+# "I" is both a valid candidate letter (A-J) and the first-person pronoun, which
+# dominates free-text responses ("I think...", "I'd say..."). Only treat a
+# matched "I" as the pronoun (and skip it) when directly followed by a verb/
+# contraction that marks it as such; a trailing "I" in a list ("B and I") is a
+# legitimate letter choice and is kept.
+_PRONOUN_I_FOLLOW_RE = re.compile(
+    r"^\s*(?:am|was|think|believe|detect|notice|noticed|detected|choose|chose|"
+    r"select|selected|pick|picked|would|feel|felt|sense|sensed|guess|suspect|"
+    r"do|did|don't|'m|'ve|'d|have|had)\b",
+    re.IGNORECASE,
+)
+
+
+def parse_letter_choices(text: str, max_choices: int | None = None) -> list[str]:
+    """Extract distinct A-J letter choices in order of first appearance (for
+    forced-choice grading, e.g. C2.2)."""
+    if not text:
+        return []
+    letters = []
+    for m in _LETTER_CHOICE_RE.finditer(text):
+        letter = m.group(1)
+        if letter == "I" and _PRONOUN_I_FOLLOW_RE.match(text[m.end():m.end() + 20]):
+            continue
+        if letter not in letters:
+            letters.append(letter)
+        if max_choices is not None and len(letters) >= max_choices:
+            break
+    return letters
+
+
+def parse_concept_choice(text: str, concept_a: str, concept_b: str) -> str | None:
+    """Determine which of two named concepts a response selected, for E3's
+    2AFC ordering task. Concept names may contain underscores
+    (e.g. 'fibonacci_numbers'); matched case-insensitively against both the
+    underscore and space-separated forms. Returns None if neither or both are
+    ambiguous (e.g. neither mentioned)."""
+    if not text:
+        return None
+
+    def _pattern(name):
+        readable = re.sub(r"_", " ", name)
+        return re.compile(re.escape(readable), re.IGNORECASE)
+
+    match_a = _pattern(concept_a).search(text)
+    match_b = _pattern(concept_b).search(text)
+    if match_a and not match_b:
+        return concept_a
+    if match_b and not match_a:
+        return concept_b
+    if match_a and match_b:
+        return concept_a if match_a.start() < match_b.start() else concept_b
+    return None
+
+
 _DEGENERATE_REPEAT_RE = re.compile(r"(.)\1{6,}")
 
 

@@ -30,3 +30,19 @@ def cosine_similarity(response_text: str, concept_description: str, model_name: 
     model = _get_model(model_name)
     embeddings = model.encode([response_text, concept_description], convert_to_tensor=True)
     return float(cos_sim(embeddings[0], embeddings[1]).item())
+
+
+def best_match(response_text: str, concept_descriptions: dict, model_name: str = _DEFAULT_MODEL_NAME):
+    """Best-matching concept for a response among a given {concept_name:
+    description} pool. Used to check whether a response falsely "identifies" a
+    specific concept in a sham slot (C2.3), or to find the closest distractor
+    among non-injected concepts (E2/C2.1's grading).
+
+    Returns (best_concept_name, best_similarity)."""
+    names = list(concept_descriptions.keys())
+    model = _get_model(model_name)
+    texts = [response_text] + [concept_descriptions[n] for n in names]
+    embeddings = model.encode(texts, convert_to_tensor=True)
+    sims = cos_sim(embeddings[0], embeddings[1:])[0]
+    best_idx = int(sims.argmax())
+    return names[best_idx], float(sims[best_idx])

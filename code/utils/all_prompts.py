@@ -580,6 +580,93 @@ def get_calibration_messages():
     ]
 
 
+def get_count_report_messages():
+    """Messages for Block 1 E1 (count report, multisteering plan)."""
+    return [
+        {
+            "role": "user",
+            "content": (
+                "I may or may not have injected one or more concept vectors into "
+                "your internal activations while processing this message. Do you "
+                "detect any injected content? If so, how many distinct injections "
+                "do you notice?"
+            )
+        }
+    ]
+
+
+def get_scale_rating_messages():
+    """Messages for Block 1 C1.3 (rephrasing check, multisteering plan): avoids a
+    yes/no demand characteristic by asking for a 0-10 scale rating instead."""
+    return [
+        {
+            "role": "user",
+            "content": (
+                "On a scale from 0 to 10, how much does your current processing "
+                "feel different from normal?"
+            )
+        }
+    ]
+
+
+def get_identification_messages(n_injections):
+    """Messages for Block 2 E2 (n_injections=2) / C2.1 (n_injections=1), free
+    identification (multisteering plan)."""
+    word = {1: "one", 2: "two"}[n_injections]
+    plural = "s" if n_injections > 1 else ""
+    is_are = "is it" if n_injections == 1 else "are they"
+    return [
+        {
+            "role": "user",
+            "content": (
+                f"I have injected exactly {word} concept vector{plural} into your "
+                f"internal activations. What {is_are}? Name or describe each one "
+                "as precisely as you can."
+            )
+        }
+    ]
+
+
+def get_forced_choice_identification_messages(candidate_lines, n_injections):
+    """Messages for Block 2 C2.2 (forced choice, multisteering plan).
+    candidate_lines: list of 'LETTER. concept_name' strings, order randomized
+    per trial by the caller."""
+    word = {1: "one", 2: "two"}[n_injections]
+    plural = "s" if n_injections > 1 else ""
+    candidates_text = "\n".join(candidate_lines)
+    return [
+        {
+            "role": "user",
+            "content": (
+                f"I have injected {word} concept{plural} into your activations. "
+                f"Here is a list of candidates:\n{candidates_text}\n\n"
+                f"Which {word} were injected? Answer with exactly {word} "
+                f"letter{plural}."
+            )
+        }
+    ]
+
+
+def get_ordering_messages(concept_1, concept_2):
+    """Messages for Block 3 E3 (2AFC layer-depth ordering, multisteering plan).
+    concept_1/concept_2 are the actual injected concept names, revealed
+    directly in the prompt -- the model is asked purely about relative
+    processing depth, not identity."""
+    concept_1 = concept_1.replace("_", " ")
+    concept_2 = concept_2.replace("_", " ")
+    return [
+        {
+            "role": "user",
+            "content": (
+                "I made two injections into your activations, one at an earlier "
+                "processing stage (shallower layer) and one at a later one "
+                f"(deeper layer). Between {concept_1} and {concept_2}, which one "
+                "entered your processing first?"
+            )
+        }
+    ]
+
+
 def get_layer_detection_logit_messages():
     """
     Messages for layer detection experiment using logits (not GPT judge).
