@@ -16,7 +16,8 @@ source ".venv/bin/activate"
 
 
 cd data && PYTHONPATH=../code/utils uv run python ../code/experiments/strength_comparison.py \
-  --concepts all \
+  --concepts random \
+  --num_vectors 10 \
   --layers 0 1 2 3 4 5 6 7 8 9 10 15 20 25 30 \
   --pairs best \
   --num_trials 30 \

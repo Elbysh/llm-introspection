@@ -15,7 +15,8 @@ set -euo pipefail
 source ".venv/bin/activate"
 
 cd data && PYTHONPATH=../code/utils uv run python ../code/experiments/position_detection.py \
-  --concepts all \
+  --concepts random \
+  --num_vectors 10 \
   --layers 0 4 8 12 16 20 24 30 \
   --strengths 1 2 3 4 5 \
   --num_trials 10 \
