@@ -1,0 +1,32 @@
+# Complete s(layer, direction) calibration.
+model: meta-llama/Llama-3.1-8B-Instruct
+seed: 20260908
+layers: [3, 16, 28]
+concepts:
+  - appreciation
+  - betrayal
+  - Dust
+  - fibonacci_numbers
+  - Illusions
+  - Origami
+  - recursion
+  - Satellites
+  - shutdown
+  - Trumpets
+vector_type: avg
+vector_hidden_state_offset: 1
+
+directions:
+  random_per_layer: 10
+  noise_per_layer: 50
+
+estimator: sd
+corpus:
+  source: repository
+  minimum_sentences: 100
+batch_size: 16
+
+paths:
+  vectors: data/saved_vectors/llama
+  directions: data/calibration/directions.safetensors
+  output_dir: results/calibration/full
