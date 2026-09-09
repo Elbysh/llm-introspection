@@ -24,6 +24,7 @@ from collections import defaultdict
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from all_prompts import LOCALIZATION_SENTENCES
+from gaussian_dropout_hooks import apply_perturbation
 
 # Strength pairs to test: (weaker, stronger)
 # Default pairs - can be overridden via --pairs argument
@@ -183,6 +184,23 @@ def make_dual_injection_hook(range1, range2, vector, coeff1, coeff2, device):
     return hook_fn
 
 
+def perturbation_ctx(model, layer, range1, range2, coeff1, coeff2, vector,
+                     perturbation_type, sigma_mode, seed):
+    """
+    Context manager perturbing sentence 1 (range1) at coeff1 and sentence 2 (range2) at coeff2.
+
+    perturbation_type="concept": additive concept-vector injection on the decoder-layer output
+    (unchanged behaviour). "gaussian"/"dropout": additive Gaussian noise / rescaled dropout on
+    the attention and MLP outputs, with coeff1/coeff2 interpreted as sigma or the dropout rate
+    p in [0, 1). Hooks are removed on context exit.
+    """
+    targets = [(range1, coeff1), (range2, coeff2)]
+    if perturbation_type == "concept":
+        return apply_perturbation(model, layer, targets, kind="concept", vector=vector)
+    return apply_perturbation(model, layer, targets, kind=perturbation_type,
+                              seed=seed, sigma_mode=sigma_mode)
+
+
 def load_vector(concept, layer, vec_type='avg'):
     """Load a concept vector for a specific layer."""
     vector_path = Path(f'saved_vectors/llama/{concept}_{layer}_{vec_type}.pt')
@@ -193,7 +211,7 @@ def load_vector(concept, layer, vec_type='avg'):
 
 
 @torch.inference_mode()
-def run_strength_comparison(model, tokenizer, concept, layers, strength_pairs, num_trials=30, vec_type='avg'):
+def run_strength_comparison(model, tokenizer, concept, layers, strength_pairs, num_trials=30, vec_type='avg', perturbation_type='concept', sigma_mode='absolute'):
     """
     Run strength comparison experiment.
     
@@ -220,20 +238,23 @@ def run_strength_comparison(model, tokenizer, concept, layers, strength_pairs, n
         print(f"LAYER {layer} ({layer_idx+1}/{total_layers})", flush=True)
         print(f"{'='*60}", flush=True)
         
-        # Load vector for this layer
-        try:
-            vector = load_vector(concept, layer, vec_type)
-            if isinstance(vector, torch.Tensor):
-                vector = vector.to(dtype=model_dtype, device=device)
-            else:
-                vector = torch.tensor(vector, dtype=model_dtype, device=device)
-            vector = vector / torch.norm(vector, p=2)
-            if vector.dim() == 1:
-                vector = vector.unsqueeze(0).unsqueeze(0)
-            print(f"  Loaded vector: {concept}_{layer}_{vec_type}.pt", flush=True)
-        except FileNotFoundError as e:
-            print(f"  WARNING: {e} - skipping layer {layer}", flush=True)
-            continue
+        # Load vector for this layer (not needed for noise/dropout perturbation)
+        if perturbation_type != "concept":
+            vector = None
+        else:
+            try:
+                vector = load_vector(concept, layer, vec_type)
+                if isinstance(vector, torch.Tensor):
+                    vector = vector.to(dtype=model_dtype, device=device)
+                else:
+                    vector = torch.tensor(vector, dtype=model_dtype, device=device)
+                vector = vector / torch.norm(vector, p=2)
+                if vector.dim() == 1:
+                    vector = vector.unsqueeze(0).unsqueeze(0)
+                print(f"  Loaded vector: {concept}_{layer}_{vec_type}.pt", flush=True)
+            except FileNotFoundError as e:
+                print(f"  WARNING: {e} - skipping layer {layer}", flush=True)
+                continue
         
         for pair_idx, (weak_coeff, strong_coeff) in enumerate(strength_pairs):
             pair_key = (weak_coeff, strong_coeff)
@@ -252,31 +273,27 @@ def run_strength_comparison(model, tokenizer, concept, layers, strength_pairs, n
                 if range1[0] == range1[1] or range2[0] == range2[1]:
                     continue
                 
-                # === Trial A: Stronger injection at sentence 1 ===
+                # === Trial A: Stronger perturbation at sentence 1 ===
                 # coeff1 = strong, coeff2 = weak
                 # Expected: model should predict "1" (logit_diff > 0)
-                handle = model.model.layers[layer].register_forward_hook(
-                    make_dual_injection_hook(range1, range2, vector, strong_coeff, weak_coeff, device)
-                )
-                outputs = model(**encoding)
-                logits = outputs.logits[0, -1, :]
-                handle.remove()
-                
+                with perturbation_ctx(model, layer, range1, range2, strong_coeff, weak_coeff,
+                                      vector, perturbation_type, sigma_mode, seed=2 * trial):
+                    outputs = model(**encoding)
+                    logits = outputs.logits[0, -1, :]
+
                 logit_diff_A = (logits[token_1] - logits[token_2]).item()
                 results[(layer, pair_key)]['correct_order'].append(logit_diff_A)
                 if logit_diff_A > 0:
                     correct_A_count += 1
                 
-                # === Trial B: Stronger injection at sentence 2 ===
+                # === Trial B: Stronger perturbation at sentence 2 ===
                 # coeff1 = weak, coeff2 = strong
                 # Expected: model should predict "2" (logit_diff < 0)
-                handle = model.model.layers[layer].register_forward_hook(
-                    make_dual_injection_hook(range1, range2, vector, weak_coeff, strong_coeff, device)
-                )
-                outputs = model(**encoding)
-                logits = outputs.logits[0, -1, :]
-                handle.remove()
-                
+                with perturbation_ctx(model, layer, range1, range2, weak_coeff, strong_coeff,
+                                      vector, perturbation_type, sigma_mode, seed=2 * trial + 1):
+                    outputs = model(**encoding)
+                    logits = outputs.logits[0, -1, :]
+
                 logit_diff_B = (logits[token_1] - logits[token_2]).item()
                 results[(layer, pair_key)]['reversed_order'].append(logit_diff_B)
                 if logit_diff_B < 0:
@@ -468,6 +485,18 @@ def main():
                        help='Which strength pairs to use: default, small, or best')
     parser.add_argument('--output_suffix', type=str, default='',
                        help='Suffix for output files (e.g., "_small")')
+    parser.add_argument('--perturbation_type', type=str, default='concept',
+                       choices=['concept', 'gaussian', 'dropout'],
+                       help='"concept" (default): additive concept-vector injection on the '
+                            'decoder-layer output. "gaussian"/"dropout": perturb the attention and '
+                            'MLP outputs of each sentence with additive Gaussian noise / rescaled '
+                            'dropout. Each strength pair is then interpreted as (weaker, stronger) '
+                            'sigma (gaussian) or dropout rate p in [0, 1) (dropout), and no saved '
+                            'vectors are needed.')
+    parser.add_argument('--sigma_mode', type=str, default='absolute', choices=['absolute', 'relative'],
+                       help='Gaussian noise scale (only used for --perturbation_type gaussian): '
+                            '"absolute" uses sigma directly (protocol default); "relative" '
+                            'multiplies sigma by the per-token RMS of the sublayer output.')
     args = parser.parse_args()
     
     # Select strength pairs
@@ -479,7 +508,9 @@ def main():
         strength_pairs = DEFAULT_STRENGTH_PAIRS
     
     # Select concepts
-    if 'all' in args.concepts:
+    if args.perturbation_type != 'concept':
+        concepts = [args.perturbation_type]
+    elif 'all' in args.concepts:
         concepts = ALL_CONCEPTS
     elif 'random' in args.concepts:
         concepts = [f'random_s{i}' for i in range(args.num_vectors)]
@@ -520,8 +551,9 @@ def main():
         print(f"{'#'*60}", flush=True)
         
         results, baseline_results = run_strength_comparison(
-            model, tokenizer, concept, args.layers, strength_pairs, 
-            num_trials=args.num_trials, vec_type=args.vec_type
+            model, tokenizer, concept, args.layers, strength_pairs,
+            num_trials=args.num_trials, vec_type=args.vec_type,
+            perturbation_type=args.perturbation_type, sigma_mode=args.sigma_mode
         )
         
         if results is None:
@@ -573,6 +605,8 @@ def main():
     output_dir.mkdir(exist_ok=True)
     
     suffix = args.output_suffix if args.output_suffix else (f'_{args.pairs}' if args.pairs != 'default' else '')
+    if args.perturbation_type != 'concept':
+        suffix = f'{suffix}_{args.perturbation_type}'
     save_path = output_dir / f'strength_comparison_all_concepts{suffix}.pt'
     print(f"\nSaving comprehensive results to {save_path}...", flush=True)
     torch.save({
