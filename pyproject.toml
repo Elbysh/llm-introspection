@@ -47,6 +47,8 @@ dependencies = [
     "regex==2026.9.3",
     "rich==15.0.0",
     "safetensors==0.8.0",
+    "scipy",
+    "sentence-transformers",
     "setuptools==84.0.0",
     "shellingham==1.5.4",
     "six==1.17.0",

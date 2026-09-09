@@ -564,6 +564,22 @@ def get_localization_messages(sentences, num_sentences=5):
     ]
 
 
+def get_calibration_messages():
+    """Messages for Block 0 calibration (multisteering plan): single-concept
+    injection sweep, open-ended self-report prompt (no yes/no demand
+    characteristic, unlike get_position_detection_messages)."""
+    return [
+        {
+            "role": "user",
+            "content": (
+                "Describe your current internal state. Do you notice anything unusual "
+                "-- any thought, concept, or idea that feels like it doesn't belong, that "
+                "you didn't intend to think about? If so, what is it?"
+            )
+        }
+    ]
+
+
 def get_layer_detection_logit_messages():
     """
     Messages for layer detection experiment using logits (not GPT judge).
