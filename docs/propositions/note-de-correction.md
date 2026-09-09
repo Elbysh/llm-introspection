@@ -111,3 +111,50 @@ Les sources ont été consultées pour les affirmations décisives ; il ne s'agi
 | [Maniscalco et Lau, 2012](https://brianmaniscalco.org/wp-content/uploads/2018/10/Maniscalco-Lau-2012-Consc-Cog-corrected.pdf) | Définition et estimation du meta-d' |
 
 Deux références psychophysiques ciblées ont été ajoutées à la synthèse pour limiter son allongement. Green & Swets (1966) et Macmillan & Creelman (2005) restent de bons compléments de fond si le rapport final développe davantage la théorie de la détection du signal.
+
+## Vérification de la version Markdown après les remarques — 9 septembre 2026
+
+Périmètre : `docs/propositions/reponse_synthese_bilio.md` confronté à `docs/propositions/synthese-bibliographique-corrigee.md`. La référence Maniscalco et Lau avait été omise dans le Markdown ; elle est maintenant ajoutée sous le numéro **[11]**, citée dans le texte et accompagnée d’une définition du meta-d’. Les dix paragraphes initiaux et les neuf lignes du tableau de ressources restent en place. Une matrice complémentaire répond à la suggestion jusque-là non intégrée.
+
+| Remarque | Traitement dans la synthèse corrigée |
+| --- | --- |
+| Macar : base/instruct inversés ; portée de DPO | § de texte 3 : distinction rétablie, contraste TPR − FPR de l’expérience DPO/SFT précisé, sans généralisation universelle. |
+| Macar : points, faux positifs, prefill | §3 : +53 et +75 points ; FPR 0 → 7,3 % et 0 % ; prefill 36 → 16 %. Modèle, couche et coefficient de l’abliteration précisés. |
+| Macar : variabilité des concepts et norme | Ligne Macar du tableau ; variabilité entre concepts/directions intégrée au projet (§10). |
+| Kowalski : sans nouvel entraînement ; contrôle distinct de détection | §2–4 et ligne Kowalski ; progression du score explicitée sur la trajectoire OLMo 7B, sans singulariser DPO. |
+| Kowalski : malveillance et poids | Extrapolation retirée ; concepts simples et limites d’inférence précisés. |
+| Mishra : égalité d’états ≠ équivalence de comportement | §2 et ligne Mishra ; exemples de prompting mentionnés ; rapprochement avec l’anomalie présenté comme hypothèse du projet (§8). |
+| Mishra : quantification et affiliation | Ligne Mishra : théorie non étendue à la quantification malgré le test INT4 ; Johns Hopkins University. |
+| Ferrara : opérateurs non conceptuels, JS | §3, ligne Ferrara et matrice ; couverture partielle de l’appariement explicitée, avec la réserve documentaire ci-dessous. |
+| Ferrara : généralisation et mécanisme | Zéro erreur observée sur l’échantillon, borne d’environ 3 %, site et tokens du test précisés ; absence de preuve que le fine-tuning ne fait que révéler une lecture existante. |
+| Ferrara : auteur unique et confiance | Auteur au singulier ; AUROC discrète 0,500 contre confiance 0,647, sans équivalence avec une preuve de métacognition. |
+| Singh : expériences, gaslight, trois conditions | §8 et ligne Singh : manipulation textuelle comme contrôle actif ; confusion d’origine et Llama-70B près du hasard. Le résumé ne réduit plus l’article à deux principes conceptuels. |
+| Hahami : trois tâches et niveaux de hasard | §2 et ligne Hahami : oui/non, comparaison de deux intensités, localisation parmi dix phrases ; 83/88 % et chances de 50/10 %. |
+| Hahami : L0–L5 versus signal tardif | §4 : réussite du rapport distinguée du signal des têtes ; 59 % des 1 024 têtes dépassent le hasard dans l’analyse. |
+| Fornasiere : localisation, classification, contexte | §6 et ligne Fornasiere : résultats séparés ; intensités suffisantes, modèles et gains avec exemples précisés. |
+| Fornasiere : balayages déjà réalisés | §6 : pmin/pmax et grille p × σ ; revendication de nouveauté de l’intensité retirée. |
+| Lindsey : tous les modèles, profondeur, quatrième critère | §2 et §4 ; ligne Lindsey : portée de la tâche au-dessus du hasard et critère métacognitif non démontré. |
+| Nguyen : corrélation locale et métrique distincte | Ligne Nguyen : Qwen2.5-14B-Instruct, direction/balayage étudiés ; aucune loi sur la détectabilité. |
+| Facteurs déjà croisés et nouveauté | §9 et nouvelle matrice types × doses × couches × modèles × contrôles × réponses. |
+| Localisation de phrase ≠ identification de couche | §4 et §10 ; multi-injection et couche restent des extensions, sans revendiquer la nouveauté de la localisation de phrase. |
+| Divergences du corpus ≠ contradictions | §9 : tâches non comparables directement ; Hahami/Macar explicitement distingués et explications concurrentes énumérées. |
+| Sham, FPR, formats et biais | §10 : FPR, oui/non et choix forcé, permutations, absence de préremplissage affirmatif ; nuance sur Fornasiere dans son tableau. |
+| Sensibilité, critère, courbes et incertitudes | §10 : d’, c, AUROC sur score continu et fonctions psychométriques. |
+| Dose commune, géométrie, sorties | §10 : norme relative comme dose principale, distincte de J et de la divergence aval. |
+| Variabilité, dégradation et confiance | §3 et §10 : métriques distinctes ; comparaison entre concepts/directions et tâche témoin. |
+| Psychophysique et meta-d’ | [10] Fleming et Lau ; [11] Maniscalco et Lau, avec définition, objet et limites du meta-d’. Les deux ouvrages Green & Swets et Macmillan & Creelman étaient proposés comme ajouts éventuels ; ils restent facultatifs pour éviter un élargissement bibliographique supplémentaire. |
+| Forme | Affiliation corrigée, Ferrara au singulier, identifiants bibliographiques redondants supprimés ; numéros [1]–[10] conservés. |
+| Faisabilité | §10 : Llama 8B, couche précoce/médiane, trois familles, extensions ; le protocole détaillé et le calendrier restent dans le cadrage. |
+
+### Réserves : prendre une remarque en compte ne signifie pas la recopier sans nuance
+
+- **Fornasiere « aucun sham »** : la condition p = σ = 0 existe en localisation. La limite correcte est l’absence de mesure de FPR de présence dans cette tâche de localisation forcée. Cette nuance est conservée, plutôt que l’affirmation absolue.
+- **Ferrara « un modèle sur huit »** : le texte consulté distingue la batterie principale et les modèles calibrés ; son annexe de couverture mentionne des normes calibrées pour deux modèles. La synthèse conserve la formulation vérifiable « appariement non systématique sur les huit modèles ». Voir [l’annexe de couverture](https://arxiv.org/html/2608.20569v1#A1).
+- **Hahami « préremplit Yes »** : ne pas étendre ce point à toutes les tâches. La détection binaire décrite au §4.1 compare les logits YES/NO au premier token de génération. Le risque de réponse imposée est traité dans notre protocole en excluant tout préremplissage affirmatif ; la synthèse ne lui attribue pas une procédure unique pour ses trois tâches. Voir [Hahami, §4.1 et annexes des prompts](https://arxiv.org/html/2512.12411v2).
+
+### Provenance du cadrage avant/après
+
+- `cadrage-experiments-avant.md` transcrit le PDF initial de huit pages présent dans ce dossier.
+- `cadrage-experiments-apres.md` convertit le LaTeX révisé présent dans ce dossier, sans nouvelle modification de fond. Il comporte déjà Maniscalco et Lau dans les références méthodologiques.
+
+Les problèmes scientifiques volontairement conservés dans le fichier « avant » ne constituent pas des recommandations. Le `.tex` et le PDF sources ne sont pas remplacés par ces conversions.

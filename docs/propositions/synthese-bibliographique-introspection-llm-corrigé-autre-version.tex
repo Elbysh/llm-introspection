@@ -1,0 +1,104 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{lmodern,microtype,amsmath,amssymb,array,longtable,booktabs,pdflscape,enumitem}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr,lastpage}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlist[itemize]{leftmargin=1.4em,itemsep=1pt,topsep=2pt}
+\pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\footnotesize\thepage\,/\,\pageref{LastPage}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\hypersetup{pdftitle={Psychophysique du rapport de perturbations internes dans les LLM},pdfauthor={William Auroux, Thomas Gegout, Louis Le Dain et Seif Zaafouri}}
+\begin{document}
+\begin{center}
+{\LARGE\bfseries Psychophysique du rapport de perturbations internes dans les LLM\par}
+\vspace{4pt}
+{\large Détection, localisation et contrôle des explications alternatives\par}
+\vspace{9pt}
+{\normalsize\bfseries William AUROUX, Thomas GEGOUT, Louis LE DAIN, Seif ZAAFOURI\par}
+{\small Encadrant : Fabrice POPINEAU\par}
+{\small Proposition de révision du 9 septembre 2026\par}
+\end{center}
+
+\section*{Synthèse bibliographique}
+
+L'étude des rapports qu'un grand modèle de langage produit sur ses propres activations pose un problème de mesure : une réponse correcte peut résulter d'un accès à un signal interne, mais aussi d'un biais de sortie, d'indices textuels ou d'une dégradation du traitement. Il faut distinguer la \textbf{détection} de la présence d'une intervention, la \textbf{localisation} des tokens ou de la phrase directement ciblés, l'\textbf{identification} de son contenu, et le \textbf{contrôle} des activations sur instruction. Ces tâches ne constituent pas des mesures interchangeables de l'introspection. Nous réservons l'expression \emph{introspection au sens fort} à un accès privilégié accompagné d'un calcul de second ordre portant sur l'état interne ; un succès comportemental isolé ne suffit pas à l'établir.
+
+\subsection*{Des performances réelles, mais dépendantes de la tâche}
+
+Lindsey \cite{lindsey2026} propose des expériences d'injection de concepts dans les activations de modèles Claude et distingue quatre critères : exactitude, ancrage causal, internalité et représentation métacognitive. Opus 4 et 4.1 réussissent généralement le mieux ; néanmoins, tous les modèles testés dépassent le hasard dans la tâche de distinction entre contenu injecté et texte d'entrée. Pour deux comportements étudiés chez Opus, les injections les plus efficaces se situent vers les deux tiers de la profondeur ; la détection de texte prérempli privilégie une autre couche. L'auteur ne démontre pas le quatrième critère et souligne la dépendance au protocole.
+
+Hahami et al. \cite{hahami2026} distinguent, sur Llama-3.1-8B-Instruct, détection oui/non, comparaison d'intensité et localisation parmi dix phrases. Leur contrôle met en évidence un déplacement général des logits favorisant l'affirmation dans la tâche binaire. Les deux autres tâches atteignent respectivement 83\,\% de comparaisons correctes et 88\,\% de localisations correctes, pour des niveaux de hasard de 50\,\% et 10\,\%. Le succès du rapport est concentré aux couches L0--L5, sans impliquer une absence de signal dans les couches tardives : leur analyse trouve des têtes sensibles aux perturbations à toutes les profondeurs. Ces observations concernent ce modèle et ce dispositif, pas une règle architecturale générale.
+
+Fornasiere et al. \cite{fornasiere2026} étudient le masquage d'activations et le bruit gaussien sur des modèles Llama, OLMo et Qwen de 8B à 32B. Il faut séparer localisation de la phrase perturbée, classification dropout/bruit et apprentissage de cette classification en contexte. Aux intensités suffisantes, la localisation atteint au moins environ 80\,\% et jusqu'à 100\,\% pour les Qwen testés. La classification sans exemples est hétérogène ; les exemples en contexte l'améliorent fortement, jusqu'à environ 96\,\% dans les conditions rapportées. Le balayage des intensités et les grilles dropout/bruit sont déjà centraux dans cet article. Une condition à dose nulle existe en localisation, mais un choix forcé entre phrases ne mesure pas les fausses déclarations de présence d'une injection.
+
+\subsection*{Post-entraînement, restitution et contrôle : des résultats distincts}
+
+Macar et al. \cite{macar2026} décrivent un mécanisme de détection absent des modèles de base étudiés et une capacité sous-élicitée dans les modèles post-entraînés. Sur Gemma3-27B instruct, à $L=37$ et $\alpha=2$, l'abliteration fait passer la détection de 10,8 à 63,8\,\%, soit \textbf{53 points de pourcentage}, avec des faux positifs passant de 0 à 7,3\,\%. Un vecteur de biais entraîné apporte 75 points sur des concepts tenus à l'écart, avec 0\,\% de faux positifs observés, mais réduit la détection de prefill de 36 à 16\,\%. Les expériences OLMo relient l'émergence de la discrimination à un entraînement contrastif ; elles ne démontrent pas une loi générale sur DPO. La détectabilité varie aussi fortement entre concepts.
+
+Ferrara \cite{ferrara2026} teste des interventions non conceptuelles : mise à zéro, changement d'échelle, bruit et remplacement. Sur Qwen2.5-7B-Instruct, la réponse discrète constante donne une AUROC de 0,500, alors que la confiance verbalement rapportée discrimine intervention et sham avec une AUROC de 0,647. Après adaptation LoRA, au site résiduel L16 et pour un remplacement aléatoire, aucune erreur n'est observée sur 100 essais perturbés et 100 shams, associés à 100 directions nouvelles. Ce résultat ne prouve ni une erreur vraie nulle, ni une généralisation à d'autres opérateurs. La présence d'un signal décodable avant entraînement ne démontre pas que l'adaptation se limite à en révéler la lecture. L'appariement selon la divergence de Jensen--Shannon n'est pas systématiquement réalisé sur les huit modèles de la batterie.
+
+Kowalski et al. \cite{kowalski2026} mesurent une autre capacité : modifier les activations sur instruction, sans entraînement supplémentaire pour le benchmark. Pour les checkpoints OLMo, leur score de contrôle augmente surtout pendant le pré-entraînement, puis plus modestement après alignement. Le ciblage fin de la couche reste difficile. Leurs concepts, tels que \emph{bread}, ne sont pas des représentations de tromperie ou de malveillance : cette étude ne montre pas qu'un modèle dissimule spontanément un comportement dangereux dans ses poids.
+
+\subsection*{Interprétations alternatives et géométrie des interventions}
+
+Singh et al. \cite{singh2026} apportent des expériences, au-delà d'une critique conceptuelle. Leur condition \emph{gaslight} induit un contenu par le texte sans injection directe dans les activations. Des modèles attribuent à tort cette manipulation à une intervention interne ; Llama-3.1-70B retombe près du hasard dans le dispositif à trois conditions. Cette confusion soutient l'hypothèse d'une sensibilité à l'irrégularité qui ne distingue pas suffisamment sa provenance. L'anomalie textuelle doit donc figurer comme \textbf{contrôle actif}. Même réussir ce contrôle ne démontrerait pas, à lui seul, un processus métacognitif de second ordre.
+
+Mishra et al. \cite{mishra2026} étudient la non-surjectivité des activations induites par steering : sous les hypothèses du théorème, l'égalité exacte avec des états produits par des prompts discrets est presque toujours impossible. Cela n'interdit ni des états proches ni un comportement similaire ; leurs expériences illustrent également des effets comportementaux obtenus par prompting. Le papier ne conclut pas sur l'introspection. La quantification n'est pas couverte par la théorie, bien qu'un modèle INT4 soit testé empiriquement. Relier cette géométrie à la détection d'anomalies constitue une hypothèse de notre projet.
+
+Nguyen et al. \cite{nguyen2026} proposent un coût géométrique des dommages collatéraux du steering. La corrélation $r<-0{,}9$ avec la performance concerne une analyse sur Qwen2.5-14B-Instruct et un balayage de steering ; ce n'est pas une relation générale avec la détectabilité. Leur travail motive une attention à la direction des déplacements. Toutefois, leur coût $J$, une norme relative des activations, la dispersion des projections naturelles et une divergence de sortie mesurent des propriétés différentes : nous ne présumons pas leur équivalence.
+
+\subsection*{Contribution visée et portée des conclusions}
+
+Plusieurs travaux croisent déjà couche et intensité ; la localisation de phrases est également bien étudiée. Le manque identifié dans ce corpus est une \textbf{comparaison commune de familles de perturbations avec calibration explicite et séparation de la sensibilité et du biais de réponse}. Le tableau suivant distingue les dimensions couvertes. Il ne constitue pas une preuve d'absence d'autres travaux dans la littérature.
+
+Les résultats divergents du corpus motivent ce programme, sans constituer des contradictions directes : une AUROC de détection, une précision de localisation et une identification de concept n'ont pas le même objet. Les différences peuvent tenir au format, aux contrôles, au site, à la portée temporelle de l'injection, au modèle ou à la dose. Notre objectif est de mesurer certains de ces effets dans un protocole fixé, et non de les attribuer d'emblée à l'architecture.
+
+Le noyau expérimental compare, sur Llama-3.1-8B-Instruct et deux couches, des directions conceptuelles, des directions aléatoires fixes et du bruit gaussien renouvelé par token. La dose principale est le rapport des normes de Frobenius de la perturbation et des activations témoins sur les tokens ciblés. Des essais shams permettent d'estimer les faux positifs dans une tâche de présence/absence ; une tâche distincte mesure la localisation A/B. Nous rapporterons $d'$, le critère de réponse, l'AUROC issue d'un score continu, les courbes dose-réponse et leurs incertitudes, ainsi qu'une mesure séparée de performance sur le texte. La théorie de la détection du signal motive cette séparation ; la confiance et le meta-$d'$ concernent des questions supplémentaires de métacognition \cite{fleming2014,maniscalco2012}.
+
+Un contrôle textuel de type gaslight et des permutations des étiquettes testent des explications alternatives. Les analyses selon la dispersion directionnelle et l'effet aval seront des analyses de sensibilité. Le dropout, une réplication sur un second modèle et la multi-injection suivront si les résultats et le budget le permettent. Localiser une phrase et identifier une couche restent deux problèmes distincts. Un avantage des concepts après contrôle indiquerait une différence entre familles d'interventions ; attribuer cette différence à un accès métacognitif demanderait des preuves supplémentaires, notamment causales.
+
+\clearpage
+\newgeometry{margin=1.3cm}
+\begin{landscape}
+\section*{Matrice du corpus : dimensions effectivement distinguées}
+\small
+Lecture : résumés des dispositifs pertinents pour le projet, et non inventaire exhaustif des annexes. \og Variable\fg{} signifie que les conditions diffèrent selon les expériences. Aucun coefficient propre à un article n'est une dose universelle.
+\small\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\begin{longtable}{@{}L{2.2cm}L{3.25cm}L{3.5cm}L{3.0cm}L{3.25cm}L{4.0cm}L{5.0cm}@{}}
+\toprule
+\textbf{Étude} & \textbf{Types} & \textbf{Dose} & \textbf{Couches} & \textbf{Modèles} & \textbf{Contrôles} & \textbf{Réponse / métrique}\\\midrule\endfirsthead
+\toprule\textbf{Étude} & \textbf{Types} & \textbf{Dose} & \textbf{Couches} & \textbf{Modèles} & \textbf{Contrôles} & \textbf{Réponse / métrique}\\\midrule\endhead
+\bottomrule\endfoot
+Lindsey & Concepts ; autres tâches & Coefficient de steering balayé & Balayages ; optimum propre à la tâche & Claude, dont Opus 4/4.1 & Sans injection, contrôles texte/concept ; variables & Détection, identification, distinction texte/concept, prefill, contrôle\\\midrule
+Hahami et al. & Directions conceptuelles & Norme du vecteur unitaire multipliée par un coefficient & Intensité et couche croisées & Llama-3.1-8B-Instruct & Questions témoins de biais ; comparaison d'intensité & Oui/non ; comparaison binaire ; localisation parmi dix phrases\\\midrule
+Fornasiere et al. & Dropout ; gaussien & Taux $p$, écart-type $\sigma$, seuils et grilles & Balayages ; réglages par modèle & Llama, OLMo, Qwen, 8B--32B & Dose nulle en localisation ; permutations ; labels de contrôle & Localisation ; classification ; exemples en contexte ; accuracy\\\midrule
+Macar et al. & Concepts ; ablations et vecteur de biais & Coefficients balayés & Détection et identification selon la profondeur & Gemma3-27B, Qwen3-235B ; checkpoints OLMo & Injection/absence ; prompts ; manipulations causales & TPR, FPR, identification ; variabilité entre concepts\\\midrule
+Singh et al. & Concepts injectés ; manipulation textuelle & Balayages pour l'injection & Recherche de conditions efficaces & Plusieurs modèles ouverts, dont Llama-70B & Gaslight ; absence ; trois conditions & Attribution à l'injection, au texte ou à aucune intervention\\\midrule
+Ferrara & Zeroing, scaling, bruit, remplacement & Dose ; JS pour certains contrôles, couverture incomplète & Site résiduel principal ; extensions de sites & Huit modèles dans la batterie principale & Sham apparié ; observateur textuel ; aléatoire & Rapport discret, confiance, $d'$, AUROC ; validité du format\\\midrule
+Mishra et al. & Steering de directions & Coefficients ; distances entre états & Sites étudiés ; théorème sous hypothèses & Modèles ouverts ; test INT4 & Recherche de prompts et comparaisons ICL & Distances d'activations et effets comportementaux ; pas de tâche introspective\\\midrule
+Nguyen et al. & Steering orienté vers une cible & Alignement et coût géométrique $J$ & Interventions de steering & Dont Qwen2.5-14B-Instruct & Comparaison de méthodes & Performance aval et dommages collatéraux ; pas de détection\\\midrule
+Kowalski et al. & Contrôle de concepts sur instruction & Objectifs de projection/contrôle & Profils en profondeur et ciblage & Modèles ouverts ; checkpoints OLMo & Conditions d'instruction comparées & Score de contrôle ; pas un benchmark de détection\\\midrule
+\textbf{Projet proposé} & \textbf{Concept ; aléatoire fixe ; gaussien/token} & \textbf{Norme relative commune ; autres échelles en sensibilité} & \textbf{Précoce et médiane fixées au départ} & \textbf{Llama-8B instruct ; réplication optionnelle} & \textbf{Sham, labels, texte, dégradation} & \textbf{Présence et localisation séparées ; courbes, $d'$, critère, AUROC}\\
+\end{longtable}
+\end{landscape}\restoregeometry
+
+\clearpage
+\begin{thebibliography}{99}
+\bibitem{hahami2026} E. Hahami, I. Sinha, L. Jain, J. Kaplan et J. Hahami. \emph{Detecting the Disturbance: A Nuanced View of Introspective Abilities in LLMs}. arXiv:2512.12411v2, 2026. \url{https://arxiv.org/abs/2512.12411v2}.
+\bibitem{macar2026} U. Macar, L. Yang, A. Wang, P. Wallich, E. Ameisen et J. Lindsey. \emph{Mechanisms of Introspective Awareness}. arXiv:2603.21396v2, 2026. \url{https://arxiv.org/abs/2603.21396v2}.
+\bibitem{fornasiere2026} D. Fornasiere, M. Bronzi, S. Kitts, A. Palmas, Y. Bengio et O. Richardson. \emph{Language models recognize dropout and Gaussian noise applied to their activations}. arXiv:2604.17465v2, 2026. \url{https://arxiv.org/abs/2604.17465v2}.
+\bibitem{lindsey2026} J. Lindsey. \emph{Emergent Introspective Awareness in Large Language Models}. arXiv:2601.01828v1, 2026. \url{https://arxiv.org/abs/2601.01828v1}.
+\bibitem{singh2026} S. Singh, T. Linzen et S. Ravfogel. \emph{Can LLMs Introspect? A Reality Check}. arXiv:2605.26242v2, 2026. \url{https://arxiv.org/abs/2605.26242v2}.
+\bibitem{mishra2026} A. Mishra, D. Khashabi et A. Liu (Johns Hopkins University). \emph{Steered LLM Activations are Non-Surjective}. arXiv:2604.09839v2, 2026. \url{https://arxiv.org/abs/2604.09839v2}.
+\bibitem{nguyen2026} T. Nguyen, T. A. Nguyen, S. Alemohammad et R. G. Baraniuk. \emph{Minimizing Collateral Damage in Activation Steering}. arXiv:2605.01167v1, 2026. \url{https://arxiv.org/abs/2605.01167v1}.
+\bibitem{kowalski2026} M. M. Kowalski, J. Fonseca Rivera, U. Macar et D. D. Africa. \emph{Measuring Activation Control in Large Language Models}. arXiv:2608.21664v1, 2026. \url{https://arxiv.org/abs/2608.21664v1}.
+\bibitem{ferrara2026} E. Ferrara. \emph{Open-Weight Masked Introspection: Measuring What Language Models Can Report About Their Own Computation}. arXiv:2608.20569v1, 2026. \url{https://arxiv.org/abs/2608.20569v1}.
+\bibitem{fleming2014} S. M. Fleming et H. C. Lau. \emph{How to measure metacognition}. Frontiers in Human Neuroscience, 8:443, 2014. \url{https://doi.org/10.3389/fnhum.2014.00443}.
+\bibitem{maniscalco2012} B. Maniscalco et H. Lau. \emph{A signal detection theoretic approach for estimating metacognitive sensitivity from confidence ratings}. Consciousness and Cognition, 21(1):422--430, 2012. \url{https://doi.org/10.1016/j.concog.2011.09.021}.
+\end{thebibliography}
+\end{document}
