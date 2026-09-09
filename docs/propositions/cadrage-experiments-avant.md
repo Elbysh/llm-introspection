@@ -1,36 +1,5 @@
 > Version avant : transcription du cadrage initial de huit pages, `docs/propositions/cadrage-experiments.pdf`. Le fond, les hypothèses et les formulations sont conservés, y compris les points à corriger. Seuls les retours à la ligne, les listes et les tableaux ont été adaptés au Markdown ; la page 5 vide n’est pas reproduite.
 
-# Hypothèses et expérimentations
-
-| Hypothèse à tester | Expériences mise en oeuvre | Résultat utile | Conclusion sur l’hypothèse |
-| --- | --- | --- | --- |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-
-idée thomas : on voit une grande différence entre avec et sans post-training, cette différence tient toujours avec l’évaluation proposée par Singh et al.? peut-on améliorer ou baisser les performances d’un LLM sur une tâche ? Multi-injection ?
-
-idée william : éviter le OUI/NON qui a l’air de biaiser les distributions. Les 2AFC ont l’air d’être une bonne méthode d’évaluation. De manière générale ce n’est pas testé sur reasoning, peut être intéressant de faire ? optionnellement, tester le bruit uniforme aussi.
-
-Expériences sur les différents normalizations de perturbations (normalization brute, ou direction dépendant)
-
-Idée de seif: comparer les méthodes de calculs (et vecteurs de concepts très proches) de vecteurs de concepts, voir lesquels amènent à des activations plus claires
-
-Idée de Louis : jouer sur les couches en faisant plusieurs injections et voir s’il fait la différence relative ?
-
-- Est-ce qu’on peut améliorer les perfs sur des tâches annexes ? comparaison gaussien, aléatoire, conceptuel
-
-- Evaluation du multi-steering ? Voir si des injections à différentes couches sont détectables
-
-- La détectabilité du modèle semble facilitée par la nature des vecteurs de steering (activation du modèle lui-même) la comparaison avec bruit gaussien et aléatoire clarifiera le fait.
-
-- une expé de contrôle : faire un steering gaussien en demandant au modèle l’activation qui a été faite entre deux steering conceptuels.
-
-- On remarque de grandes spécificités entre les modèles, étudier sur différents modèles. (les différences entre types de training est déjà attesté)
-
-- tester différents vecteurs concernant 1 concept pour voir lequel est le mieux détecté (seif)
-
 ## 0 - Design de la tâche 2AFC
 
 Objectif: Mesurer si le modèle peut détecter une perturbation de ses activations internes parmi 2 phrases.
