@@ -1,0 +1,32 @@
+# Fast calibration run used to validate the complete pipeline on Ruche.
+model: meta-llama/Llama-3.1-8B-Instruct
+seed: 20260908
+
+# Decoder-block outputs: one early, one middle and one late layer.
+layers: [3, 16, 28]
+concepts: [appreciation, betrayal, Dust]
+
+# Existing concept vectors are indexed as hidden states. The +1 offset maps a
+# decoder block l to the vector file saved at hidden-state index l + 1.
+vector_type: avg
+vector_hidden_state_offset: 1
+
+# Random and noise directions are independent normalized Gaussian draws.
+# They remain separate families so later experiments can give them different
+# semantics without changing the calibration format.
+directions:
+  random_per_layer: 2
+  noise_per_layer: 10
+
+# Both SD and Gaussian-consistent MAD are always saved. This selects the scale
+# that downstream experiments should use by default.
+estimator: sd
+corpus:
+  source: repository
+  minimum_sentences: 100
+batch_size: 16
+
+paths:
+  vectors: data/saved_vectors/llama
+  directions: data/calibration/directions_pilot.safetensors
+  output_dir: results/calibration/pilot
