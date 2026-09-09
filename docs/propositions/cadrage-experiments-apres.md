@@ -2,7 +2,7 @@
 
 Détection, localisation et spécificité des perturbations internes
 
-> Version après : conversion de `docs/propositions/cadrage-experiments.tex`, sans réécriture supplémentaire du protocole. La version avant correspond au PDF initial. Les équations sont conservées en LaTeX dans le Markdown ; la macro locale de norme a été développée pour permettre leur affichage.
+> Version révisée à partir de `docs/propositions/cadrage-experiments.tex`. La version avant correspond au PDF initial. Les équations sont conservées en LaTeX dans le Markdown ; la macro locale de norme a été développée pour permettre leur affichage.
 
 Proposition pour un hackathon de dix jours. Les choix chiffrés ci-dessous sont des paramètres de départ à figer après un pilote indépendant, pas des résultats expérimentaux.
 
@@ -20,15 +20,15 @@ La contribution est un protocole commun et une comparaison interprétable. Elle 
 | H4 : spécificité | Injection interne, manipulation textuelle, sham | Matrice de confusion ; fausses attributions internes au texte | Test d'une explication par anomalie ou suggestion |
 | H5 : fonctionnement | Même texte et intervention, question de compréhension séparée | Perte de performance et variation de log-vraisemblance | Situer la détection par rapport au dysfonctionnement |
 
-**Hiérarchie.** Critère confirmatoire principal : différence d'AUROC de présence entre concept et aléatoire cohérent, à une dose choisie sur pilote et une couche précoce préspécifiée. Les courbes complètes et les autres contrastes sont secondaires ; publier toutes les cellules, avec leurs intervalles. Le choix d'une seule cible principale limite la sélection du meilleur résultat après observation.
+**Hiérarchie.** Critère confirmatoire principal : différence d'AUROC de présence entre concept et aléatoire cohérent, à une dose choisie sur pilote et une couche précoce préspécifiée. Le noyau comprend ces deux familles, une couche précoce, trois doses positives, les tâches de présence et de localisation, les shams, les mappings entièrement croisés et une mesure de compréhension sur un sous-plan fixé. La couche médiane, le bruit renouvelé, la quatrième dose, la normalisation en $z$, l'appariement JS, le contrôle textuel et les diagnostics causaux sont des extensions hiérarchisées. Les courbes complètes et les autres contrastes sont secondaires ; publier toutes les cellules exécutées, avec leurs intervalles. Le choix d'une seule cible principale limite la sélection du meilleur résultat après observation.
 
 ## Noyau expérimental et unité d'analyse
 
-**Modèle.** Meta-Llama-3.1-8B-Instruct, révision et tokenizer enregistrés, mode évaluation, même précision numérique partout. Privilégier BF16 si le matériel le permet ; toute quantification devient une condition documentée. Deux sorties de blocs, indices zéro-based 3 et 15, soit les quatrième et seizième blocs. Cette convention évite de confondre une sortie de bloc avec l'indice d'un tableau `hidden_states`.
+**Modèle.** Meta-Llama-3.1-8B-Instruct, révision et tokenizer enregistrés, mode évaluation, même précision numérique partout. Privilégier BF16 si le matériel le permet ; toute quantification devient une condition documentée. Le noyau porte sur la sortie du bloc d'indice zéro-based 3, soit le quatrième bloc ; la sortie du bloc 15, soit le seizième, constitue l'extension à une couche médiane. Cette convention évite de confondre une sortie de bloc avec l'indice d'un tableau `hidden_states`.
 
 **Données.** Un corpus d'extraction des vecteurs, un corpus de calibration/pilote et un corpus de test disjoints par phrases. Réutiliser les ressources de Hahami pour une réplication pilote ; construire un test indépendant pour la comparaison principale. Point de départ : 40 paires de phrases de test, 6 concepts choisis avant les résultats, et 6 directions aléatoires fixes. Répartir concepts concrets et abstraits ; un petit nombre de concepts limite explicitement la généralisation. Ne pas sélectionner les concepts pour leur détectabilité. Les vecteurs existants sont réutilisables seulement si modèle, checkpoint, couche et méthode d'extraction sont vérifiés.
 
-Pour chaque paire $(x,y)$, exécuter les ordres $(x,y)$ et $(y,x)$ et, pour chaque ordre, injection dans la première phrase, injection dans la seconde et sham. Apparier les longueurs en tokens ; fixer le séparateur. Permuter les étiquettes A/B de manière équilibrée entre paires indépendamment de l'ordre ; croiser les deux mappings sur un sous-ensemble de robustesse. Enregistrer la distance du site au token de réponse. Une inversion de l'ordre des phrases ne suffit pas, seule, à distinguer biais pour la lettre et biais pour la position.
+Pour chaque paire $(x,y)$, exécuter les ordres $(x,y)$ et $(y,x)$ et, pour chaque ordre, injection dans la première phrase, injection dans la seconde et sham. Apparier les longueurs en tokens ; fixer le séparateur. Croiser les deux mappings de réponse dans toutes les cellules principales, indépendamment de l'ordre et de la condition : mapping présent/absent pour la tâche de présence, et attribution des labels aux positions pour la localisation. Enregistrer la distance du site au token de réponse. Une inversion de l'ordre des phrases ne suffit pas, seule, à distinguer biais pour la lettre et biais pour la position.
 
 **Injection.** Perturber uniquement les tokens du texte de la phrase cible lors du traitement du prompt, à la sortie du bloc retenu. Exclure les marqueurs A/B, séparateurs, consignes et tokens de réponse. Définir les bornes par offsets du tokenizer après application du chat template, sans recherche ambiguë d'une sous-chaîne répétée. Retirer l'intervention pour la génération ; invalider tout cache hérité d'une autre condition. Le sham suit exactement le même chemin d'exécution avec une perturbation nulle.
 
@@ -50,14 +50,14 @@ $$
 Rejeter et journaliser un tirage nul. Ne jamais utiliser le score de détection du test pour régler cette échelle.
 
 - **Concept cohérent :** $G_t=\hat v_c$ pour tous les tokens ciblés, où $\hat v_c$ est une différence de moyennes normalisée extraite sur un corpus indépendant, à cette couche.
-- **Aléatoire cohérent :** $G_t=u_j$, avec $u_j$ tiré uniformément sur la sphère et maintenu fixe entre tokens et entre phrases. Utiliser plusieurs directions, sans sélectionner les plus détectables. Ce bras contrôle la cohérence temporelle du steering conceptuel.
+- **Aléatoire cohérent :** $G_t=u_{\ell,j}$, avec une direction tirée uniformément sur la sphère séparément pour chaque couche $\ell$, puis maintenue fixe entre tokens et entre phrases à cette couche. Utiliser plusieurs directions, sans sélectionner les plus détectables. Une même suite de coordonnées ne constitue pas une direction comparable entre couches. Ce bras contrôle la cohérence temporelle du steering conceptuel.
 - **Bruit renouvelé :** $G_{tk}\sim\mathcal N(0,1)$ indépendamment avant remise à l'échelle du bloc. Il s'agit donc précisément de *bruit gaussien renormalisé en norme de Frobenius* : après normalisation commune, ses coordonnées ne sont plus des gaussiennes indépendantes exactes. Conserver les graines et réutiliser le même tirage de forme dans les comparaisons de doses compatibles.
 
 Une direction gaussienne normalisée fixe a la même loi directionnelle qu'un vecteur isotrope aléatoire. La différence avec le troisième bras vient ici de la corrélation entre tokens. Un écart aléatoire cohérent/bruit renouvelé ne doit donc pas être attribué à la « non-sémantique » de l'un des deux. Une extension utile renouvelle également la direction aléatoire entre essais pour dissocier stabilité entre essais et cohérence entre tokens.
 
-**Grille.** Pilote indépendant avec $\rho\in\{0,0{,}01,0{,}03,0{,}1,0{,}3,1\}$ à titre initial. Retenir quatre doses positives communes aux trois bras, couvrant si possible le début de réponse et le plateau avant effondrement de la tâche. Enregistrer la règle de sélection ; si aucune plage commune n'existe, le rapporter et ne pas comparer artificiellement des seuils extrapolés.
+**Grille.** Pilote indépendant avec $\rho\in\{0,0{,}01,0{,}03,0{,}1,0{,}3,1\}$ à titre initial. Pour le noyau, retenir trois doses positives communes aux bras conceptuel et aléatoire, couvrant si possible le début de réponse et le plateau avant effondrement de la tâche. Une quatrième dose et le bras bruit peuvent être ajoutés comme extensions dans une plage commune validée. Enregistrer la règle de sélection ; si aucune plage commune n'existe, le rapporter et ne pas comparer artificiellement des seuils extrapolés.
 
-### Analyses de sensibilité : géométrie et effet aval
+### Analyses secondaires conditionnelles : géométrie et effet aval
 
 Pour une direction fixe unitaire $v$, estimer sur un corpus témoin au même site et avec le même template
 $$
@@ -68,9 +68,9 @@ Le coefficient $a$ est une norme par token, pas un écart-type gaussien. Stratif
 
 Comparer à $z$ égal constitue une **seconde série d'interventions** pour concept et aléatoire cohérent ; ce n'est pas un simple renommage de $\rho$. Pour le bruit par token ou le dropout, la direction change avec le tirage ou l'état : un unique $s(\ell,v)$ n'a pas la même signification. Ne pas présenter une telle extension comme une normalisation universelle.
 
-Mesurer en complément la divergence JS entre distributions complètes de prochain token sur une continuation neutre fixée et forcée, à des positions fixées après le site. Apparier éventuellement les intensités sur calibration, puis geler la correspondance pour le test et publier la qualité de l'appariement. Ne pas apparier sur les logits du rapport de détection : ils constituent le résultat étudié. L'appariement aval conditionne un effet de l'intervention ; il répond à une autre question que l'effet total à $\rho$ égal et ne prouve pas une médiation causale.
+Si le noyau est terminé, mesurer en complément la divergence JS entre distributions complètes de prochain token sur une continuation neutre fixée et forcée, à des positions fixées après le site. Apparier éventuellement les intensités sur calibration, puis geler la correspondance pour le test et publier la qualité de l'appariement. Ne pas apparier sur les logits du rapport de détection : ils constituent le résultat étudié. L'appariement aval conditionne un effet de l'intervention ; il répond à une autre question que l'effet total à $\rho$ égal et ne prouve pas une médiation causale.
 
-**Dropout en extension.** Définir explicitement $h'=(1-m)\odot h$ avec $m_k\sim\mathrm{Bernoulli}(p)$, sans remise à l'échelle par $1/(1-p)$. Alors $\Delta=-m\odot h$ et $\mathbb E\left\lVert \Delta\right\rVert^2=p\lVert h\rVert^2$ pour $h$ fixé : $\sqrt p$ guide la calibration RMS mais n'est pas la dose réalisée de chaque essai. Comparer dans des plages de $\rho$ communes ; renormaliser ensuite $\Delta$ en ferait un autre opérateur, qui ne mettrait plus exactement les coordonnées à zéro.
+**Dropout en extension.** Définir explicitement $h'=(1-m)\odot h$ avec $m_k\sim\mathrm{Bernoulli}(p)$, sans remise à l'échelle par $1/(1-p)$. Alors $\Delta=-m\odot h$ et $\mathbb E\left\lVert \Delta\right\rVert^2=p\lVert h\rVert^2$ pour $h$ fixé : $\sqrt p$ guide la calibration RMS mais n'est pas la dose réalisée de chaque essai. Cet opérateur diffère de celui de Fornasiere et al., qui appliquent un dropout inversé, remis à l'échelle par $1/(1-p)$, aux sorties de l'attention et du MLP à chaque couche. Il constitue donc une variante contrôlée plutôt qu'une réplication directe. Comparer dans des plages de $\rho$ communes ; renormaliser ensuite $\Delta$ en ferait un autre opérateur, qui ne mettrait plus exactement les coordonnées à zéro.
 
 ## Deux tâches principales, évaluées séparément
 
@@ -123,17 +123,17 @@ Ce contrôle est **asymétrique** : une fausse attribution d'injection au texte 
 
 **Fonction psychométrique.** Pour la localisation, ajuster si les données sont compatibles une sigmoïde bornée avec plancher $0{,}5$ et asymptote $1-\lambda$. Définir $\rho_{75}=\inf\{\rho:p_{\mathrm{correct}}(\rho)\geq0{,}75\}$. Ne rapporter un seuil que si le domaine observé encadre ce passage. Si la performance chute aux fortes doses, montrer les points et restreindre explicitement l'ajustement à la branche croissante préspecifiée, ou renoncer au résumé par seuil. Pour la détection, rapporter TPR en fonction de la dose avec FPR et AUROC ; son plancher n'est pas automatiquement 0,5.
 
-**Incertitudes.** Intervalles à 95 % par bootstrap croisé sur paires et concepts/directions, en gardant ensemble tous les swaps, doses et shams associés. Conserver le partage des shams dans chaque rééchantillonnage. Rapporter aussi les résultats par concept et direction ; avec seulement six concepts, qualifier l'inférence comme exploratoire hors de cet ensemble. Un modèle mixte avec effets de paire et de concept peut compléter les contrastes appariés, sans remplacer les données brutes. Les IC ponctuels des courbes ne sont pas des bandes simultanées ; appliquer une correction de multiplicité aux familles de tests secondaires revendiquées.
+**Incertitudes.** Intervalles à 95 % par bootstrap croisé sur paires et concepts/directions, en gardant ensemble tous les swaps, doses et shams associés. Conserver le partage des shams dans chaque rééchantillonnage. Pour le critère principal, calculer dans chaque rééchantillonnage les deux AUROC puis leur différence, en n'incluant qu'une fois les shams partagés : l'intervalle porte ainsi directement sur le contraste apparié. Avec seulement six grappes conceptuelles, le bootstrap au niveau des concepts reste instable : rapporter les résultats par concept, ajouter une analyse de sensibilité *leave-one-concept-out* et qualifier l'inférence comme exploratoire hors de cet ensemble. Un modèle mixte avec effets de paire et de concept peut compléter les contrastes appariés, sans remplacer les données brutes. Les IC ponctuels des courbes ne sont pas des bandes simultanées ; appliquer une correction de multiplicité aux familles de tests secondaires revendiquées.
 
 Une différence non significative n'est pas une équivalence. Pour soutenir une équivalence pratique, fixer une marge à l'avance, par exemple $\pm0{,}05$ d'AUROC, et vérifier que l'intervalle pertinent est entièrement inclus dans cette marge. Sinon conclure « différence non résolue ». Les seuils non atteints sont censurés, pas imputés à la dose maximale.
 
-**Budget proposé.** Par tâche, le plan de départ comprend
+**Budget du noyau confirmatoire.** Par tâche, le plan comprend
 $$
-40\ \text{paires}\times6\ \text{directions}\times2\ \text{couches}\times4\ \text{doses}
-\times2\ \text{ordres}\times2\ \text{sites}\times3\ \text{familles}
-=23\,040
+40\ \text{paires}\times6\ \text{directions}\times1\ \text{couche}\times3\ \text{doses}
+\times2\ \text{ordres}\times2\ \text{sites}\times2\ \text{familles}\times2\ \text{mappings}
+=11\,520
 $$
-exécutions perturbées, soit 46 080 pour présence et localisation. Les six index du bras bruit désignent des graines, pas des concepts. Ajouter les shams uniques : 80 par tâche si le mapping est fixé par paire, et les exécutions de validation des hooks. Les effectifs du bruit ne constituent pas six catégories sémantiques. Réserver une enveloppe supplémentaire mesurée pour compréhension, contrôle textuel et robustesse des labels ; les exécuter sur un sous-plan fixé avant test. Viser au départ moins de 60 000 exécutions au total, puis valider ce plafond par chronométrage réel.
+exécutions perturbées, soit 23 040 pour présence et localisation. Ajouter 160 shams par tâche, correspondant à 40 paires, deux ordres et deux mappings, ainsi que les exécutions de validation des hooks et le sous-plan de compréhension. L'ajout de la seconde couche double ce noyau à 46 080 exécutions perturbées. Le plan complet avec trois familles, deux couches, quatre doses et deux mappings atteindrait 92 160 exécutions perturbées avant pilote et contrôles ; il n'est donc pas compatible avec un plafond de 60 000. Le bruit, la quatrième dose, la seconde couche et les autres extensions doivent être ajoutés séparément après chronométrage, sans dépasser une enveloppe gelée au terme du pilote. Dans le bras bruit, les six index désignent des graines, pas des catégories sémantiques.
 
 La faisabilité dépend du GPU, de la longueur de prompt, des batches et des passes témoins nécessaires ; aucun temps d'exécution n'est garanti ici. Chronométrer au jour 1 un lot représentatif incluant shams et journaux. Si le budget est dépassé, réduire d'abord les extensions et le nombre de doses, en conservant les shams et les contrôles. Ne pas traiter les dizaines de milliers d'exécutions comme autant de phrases indépendantes : le plan n'en contient que 40 paires.
 
@@ -168,7 +168,7 @@ La similarité cosinus de vecteurs doit être calculée dans un espace *à couch
 - Comparer plusieurs estimateurs du même concept sur des corpus d'extraction disjoints. Mesurer la stabilité des directions, pas seulement le meilleur taux de détection.
 - Répliquer le noyau sur un second modèle seulement après validation du premier. Deux modèles différents ne suffisent pas à isoler un effet architectural.
 - Comparer base/instruct avec contrôle textuel si le temps le permet, en vérifiant la compréhension des consignes. Seuls des checkpoints successifs appropriés permettent de discuter spécifiquement l'effet de DPO.
-- Mesurer une confiance explicitement demandée sur une tâche définie. Le meta-$d'$ nécessite suffisamment de réponses correctes et incorrectes et des niveaux de confiance exploitables ; il ne prouve pas un mécanisme métacognitif. Les log-probabilités des labels ne sont pas une confiance verbalisée.
+- Mesurer une confiance explicitement demandée sur une tâche définie. Le meta-$d'$ nécessite suffisamment de réponses correctes et incorrectes et des niveaux de confiance exploitables ; le rapport meta-$d'/d'$ devient instable lorsque $d'$ est proche de zéro. Il ne prouve pas un mécanisme métacognitif. Les log-probabilités des labels ne sont pas une confiance verbalisée.
 
 ## Décisions, calendrier et livrables
 
@@ -176,14 +176,14 @@ La similarité cosinus de vecteurs doit être calculée dans un espace *à couch
 | --- | --- | --- |
 | 1--2 | Valider hooks, tokenisation, shams, précision et corpus ; chronométrer ; répliquer un signal de référence | Dose nulle identique au témoin ; support d'injection exact |
 | 3 | Pilote indépendant : plage de doses, compréhension des consignes, validité des labels | Geler doses, contrastes, exclusions et budget |
-| 4--6 | Présence et localisation sur le test ; contrôles textuels et compréhension sur sous-plan fixé | Journaux complets et toutes les cellules prévues |
-| 7--8 | Courbes, IC, effets de position ; sensibilité directionnelle si faisable | Conclusions avec incertitudes et limites |
+| 4--6 | Noyau présence/localisation sur le test ; compréhension sur sous-plan fixé | Journaux complets et toutes les cellules du noyau |
+| 7--8 | Courbes, IC, effets de position ; seconde couche, bruit ou contrôle textuel selon le budget gelé | Conclusions avec incertitudes et limites |
 | 9 | Réplication ciblée ou multi-injection $2\times2$, uniquement si le noyau est terminé | Extension clairement séparée |
 | 10 | Relecture, figures et rédaction ; archiver prompts, graines et données | Résultats reproductibles, y compris nuls |
 
 **Journal minimal par essai :** identifiants de paire, concept/direction et split ; modèle/révision/précision ; prompt exact et mapping ; couche et site ; bornes tokens ; opérateur et graine ; dose visée et réalisée ; score des labels et décision ; validité du format ; identifiant du sham partagé ; résultats de compréhension et JS si mesurés. Sauvegarder les activations complètes seulement pour le sous-ensemble mécaniste.
 
-**Figures principales :** AUROC et TPR/FPR selon $\rho$ ; localisation brute selon $\rho$ avec IC ; dégradation selon $\rho$ ; contrastes concept/aléatoire par concept et couche ; matrice interne/texte/sham. Ajouter les diagnostics ajustés en annexe, avec leurs scores bruts.
+**Figures principales :** AUROC et TPR/FPR selon $\rho$ ; localisation brute selon $\rho$ avec IC ; dégradation selon $\rho$ ; contrastes concept/aléatoire par concept. Ajouter les résultats par couche et la matrice interne/texte/sham si les extensions correspondantes sont exécutées, ainsi que les diagnostics ajustés en annexe avec leurs scores bruts.
 
 **Règles d'interprétation :** un avantage conceptuel persistant indique une différence inexpliquée par les contrôles retenus ; sa disparition après normalisation est compatible avec une explication d'échelle, sans prouver que toute la géométrie est contrôlée ; une absence de différence reste indéterminée hors d'un test d'équivalence ; une confusion texte/interne limite la spécificité ; un succès limité aux fortes dégradations évoque un signal de dysfonctionnement. Aucun de ces seuls résultats ne démontre une représentation de second ordre.
 
