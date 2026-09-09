@@ -11,8 +11,9 @@
 - Inject at zero-based decoder-block outputs `0, 3, 6, ..., 30`, before the final
   model normalization, using the same-numbered `avg` concept vector files.
 - Normalize each concept vector to unit L2 norm, then add `alpha * vector` at
-  every token overlapping the target sentence. Alpha defaults to `1, 2, 5, 10`
-  and is the intended norm **per token**, not the whole-sentence norm.
+  every token overlapping the target sentence. Alpha defaults to every integer
+  from `1` through `20` (inclusive) and is the intended norm **per token**, not
+  the whole-sentence norm.
 - Both sentence orders and both label mappings run for every pair. Each prompt
   has injection into the first sentence, injection into the second, and a control.
 - There is no random perturbation and no z computation. `epsilon` applies only
@@ -134,15 +135,17 @@ access to the Meta model on Hugging Face:
 # Select/save pairs and exact prompts, hash vectors, report cost. No model weights.
 python code/experiments/position_detection.py --prepare-only
 
-# Continue using that manifest and load the model.
-python code/experiments/position_detection.py --resume
+# Continue using that manifest and load the model. Re-running this exact command
+# after an interruption finds the manifest and skips completed artifacts.
+python code/experiments/position_detection.py
 
 # Analyze completed conditions, even while the experiment is still running.
-python code/analysis/compute_position_detection_accuracy.py --input-dir results/position_detection
+python code/analysis/compute_position_detection_accuracy.py \
+  --input-dir runs/position_detection_alpha_1_20
 ```
 
-The default run has **1,003,320 full-prompt evaluations**: 120 clean controls,
-105,600 injection runs and 897,600 restoration runs. Only the final position's
+The default run has **5,016,120 full-prompt evaluations**: 120 clean controls,
+528,000 injection runs and 4,488,000 restoration runs. Only the final position's
 vocabulary logits are computed; all prompt hidden states are still processed.
 This count assumes no batching or reuse of prefixes in restoration runs.
 
@@ -160,9 +163,11 @@ its identity and hash are recorded. Use the actual model tokenizer for the resea
 run. An inspection manifest prepared with another tokenizer source cannot resume
 under different tokenizer settings; prepare a separate output directory.
 
-The manifest saves all inputs. Each complete condition writes its activation
-artifact atomically before its JSON record. An interrupted condition is rerun;
-complete conditions are skipped. Control matrices are stored once per prompt.
+The manifest saves all inputs. When `manifest.json` already exists, the runner
+automatically enters resume mode; `--resume` remains available when a missing
+manifest should be treated as an error. Each complete condition writes its
+activation artifact atomically before its JSON record. An interrupted condition
+is rerun; complete conditions are skipped. Control matrices are stored once per prompt.
 Resume checks configuration, vector/corpus/tokenizer hashes and model/runtime
 metadata. Do not run concurrent writers against the same output directory.
 
@@ -183,19 +188,70 @@ diagnostics.csv                  mean P/E by injection and restoration layers
 The analysis marks incomplete sweeps as PARTIAL. It does not parse legacy console
 logs or mix the former YES/NO output schema into this experiment.
 
+## Paper figures and statistical summaries
+
+For a completed run, generate the paper-ready core and appendix figures with:
+
+```bash
+python code/analysis/plot_position_detection_results.py \
+  --input-dir runs/<completed-run-name> \
+  --output-dir plots/position_detection \
+  --bootstrap-replicates 5000 \
+  --bootstrap-seed 42 \
+  --main-alpha 5
+```
+
+The command requires a complete schema-v1 manifest, completion marker, summary,
+controls and condition records. It reads JSON only: model weights and saved `.pt`
+activation matrices are never loaded. The first invocation builds compressed
+tabular caches under `plots/position_detection/source_data`; later invocations
+reuse them when the hashes of `manifest.json`, `completed.json` and `summary.json`
+are unchanged. Pass `--rebuild-cache` to force a fresh JSON scan.
+
+Each figure is saved as a 300-DPI PNG and vector PDF. The five `fig01` through
+`fig05` files cover control bias, raw/adjusted accuracy and ties, layer profiles,
+concept heterogeneity and causal propagation. `appendix01` through `appendix07`
+cover all-alpha propagation, counterbalancing robustness, concept profiles,
+physical-position effects, realized intervention norms, structural endpoint
+checks and signed effect distributions. Exact plotted aggregates and confidence
+limits are written as CSV files in `source_data`; `analysis_summary.json` records
+input hashes, model provenance, bootstrap settings and headline results.
+`figure_captions.json` contains concise captions for the five main figures.
+Large alpha sweeps use dynamic layouts and paginate the all-alpha propagation
+appendix rather than dropping configured strengths.
+
+Confidence intervals use a deterministic percentile bootstrap over complete
+sentence-pair clusters. Resampling a pair retains its four order/label prompts and
+all concepts, injection layers and alpha values; the ten concepts are treated as
+the fixed studied set. Exact adjusted ties receive half credit and are also shown
+as a separate tie rate. Accuracy conditional on a non-tie is reported so a null
+late-layer effect is not confused with noisy classification.
+
+The target-aligned effect is `L_adjusted` for an A-target injection and its
+negative for a B-target injection. Restoration effects are aligned to physical
+position by retaining `E` for AB prompts and negating it for BA prompts. The
+per-concept best-setting table is exploratory: it searches many settings and is
+not accompanied by post-selection significance claims. The representative
+alpha controls only the main propagation figure; every configured alpha remains
+visible in the appendix.
+
 ## Validation
 
 ```bash
 pytest tests/test_position_detection.py -q
+pytest tests/test_position_detection_plots.py -q
 ```
 
 Tests use a small randomly initialized Llama on CPU, with no pretrained model
 downloads. They verify token targeting, matched metrics, reproducible pairs,
 counterbalancing, direct scoring, causal propagation, independent restoration,
 zero-alpha identity, hook cleanup on failure, saved analysis and workload counts.
+The plotting tests use JSON-only synthetic fixtures and verify metric alignment,
+pair-cluster bootstrapping, validation failures, cache files, tables, and both
+figure formats without creating or loading activation tensors.
 The large pretrained experiment must be run separately on the intended hardware.
 
-## Live progress and monitoring on Ruche
+## Progress and logs
 
 The runner shows a tqdm progress bar in an interactive terminal. In a batch job,
 terminal animation is disabled automatically; timestamped progress messages go
@@ -216,58 +272,52 @@ are repeated and are not counted as durable progress. The ETA uses only work
 performed in the current session, excluding model loading; differing costs across
 injection layers and filesystem IO make it an approximation.
 
-After logging into Ruche manually, from the repository root:
-
-```bash
-source .venv/bin/activate
-python code/utils/monitor_position_detection.py results/position_detection --job-id 123456
-```
-
-Replace `123456` with the ID returned by `sbatch`. Providing the ID allows the
-monitor to show a queued job before the experiment creates progress.json.
-Once the experiment starts, the job ID can be inferred from progress.json.
-For a custom output directory, pass that directory instead.
-
-Alternatively, from your own machine, in the local repository:
-
-```bash
-bash jobs/monitor_ruche.sh 123456
-```
-
-This opens one SSH connection to `aurouxw@ruche.mesocentre.universite-paris-saclay.fr`.
-**Enter the password directly in the terminal when SSH asks for it.** The script
-does not store or handle passwords. It expects the remote checkout at
-`$WORKDIR/llm-introspection`, with its `.venv`, and the default results directory.
-It runs the monitor remotely, so polling does not require repeated logins.
-Update the remote checkout to this branch before using the new scripts.
-
-The monitor refreshes every 10 seconds, shows recent run.log lines, and queries
-`squeue`, falling back to `sacct` when a job leaves the queue. Slurm TIMEOUT,
-CANCELLED, FAILED and similar states are displayed separately from the last
-experiment phase. Hard kills cannot update progress.json, so stale timestamps
-are shown explicitly. No recent update alone does not prove a failure: model
-loading or a long forward pass can also delay updates. Early preparation errors
-appear in Slurm's `.out`/`.err` files, before run.log is initialized.
-
-Useful commands on Ruche:
-
-```bash
-# A single snapshot, including while no GPU job is running.
-python code/utils/monitor_position_detection.py results/position_detection --once
-
-# Follow the batch streams (use your actual job ID).
-tail -f logs/position-detection-123456.out logs/position-detection-123456.err
-
-# Follow just the persistent experiment log.
-tail -f results/position_detection/run.log
-```
-
-The monitor is read-only, requires only the Python standard library, and can run
-on a login node. Ctrl+C stops monitoring without cancelling the experiment. It
-also stops automatically on experiment completion/failure or a terminal Slurm
-state; use `--once` for a non-watching snapshot. It does not submit, cancel or
-resubmit jobs.
-
-Install these instrumentation changes **before starting a new experiment**.
+The progress instrumentation must be installed before starting a new experiment.
 Existing manifests record source hashes and intentionally reject changed runner
-code; do not replace the code of an existing checkpointed run to add monitoring.
+code. Keep an existing run's code and environment unchanged when resuming it.
+
+## Run on Ruche
+
+Use one canonical checkout instead of creating a code directory per job:
+
+```text
+$WORKDIR/llm-introspection/
+├── .git/                 Git history and branch metadata
+├── .venv/                shared experiment environment
+├── code/                 experiment and analysis code
+├── data/                 concept vectors and prompt data
+├── jobs/                 Slurm entry points
+└── runs/
+    ├── position_detection_alpha_1_2_5_10/  preserved completed sweep
+    ├── position_detection_alpha_1_20/       active extended sweep
+    └── aborted/                              preserved failed attempts
+```
+
+Ruche exposes `$WORKDIR` on both front-end and compute nodes, so jobs run from
+this checkout without another copy. The cluster documentation recommends
+`rsync -P` for large resumable transfers and warns that `$WORKDIR` is not backed
+up; copy final summaries and irreplaceable results off-cluster regularly.
+
+The canonical `.venv` uses Python 3.13, CUDA 12.8 PyTorch 2.10.0,
+Transformers 5.16.1 and Accelerate 1.14.0. Model weights remain in the shared
+`$WORKDIR/.cache/huggingface` cache. Keep the environment and runner unchanged
+while a manifest is active; resume validation rejects implementation drift.
+
+Submit from the canonical checkout:
+
+```bash
+cd "$WORKDIR/llm-introspection"
+export HF_HOME="$WORKDIR/.cache/huggingface"
+export HF_HUB_OFFLINE=1
+sbatch jobs/position_detection.sbatch
+```
+
+The batch file requests one A100, eight CPU cores, 64 GB RAM and 24 hours. Its
+standard streams are `runs/slurm-position-detection-JOBID.out` and `.err`; the
+persistent experiment log and progress snapshot are inside
+`runs/position_detection_alpha_1_20/`.
+
+After a timeout or interruption, confirm the previous job has stopped and repeat
+the same `sbatch jobs/position_detection.sbatch` command. The existing manifest
+selects resume mode automatically, and complete condition artifact pairs are
+skipped.

@@ -17,7 +17,7 @@ SUFFIX = (
 )
 ASSISTANT_PREFILL = "The answer is"
 LAYERS = list(range(0, 31, 3))
-ALPHAS = [1.0, 2.0, 5.0, 10.0]
+ALPHAS = [float(alpha) for alpha in range(1, 21)]
 CONCEPTS = [
     "appreciation", "betrayal", "Dust", "fibonacci_numbers", "Illusions",
     "Origami", "recursion", "Satellites", "shutdown", "Trumpets",

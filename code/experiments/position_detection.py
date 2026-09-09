@@ -228,7 +228,10 @@ def main():
     parser.add_argument("--dtype", choices=["bfloat16", "float16", "float32"], default="bfloat16")
     parser.add_argument("--epsilon", type=float, default=1e-8, help="Only for the contamination ratio P")
     parser.add_argument("--prepare-only", action="store_true", help="Save pair/prompt manifest without loading weights")
-    parser.add_argument("--resume", action="store_true")
+    parser.add_argument(
+        "--resume", action="store_true",
+        help="Require and resume an existing manifest (otherwise an existing manifest is resumed automatically)",
+    )
     parser.add_argument("--log-interval", type=float, default=30,
                         help="Seconds between progress.json and log updates")
     parser.add_argument("--no-progress", action="store_true", help="Disable the interactive tqdm bar")
@@ -253,6 +256,10 @@ def main():
     inventory = vector_inventory(args)
     out = args.output_dir
     manifest_path = out / "manifest.json"
+    auto_resume = manifest_path.exists() and not args.resume
+    if auto_resume:
+        args.resume = True
+        print(f"Found {manifest_path}; resuming saved work.", flush=True)
     if out.exists() and any(out.iterdir()) and not args.resume:
         parser.error("Output directory is not empty. Use --resume or a new directory.")
     if args.resume and not manifest_path.exists():
