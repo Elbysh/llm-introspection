@@ -1076,7 +1076,6 @@ Les configurations, graines, données agrégées et scripts de figures sont vers
 
 Après le pilote et avant les mesures principales, une version du protocole est figée dans le dépôt. Elle permet de distinguer les décisions prises avant ces mesures des analyses suggérées par les résultats. Elle documente notamment le choix de la normalisation, des doses, des métriques et des règles d'exclusion.
 
-Un pré-enregistrement formel n'est pas indispensable à l'exploration du projet. Il peut compléter cette version en déposant le plan dans un registre horodaté comme OSF. Une version figée dans le dépôt et un dépôt dans un registre indépendant sont deux niveaux de formalisation distincts. Le rôle du pré-enregistrement est de rendre explicite la distinction entre analyses prévues et exploratoires, comme le décrit le [Center for Open Science](https://www.cos.io/initiatives/prereg).
 
 Le protocole figé précise :
 
