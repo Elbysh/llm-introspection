@@ -22,10 +22,8 @@ def test_development_config_makes_weighting_and_bootstrap_explicit():
 def test_stochastic_families_have_separate_seed_namespaces():
     config = load_config("configs/experiment_0_calibration/development_full.yaml")
 
-    # The fixed-random interval must end before the renewed-noise interval
-    # starts. The material-plan builder also checks every realized seed.
-    fixed_random_upper_bound = (
-        config.fixed_random_base_seed
-        + len(config.layers) * config.fixed_random_count_per_layer
-    )
-    assert fixed_random_upper_bound < config.renewed_noise_base_seed
+    # These values identify the persisted fixed-random bank. Renewed noise has
+    # a separate base, and the plan builder checks every realized seed.
+    assert config.fixed_random_base_seed == 2026091001
+    assert config.fixed_random_layer_stride == 100_000
+    assert config.renewed_noise_base_seed == 1_000_000_000

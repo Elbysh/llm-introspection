@@ -36,6 +36,7 @@ class Experiment0Config:
     hidden_state_offset: int
     fixed_random_count_per_layer: int
     fixed_random_base_seed: int
+    fixed_random_layer_stride: int
     noise_repetitions_per_position: int
     renewed_noise_base_seed: int
     presentation_mode: str
@@ -80,6 +81,9 @@ class Experiment0Config:
             ),
             fixed_random_base_seed=int(
                 directions["fixed_random"]["base_seed"]
+            ),
+            fixed_random_layer_stride=int(
+                directions["fixed_random"]["layer_stride"]
             ),
             noise_repetitions_per_position=int(
                 directions["renewed_noise"]["repetitions_per_position"]
@@ -135,6 +139,10 @@ class Experiment0Config:
             raise ValueError("direction counts must be positive")
         if min(self.fixed_random_base_seed, self.renewed_noise_base_seed) < 0:
             raise ValueError("direction base seeds must be non-negative")
+        if self.fixed_random_layer_stride < self.fixed_random_count_per_layer:
+            raise ValueError(
+                "fixed-random layer_stride must cover every per-layer sample"
+            )
         if self.presentation_mode not in {"template_per_sentence", "external_manifest"}:
             raise ValueError("unsupported presentation.mode")
         if (

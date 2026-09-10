@@ -114,16 +114,19 @@ Avec les 616 positions observées lors du précédent passage, cela représente
 Les familles ont des rôles différents :
 
 - `concept` charge une direction conceptuelle existante et la normalise ;
-- `fixed_random` tire une direction gaussienne normalisée, fixe pour son ID ;
+- `fixed_random` utilise la banque persistée
+  `data/saved_vectors/llama/random_s{sample}_{bloc}_avg.pt`. Chaque fichier est
+  hashé dans le plan et vérifié bit à bit contre sa seed lors du calcul ;
 - `renewed_noise` tire une direction indépendante pour chaque
   `(bloc, position, répétition)` et enregistre la position à laquelle elle sera
   associée.
 
-Les deux familles stochastiques utilisent des intervalles de seeds séparés.
-Dans chaque famille, les seeds sont allouées de manière contiguë par bloc et
-index. La préparation et l’exécution refusent un plan contenant la moindre seed
-dupliquée : deux contrôles supposés indépendants ne peuvent donc pas reconstruire
-accidentellement le même vecteur.
+Les deux familles stochastiques utilisent des intervalles de seeds séparés. La
+banque `fixed_random` conserve sa convention historique
+`2026091001 + bloc × 100000 + sample`, tandis que `renewed_noise` utilise un
+espace indépendant. La préparation et l’exécution refusent un plan contenant
+la moindre seed dupliquée : deux contrôles supposés indépendants ne peuvent donc
+pas reconstruire accidentellement le même vecteur.
 
 ### `manifest.json`
 

@@ -234,14 +234,21 @@ def build_direction_rows(
                 }
             )
         for index in range(config.fixed_random_count_per_layer):
-            # Allocate a compact, auditable interval of seeds to each block.
-            # The configured base is family-specific; global uniqueness is
-            # checked below before the plan can be persisted.
+            # Match the persisted random_s{index}_{block}_avg.pt bank exactly.
+            # Global uniqueness against renewed noise is checked below before
+            # the material plan can be persisted.
             seed = (
                 config.fixed_random_base_seed
-                + layer * config.fixed_random_count_per_layer
+                + layer * config.fixed_random_layer_stride
                 + index
             )
+            source = config.vector_dir / "random_s{}_{}_{}.pt".format(
+                index, layer, config.vector_type
+            )
+            if not source.is_file():
+                raise FileNotFoundError(
+                    "missing persisted fixed-random direction: {}".format(source)
+                )
             rows.append(
                 {
                     "direction_id": "fixed_random__block_{:02d}__{:04d}".format(layer, index),
@@ -252,7 +259,8 @@ def build_direction_rows(
                     "concept_dataset": None,
                     "concept_split": None,
                     "concept_vector_type": None,
-                    "source_path": None,
+                    "source_path": str(source.relative_to(REPO_ROOT)),
+                    "source_sha256": file_sha256(source),
                     "seed": seed,
                     "target_observation_id": None,
                     "noise_repetition": None,
@@ -319,10 +327,38 @@ def materialize_direction(
     if row["direction_family"] == "concept":
         payload = torch.load(REPO_ROOT / row["source_path"], map_location="cpu", weights_only=False)
         vector = payload["vector"]
+        normalized, original_norm = unit(vector)
+    elif row["direction_family"] == "fixed_random":
+        payload = torch.load(
+            REPO_ROOT / row["source_path"], map_location="cpu", weights_only=False
+        )
+        if int(payload.get("draw_seed", -1)) != int(row["seed"]):
+            raise ValueError(
+                "persisted random direction has an unexpected draw_seed: {}".format(
+                    row["direction_id"]
+                )
+            )
+        stored_vector = payload["vector"].detach().to(
+            device="cpu", dtype=torch.float32
+        ).reshape(-1)
+        # Validate finiteness/non-zero norm without normalizing the persisted
+        # vector a second time, which could alter its last floating-point bits.
+        unit(stored_vector)
+        generator = torch.Generator(device="cpu").manual_seed(int(row["seed"]))
+        regenerated, original_norm = unit(
+            torch.randn(hidden_size, generator=generator)
+        )
+        if not torch.equal(stored_vector, regenerated):
+            raise ValueError(
+                "persisted random direction does not match its seed: {}".format(
+                    row["direction_id"]
+                )
+            )
+        normalized = stored_vector
     else:
         generator = torch.Generator(device="cpu").manual_seed(int(row["seed"]))
         vector = torch.randn(hidden_size, generator=generator)
-    normalized, original_norm = unit(vector)
+        normalized, original_norm = unit(vector)
     if normalized.numel() != hidden_size:
         raise ValueError("direction {} has the wrong hidden size".format(row["direction_id"]))
     return normalized, original_norm

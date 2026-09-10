@@ -112,11 +112,23 @@ def persist_calibration(
     The output-directory guard is the concrete no-overwrite rule. A frozen
     configuration has additional validation in `protocol_config.py`.
     """
-    if config.output_dir.exists():
+    protected_outputs = [
+        config.output_dir / "directional_scales.json",
+        config.output_dir / "directional_scales.csv",
+        config.output_dir / "projections.npz",
+        config.output_dir / "run_manifest.json",
+        config.output_dir / "figures",
+    ]
+    existing_outputs = [path for path in protected_outputs if path.exists()]
+    if existing_outputs:
         raise FileExistsError(
-            "refusing to overwrite Experiment 0 output: {}".format(config.output_dir)
+            "refusing to overwrite Experiment 0 artifacts: {}".format(
+                ", ".join(str(path) for path in existing_outputs)
+            )
         )
-    config.output_dir.mkdir(parents=True, exist_ok=False)
+    # The result root may already contain its tracked README. Scientific
+    # artifacts themselves remain immutable and are never overwritten.
+    config.output_dir.mkdir(parents=True, exist_ok=True)
     statistics_path = config.output_dir / "directional_scales.json"
     with statistics_path.open("w", encoding="utf-8") as handle:
         json.dump(records, handle, indent=2, ensure_ascii=False, sort_keys=True)
