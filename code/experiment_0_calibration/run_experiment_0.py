@@ -22,7 +22,11 @@ from .step_06_bootstrap_stability import (
     build_phrase_bootstrap_plan,
     estimate_bootstrap_stability,
 )
-from .step_07_persist_and_freeze import persist_calibration, validate_prepared_plan
+from .step_07_persist_and_freeze import (
+    ensure_output_artifacts_absent,
+    persist_calibration,
+    validate_prepared_plan,
+)
 
 
 def disable_optional_triton_native_ops() -> bool:
@@ -60,10 +64,9 @@ def main() -> None:
         observations,
         directions,
     )
-    if config.output_dir.exists():
-        raise FileExistsError(
-            "refusing to overwrite Experiment 0 output: {}".format(config.output_dir)
-        )
+    # The tracked README may already exist in the result root. Check only the
+    # immutable scientific artifacts before paying the cost of loading a model.
+    ensure_output_artifacts_absent(config.output_dir)
 
     from transformers import AutoModelForCausalLM, AutoTokenizer
 

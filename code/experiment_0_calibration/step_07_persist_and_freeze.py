@@ -14,6 +14,30 @@ from . import EXPERIMENT_ID
 from .protocol_config import Experiment0Config
 
 
+PROTECTED_OUTPUT_NAMES = (
+    "directional_scales.json",
+    "directional_scales.csv",
+    "projections.npz",
+    "run_manifest.json",
+    "figures",
+)
+
+
+def ensure_output_artifacts_absent(output_dir: Path) -> None:
+    """Allow a documented result root, but never overwrite run artifacts."""
+    existing_outputs = [
+        output_dir / name
+        for name in PROTECTED_OUTPUT_NAMES
+        if (output_dir / name).exists()
+    ]
+    if existing_outputs:
+        raise FileExistsError(
+            "refusing to overwrite Experiment 0 artifacts: {}".format(
+                ", ".join(str(path) for path in existing_outputs)
+            )
+        )
+
+
 def file_sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -112,20 +136,7 @@ def persist_calibration(
     The output-directory guard is the concrete no-overwrite rule. A frozen
     configuration has additional validation in `protocol_config.py`.
     """
-    protected_outputs = [
-        config.output_dir / "directional_scales.json",
-        config.output_dir / "directional_scales.csv",
-        config.output_dir / "projections.npz",
-        config.output_dir / "run_manifest.json",
-        config.output_dir / "figures",
-    ]
-    existing_outputs = [path for path in protected_outputs if path.exists()]
-    if existing_outputs:
-        raise FileExistsError(
-            "refusing to overwrite Experiment 0 artifacts: {}".format(
-                ", ".join(str(path) for path in existing_outputs)
-            )
-        )
+    ensure_output_artifacts_absent(config.output_dir)
     # The result root may already contain its tracked README. Scientific
     # artifacts themselves remain immutable and are never overwritten.
     config.output_dir.mkdir(parents=True, exist_ok=True)
