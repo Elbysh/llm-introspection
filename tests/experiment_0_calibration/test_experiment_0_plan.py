@@ -2,7 +2,7 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
-from calibration.experiment_0.plan import unit
+from experiment_0_calibration.plan import unit
 
 
 def test_direction_normalization_preserves_original_norm():
@@ -15,4 +15,3 @@ def test_direction_normalization_preserves_original_norm():
 def test_zero_direction_is_rejected():
     with pytest.raises(ValueError, match="non-zero"):
         unit(torch.zeros(4))
-

@@ -1,6 +1,7 @@
 # Experiment 0 — natural directional-scale calibration
 
-This directory implements section 4, “Expérience 0”, of
+This package is the calibration experiment itself. It implements section 4,
+“Expérience 0”, of
 `docs/propositions/cadrage-experiments.md`. It does not implement behavioural
 trials, injections, or the later conversion of standardized doses into
 coefficients `alpha`.
@@ -37,7 +38,7 @@ coefficients `alpha`.
 
 ## Development versus frozen calibration
 
-`configs/calibration/experiment_0/development_full.yaml` is intentionally not a
+`configs/experiment_0_calibration/development_full.yaml` is intentionally not a
 frozen calibration. It uses isolated sentences because the exact behavioural
 presentation context and final number of repeated noise trials are not fixed
 yet. The resulting plan is nevertheless explicit and auditable.
@@ -58,20 +59,20 @@ still uses moving model revisions or a development context.
 ## Commands
 
 ```bash
-python -m calibration.experiment_0.ensure_concept_vectors \
-  --config configs/calibration/experiment_0/development_full.yaml
+python -m experiment_0_calibration.ensure_concept_vectors \
+  --config configs/experiment_0_calibration/development_full.yaml
 
-python -m calibration.experiment_0.prepare_plan \
-  --config configs/calibration/experiment_0/development_full.yaml
+python -m experiment_0_calibration.prepare_plan \
+  --config configs/experiment_0_calibration/development_full.yaml
 
-python -m calibration.experiment_0.run \
-  --config configs/calibration/experiment_0/development_full.yaml
+python -m experiment_0_calibration.run \
+  --config configs/experiment_0_calibration/development_full.yaml
 ```
 
 On Ruche, submit the dependent jobs with:
 
 ```bash
-bash jobs/calibration/experiment_0/submit.sh development_full
+bash jobs/experiment_0_calibration/submit.sh development_full
 ```
 
 ## Outputs

@@ -1,6 +1,6 @@
 import numpy as np
 
-from calibration.experiment_0.statistics import (
+from experiment_0_calibration.statistics import (
     build_bootstrap_plan,
     corrected_mad,
     summarize_projection_matrix,
@@ -26,4 +26,3 @@ def test_phrase_bootstrap_keeps_token_clusters_and_returns_intervals():
     assert result["sd"].shape == (2,)
     assert np.all(result["sd_ci_low"] <= result["sd"])
     assert np.all(result["sd_ci_high"] >= result["sd"])
-

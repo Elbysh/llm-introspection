@@ -13,5 +13,4 @@ CONFIG=${1:?configuration path required}
 cd "${SLURM_SUBMIT_DIR}"
 source .venv/bin/activate
 export PYTHONPATH="${PWD}/code${PYTHONPATH:+:${PYTHONPATH}}"
-python -m calibration.experiment_0.prepare_plan --config "${CONFIG}"
-
+python -m experiment_0_calibration.prepare_plan --config "${CONFIG}"

@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional
 import yaml
 
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def repo_path(value: str) -> Path:

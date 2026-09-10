@@ -66,5 +66,5 @@ execution:
 
 paths:
   concept_vectors: data/saved_vectors/llama
-  plan_dir: data/calibration/experiment_0/plans/development_full_v2
-  output_dir: results/calibration/experiment_0/development_full_v2
+  plan_dir: data/experiment_0_calibration/plans/development_full_v2
+  output_dir: results/experiment_0_calibration/development_full_v2
