@@ -43,12 +43,15 @@ directions:
     - {name: shutdown, dataset: complex_data, split: unassigned}
   fixed_random:
     count_per_layer: 10
-    seed: 2026091001
+    # Matches data/saved_vectors/llama/random_s{sample}_{block}_avg.pt.
+    base_seed: 2026091001
+    layer_stride: 100000
   renewed_noise:
     # One independent direction for each (block, admissible token). Increase
     # this only when the later trial plan requires repeated noise realizations.
     repetitions_per_position: 1
-    seed: 2026091002
+    # A separate interval owns all token-specific noise seeds.
+    base_seed: 1000000000
 
 statistics:
   # Point estimates pool admissible tokens; uncertainty resamples whole
@@ -66,5 +69,5 @@ execution:
 
 paths:
   concept_vectors: data/saved_vectors/llama
-  plan_dir: data/experiment_0_calibration/plans/development_full_v2
-  output_dir: results/experiment_0_calibration/development_full_v2
+  plan_dir: data/experiment_0_calibration/plans/development_full_unique_noise
+  output_dir: results/experiment_0_calibration

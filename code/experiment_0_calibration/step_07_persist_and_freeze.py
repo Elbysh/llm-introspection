@@ -14,6 +14,30 @@ from . import EXPERIMENT_ID
 from .protocol_config import Experiment0Config
 
 
+PROTECTED_OUTPUT_NAMES = (
+    "directional_scales.json",
+    "directional_scales.csv",
+    "projections.npz",
+    "run_manifest.json",
+    "figures",
+)
+
+
+def ensure_output_artifacts_absent(output_dir: Path) -> None:
+    """Allow a documented result root, but never overwrite run artifacts."""
+    existing_outputs = [
+        output_dir / name
+        for name in PROTECTED_OUTPUT_NAMES
+        if (output_dir / name).exists()
+    ]
+    if existing_outputs:
+        raise FileExistsError(
+            "refusing to overwrite Experiment 0 artifacts: {}".format(
+                ", ".join(str(path) for path in existing_outputs)
+            )
+        )
+
+
 def file_sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -57,6 +81,15 @@ def validate_prepared_plan(
     direction_ids = [row["direction_id"] for row in directions]
     if len(direction_ids) != len(set(direction_ids)):
         raise ValueError("direction IDs must be unique")
+    stochastic_seeds = [
+        int(row["seed"])
+        for row in directions
+        if row["direction_family"] != "concept"
+    ]
+    if len(stochastic_seeds) != len(set(stochastic_seeds)):
+        raise ValueError(
+            "fixed-random and renewed-noise seeds must be globally unique"
+        )
     for decoder_block_index in config.layers:
         counts = Counter(
             row["direction_family"]
@@ -103,11 +136,10 @@ def persist_calibration(
     The output-directory guard is the concrete no-overwrite rule. A frozen
     configuration has additional validation in `protocol_config.py`.
     """
-    if config.output_dir.exists():
-        raise FileExistsError(
-            "refusing to overwrite Experiment 0 output: {}".format(config.output_dir)
-        )
-    config.output_dir.mkdir(parents=True, exist_ok=False)
+    ensure_output_artifacts_absent(config.output_dir)
+    # The result root may already contain its tracked README. Scientific
+    # artifacts themselves remain immutable and are never overwritten.
+    config.output_dir.mkdir(parents=True, exist_ok=True)
     statistics_path = config.output_dir / "directional_scales.json"
     with statistics_path.open("w", encoding="utf-8") as handle:
         json.dump(records, handle, indent=2, ensure_ascii=False, sort_keys=True)

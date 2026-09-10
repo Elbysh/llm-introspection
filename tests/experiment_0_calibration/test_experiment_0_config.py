@@ -17,3 +17,13 @@ def test_development_config_makes_weighting_and_bootstrap_explicit():
     assert config.point_weighting == "equal_token"
     assert config.bootstrap_unit == "sentence"
     assert config.bootstrap_resamples_sd > config.bootstrap_resamples_mad > 0
+
+
+def test_stochastic_families_have_separate_seed_namespaces():
+    config = load_config("configs/experiment_0_calibration/development_full.yaml")
+
+    # These values identify the persisted fixed-random bank. Renewed noise has
+    # a separate base, and the plan builder checks every realized seed.
+    assert config.fixed_random_base_seed == 2026091001
+    assert config.fixed_random_layer_stride == 100_000
+    assert config.renewed_noise_base_seed == 1_000_000_000
