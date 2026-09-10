@@ -2,6 +2,7 @@
 __pycache__/
 *.py[codz]
 *$py.class
+**/.DS_Store
 
 # macOS metadata
 .DS_Store
@@ -211,6 +212,14 @@ tempCodeRunnerFile.py
 
 # PyPI configuration file
 .pypirc
+
+# Experiment results and activation tensors
+results/
+runs/
+
+# Reproducible position-detection analysis caches and source tables
+plots/position_detection/source_data/
+plots/position_detection/analysis_summary.json
 
 # Marimo
 marimo/_static/
