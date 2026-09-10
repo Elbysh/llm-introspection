@@ -43,12 +43,14 @@ directions:
     - {name: shutdown, dataset: complex_data, split: unassigned}
   fixed_random:
     count_per_layer: 10
-    seed: 2026091001
+    # This base owns a compact interval of 320 seeds (10 x 32 blocks).
+    base_seed: 100000000
   renewed_noise:
     # One independent direction for each (block, admissible token). Increase
     # this only when the later trial plan requires repeated noise realizations.
     repetitions_per_position: 1
-    seed: 2026091002
+    # A separate interval owns all 19,712 token-specific noise seeds.
+    base_seed: 1000000000
 
 statistics:
   # Point estimates pool admissible tokens; uncertainty resamples whole

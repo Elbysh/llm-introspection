@@ -5,6 +5,13 @@ Ce dossier contient les résultats du calcul de l’échelle directionnelle natu
 elle ne calcule encore aucune dose `alpha` ou `z` et ne contient aucun résultat
 2AFC.
 
+> **Attention — recalcul requis :** ces artefacts ont été produits avant la
+> séparation des espaces de seeds. Ils contiennent 36 seeds partagées entre un
+> contrôle `fixed_random` et un contrôle `renewed_noise` (72 enregistrements au
+> total). Les figures restent utiles pour développer l’analyse, mais ces valeurs
+> ne doivent pas être figées ni utilisées comme calibration finale. Le prochain
+> calcul les remplacera avec des seeds garanties uniques.
+
 ## Périmètre de ce calcul
 
 - modèle : `meta-llama/Llama-3.1-8B-Instruct` ;
@@ -63,23 +70,36 @@ et quel modèle les résultats ont été produits.
 
 Le dossier `figures/` contient :
 
-- `experiment_0_scales_sd.png` : `s_SD(l,v)` selon la couche. Chaque concept est
-  tracé séparément ; les contrôles aléatoires fixes et bruit renouvelé sont
-  résumés par leur médiane et leur intervalle interquartile.
-- `experiment_0_scales_sd_log.png` : même graphique avec une échelle verticale
-  logarithmique pour rendre visibles les écarts de plusieurs ordres de grandeur.
-- `experiment_0_sd_vs_mad.png` : comparaison, direction par direction, entre SD
-  et MAD corrigée. La diagonale correspond à `SD = MAD`.
+- `experiment_0_scales_sd.png` : `s_SD(l,v)` selon la couche, en échelle
+  linéaire et dans trois panneaux séparés. Les dix concepts sont tracés
+  individuellement. Les contrôles aléatoires fixes et le bruit renouvelé sont
+  résumés par leur médiane, leur IQR et leurs quantiles 5–95 %.
+- `experiment_0_scales_sd_log.png` : même figure avec une échelle verticale
+  logarithmique dans chacun des trois panneaux.
+- `experiment_0_sd_vs_mad.png` : comparaison entre SD et MAD corrigée dans un
+  panneau indépendant par famille. Chaque panneau possède ses propres limites
+  logarithmiques afin que les 19 712 bruits ne masquent pas les autres points.
+  La diagonale correspond à `SD = MAD`.
 - `experiment_0_sd_over_mad.png` : médiane du rapport `SD / MAD corrigée` par
-  couche et famille. Un rapport élevé signale une sensibilité plus forte de la
-  SD aux queues de distribution ou aux valeurs extrêmes.
+  couche et famille, accompagnée de son IQR entre directions. Un rapport élevé
+  signale une sensibilité plus forte de la SD aux queues de distribution ou aux
+  valeurs extrêmes.
 - `experiment_0_bootstrap_stability.png` : coefficient de variation bootstrap
-  médian de la SD par couche et famille. Plus il est faible, plus l’estimation
-  est stable vis-à-vis du choix des phrases.
-- `experiment_0_projection_distributions.png` : cartes de densité des projections
-  centrées-réduites par couche et famille. Jusqu’à 25 directions par couche sont
-  agrégées ; cette figure compare la forme et les queues des distributions, pas
-  leur amplitude.
+  médian de la SD par couche et famille, avec l’IQR entre directions. Plus il
+  est faible, plus l’estimation est stable vis-à-vis du choix des phrases.
+- `experiment_0_projection_distributions.png` : distributions centrées-réduites
+  aux blocs 1, 16 et 30, comparées à une loi normale standard. Les dix directions
+  conceptuelles et aléatoires fixes sont utilisées. Pour le bruit renouvelé,
+  25 identifiants régulièrement espacés dans la liste triée sont utilisés, et
+  non les 25 premiers. Chaque direction est standardisée avant agrégation ; ce
+  graphique compare donc la forme des distributions, pas leur amplitude.
+- `experiment_0_concept_scale_heatmap.png` : heatmap `concept × couche` de
+  `log10(s_SD)`, destinée à rendre visibles les différences entre concepts que
+  masquerait une moyenne de famille.
+- `experiment_0_relative_scales.png` : en haut, rapport entre l’échelle de chaque
+  concept et la médiane des directions aléatoires fixes de la même couche ; en
+  bas, rapport entre le bruit renouvelé et ce même contrôle aléatoire. La ligne
+  `1` représente l’égalité avec le contrôle.
 
 ## Statut scientifique
 

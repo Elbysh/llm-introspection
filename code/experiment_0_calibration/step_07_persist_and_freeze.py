@@ -57,6 +57,15 @@ def validate_prepared_plan(
     direction_ids = [row["direction_id"] for row in directions]
     if len(direction_ids) != len(set(direction_ids)):
         raise ValueError("direction IDs must be unique")
+    stochastic_seeds = [
+        int(row["seed"])
+        for row in directions
+        if row["direction_family"] != "concept"
+    ]
+    if len(stochastic_seeds) != len(set(stochastic_seeds)):
+        raise ValueError(
+            "fixed-random and renewed-noise seeds must be globally unique"
+        )
     for decoder_block_index in config.layers:
         counts = Counter(
             row["direction_family"]

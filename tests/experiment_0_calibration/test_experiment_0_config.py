@@ -17,3 +17,15 @@ def test_development_config_makes_weighting_and_bootstrap_explicit():
     assert config.point_weighting == "equal_token"
     assert config.bootstrap_unit == "sentence"
     assert config.bootstrap_resamples_sd > config.bootstrap_resamples_mad > 0
+
+
+def test_stochastic_families_have_separate_seed_namespaces():
+    config = load_config("configs/experiment_0_calibration/development_full.yaml")
+
+    # The fixed-random interval must end before the renewed-noise interval
+    # starts. The material-plan builder also checks every realized seed.
+    fixed_random_upper_bound = (
+        config.fixed_random_base_seed
+        + len(config.layers) * config.fixed_random_count_per_layer
+    )
+    assert fixed_random_upper_bound < config.renewed_noise_base_seed

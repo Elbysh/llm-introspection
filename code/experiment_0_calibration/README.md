@@ -119,6 +119,12 @@ Les familles ont des rôles différents :
   `(bloc, position, répétition)` et enregistre la position à laquelle elle sera
   associée.
 
+Les deux familles stochastiques utilisent des intervalles de seeds séparés.
+Dans chaque famille, les seeds sont allouées de manière contiguë par bloc et
+index. La préparation et l’exécution refusent un plan contenant la moindre seed
+dupliquée : deux contrôles supposés indépendants ne peuvent donc pas reconstruire
+accidentellement le même vecteur.
+
 ### `manifest.json`
 
 Résumé vérifiable : expérience, version du protocole, configuration, modèle,
@@ -167,12 +173,14 @@ poids. Elle est explicite dans la configuration et les résultats.
 
 `step_05_plot_distributions.py` produit :
 
-- échelles SD par bloc ;
-- même figure en échelle logarithmique ;
-- SD contre MAD corrigée ;
-- rapport SD/MAD par famille et bloc ;
-- stabilité bootstrap ;
-- heatmaps des distributions standardisées pour chaque bloc et famille.
+- échelles SD par bloc et par famille, en version linéaire et logarithmique ;
+- SD contre MAD corrigée, dans un panneau indépendant par famille ;
+- rapport SD/MAD médian et IQR par famille et bloc ;
+- stabilité bootstrap médiane et IQR ;
+- distributions standardisées aux blocs early, middle et late, avec référence
+  gaussienne et sélection déterministe des directions ;
+- heatmap des échelles conceptuelles par concept et couche ;
+- rapports concept/random et bruit/random par couche.
 
 Le rendu est exécuté après l’écriture des données afin que les figures soient
 toujours reproductibles depuis les artefacts sauvegardés.

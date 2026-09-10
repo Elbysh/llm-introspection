@@ -35,9 +35,9 @@ class Experiment0Config:
     vector_type: str
     hidden_state_offset: int
     fixed_random_count_per_layer: int
-    random_seed: int
+    fixed_random_base_seed: int
     noise_repetitions_per_position: int
-    noise_seed: int
+    renewed_noise_base_seed: int
     presentation_mode: str
     context_id: str
     context_template: str
@@ -78,11 +78,15 @@ class Experiment0Config:
             fixed_random_count_per_layer=int(
                 directions["fixed_random"]["count_per_layer"]
             ),
-            random_seed=int(directions["fixed_random"]["seed"]),
+            fixed_random_base_seed=int(
+                directions["fixed_random"]["base_seed"]
+            ),
             noise_repetitions_per_position=int(
                 directions["renewed_noise"]["repetitions_per_position"]
             ),
-            noise_seed=int(directions["renewed_noise"]["seed"]),
+            renewed_noise_base_seed=int(
+                directions["renewed_noise"]["base_seed"]
+            ),
             presentation_mode=str(presentation["mode"]),
             context_id=str(presentation["context_id"]),
             context_template=str(presentation.get("template", "")),
@@ -129,6 +133,8 @@ class Experiment0Config:
             raise ValueError("decoder-block outputs require hidden_state_offset=1")
         if self.fixed_random_count_per_layer < 1 or self.noise_repetitions_per_position < 1:
             raise ValueError("direction counts must be positive")
+        if min(self.fixed_random_base_seed, self.renewed_noise_base_seed) < 0:
+            raise ValueError("direction base seeds must be non-negative")
         if self.presentation_mode not in {"template_per_sentence", "external_manifest"}:
             raise ValueError("unsupported presentation.mode")
         if (

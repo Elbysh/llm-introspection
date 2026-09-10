@@ -234,7 +234,14 @@ def build_direction_rows(
                 }
             )
         for index in range(config.fixed_random_count_per_layer):
-            seed = config.random_seed + layer * 100_000 + index
+            # Allocate a compact, auditable interval of seeds to each block.
+            # The configured base is family-specific; global uniqueness is
+            # checked below before the plan can be persisted.
+            seed = (
+                config.fixed_random_base_seed
+                + layer * config.fixed_random_count_per_layer
+                + index
+            )
             rows.append(
                 {
                     "direction_id": "fixed_random__block_{:02d}__{:04d}".format(layer, index),
@@ -258,7 +265,14 @@ def build_direction_rows(
                     * config.noise_repetitions_per_position
                     + repetition
                 )
-                seed = config.noise_seed + layer * 1_000_000 + index
+                noise_count_per_layer = (
+                    len(observations) * config.noise_repetitions_per_position
+                )
+                seed = (
+                    config.renewed_noise_base_seed
+                    + layer * noise_count_per_layer
+                    + index
+                )
                 rows.append(
                     {
                         "direction_id": "renewed_noise__block_{:02d}__{}__rep_{:02d}".format(
@@ -277,6 +291,16 @@ def build_direction_rows(
                         "noise_repetition": repetition,
                     }
                 )
+    stochastic_rows = [
+        row for row in rows if row["direction_family"] != "concept"
+    ]
+    stochastic_seeds = [int(row["seed"]) for row in stochastic_rows]
+    if len(stochastic_seeds) != len(set(stochastic_seeds)):
+        # A shared seed would make two nominally independent control
+        # directions exactly identical after deterministic regeneration.
+        raise ValueError(
+            "fixed-random and renewed-noise seeds must be globally unique"
+        )
     return rows
 
 
