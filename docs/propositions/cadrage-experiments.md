@@ -859,7 +859,7 @@ Assistant:
 
 ### 14.4 Déroulé
 
-1. Tirer $k$ uniformément.
+1. À $k$ choisi, fixé.
 2. Tirer $k$ couches distinctes et $k$ concepts distincts.
 3. Appliquer le régime de dose prévu.
 4. Randomiser l'association entre concepts et couches.
