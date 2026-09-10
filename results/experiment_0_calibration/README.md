@@ -5,12 +5,11 @@ Ce dossier contient les résultats du calcul de l’échelle directionnelle natu
 elle ne calcule encore aucune dose `alpha` ou `z` et ne contient aucun résultat
 2AFC.
 
-> **Attention — recalcul requis :** ces artefacts ont été produits avant la
-> séparation des espaces de seeds. Ils contiennent 36 seeds partagées entre un
-> contrôle `fixed_random` et un contrôle `renewed_noise` (72 enregistrements au
-> total). Les figures restent utiles pour développer l’analyse, mais ces valeurs
-> ne doivent pas être figées ni utilisées comme calibration finale. Le prochain
-> calcul les remplacera avec des seeds garanties uniques.
+> **Validation du nouveau calcul :** les 20 032 graines stochastiques sont
+> uniques et aucun chevauchement ne subsiste entre `fixed_random` et
+> `renewed_noise`. Les 320 directions aléatoires fixes réutilisent la banque
+> persistée du dépôt ; les 19 712 directions de bruit ont été recalculées avec
+> leur nouvel espace de graines.
 
 ## Périmètre de ce calcul
 
@@ -66,6 +65,14 @@ révision résolue du modèle, versions logicielles, tailles des données et has
 des fichiers de préparation. Il permet de vérifier précisément avec quel plan
 et quel modèle les résultats ont été produits.
 
+> **Note de provenance :** le champ `git_commit` du manifeste décrit le HEAD du
+> checkout présent sur Ruche, pas exactement les sources exécutées, car les
+> fichiers de cette branche ont été transférés directement par SCP. Le hash de
+> configuration enregistré dans le manifeste correspond bien au fichier local
+> utilisé (`3545c6bda6bd4f0d3a08882dd073a85a180e2c4d0df8aa357b953ab63977ddf9`).
+> Il faut donc utiliser ce hash, les artefacts versionnés et le code de cette
+> branche pour retracer ce run, plutôt que le seul champ `git_commit`.
+
 ## Figures
 
 Le dossier `figures/` contient :
@@ -107,3 +114,16 @@ Ces sorties portent le statut `development`. Elles servent à examiner la
 calibration et à arrêter les choix du protocole avant de figer les échelles.
 Elles ne doivent pas être interprétées comme les performances finales de la
 tâche 2AFC.
+
+## Vérifications effectuées avant versionnement
+
+- 20 352 lignes dans le CSV et le JSON, avec les mêmes `direction_id` ;
+- 320 directions de concept, 320 directions aléatoires fixes et 19 712
+  directions de bruit renouvelé ;
+- 32 couches contenant chacune exactement 10 concepts, 10 directions
+  aléatoires fixes et 616 directions de bruit ;
+- 20 032 graines stochastiques toutes distinctes, sans intersection entre les
+  deux familles de contrôle ;
+- 20 352 tableaux de projections de forme `(616,)`, tous finis ;
+- les 20 352 calibrations sont marquées `valid_for_sd_normalization` ;
+- les huit figures attendues ont été générées.
