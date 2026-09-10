@@ -1,0 +1,1772 @@
+[
+  {
+    "concept": "appreciation",
+    "direction_id": "concept__l3__appreciation",
+    "kind": "concept",
+    "layer": 3,
+    "original_norm": 0.3846547305583954,
+    "seed": null,
+    "source_hidden_state_index": 4,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/appreciation_4_avg.pt"
+  },
+  {
+    "concept": "betrayal",
+    "direction_id": "concept__l3__betrayal",
+    "kind": "concept",
+    "layer": 3,
+    "original_norm": 0.27249735593795776,
+    "seed": null,
+    "source_hidden_state_index": 4,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/betrayal_4_avg.pt"
+  },
+  {
+    "concept": "Dust",
+    "direction_id": "concept__l3__Dust",
+    "kind": "concept",
+    "layer": 3,
+    "original_norm": 1.0367705821990967,
+    "seed": null,
+    "source_hidden_state_index": 4,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Dust_4_avg.pt"
+  },
+  {
+    "concept": "fibonacci_numbers",
+    "direction_id": "concept__l3__fibonacci_numbers",
+    "kind": "concept",
+    "layer": 3,
+    "original_norm": 0.4984239935874939,
+    "seed": null,
+    "source_hidden_state_index": 4,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/fibonacci_numbers_4_avg.pt"
+  },
+  {
+    "concept": "Illusions",
+    "direction_id": "concept__l3__Illusions",
+    "kind": "concept",
+    "layer": 3,
+    "original_norm": 0.3536628186702728,
+    "seed": null,
+    "source_hidden_state_index": 4,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Illusions_4_avg.pt"
+  },
+  {
+    "concept": "Origami",
+    "direction_id": "concept__l3__Origami",
+    "kind": "concept",
+    "layer": 3,
+    "original_norm": 0.38997918367385864,
+    "seed": null,
+    "source_hidden_state_index": 4,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Origami_4_avg.pt"
+  },
+  {
+    "concept": "recursion",
+    "direction_id": "concept__l3__recursion",
+    "kind": "concept",
+    "layer": 3,
+    "original_norm": 1.467015027999878,
+    "seed": null,
+    "source_hidden_state_index": 4,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/recursion_4_avg.pt"
+  },
+  {
+    "concept": "Satellites",
+    "direction_id": "concept__l3__Satellites",
+    "kind": "concept",
+    "layer": 3,
+    "original_norm": 0.3801744282245636,
+    "seed": null,
+    "source_hidden_state_index": 4,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Satellites_4_avg.pt"
+  },
+  {
+    "concept": "shutdown",
+    "direction_id": "concept__l3__shutdown",
+    "kind": "concept",
+    "layer": 3,
+    "original_norm": 0.7179399728775024,
+    "seed": null,
+    "source_hidden_state_index": 4,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/shutdown_4_avg.pt"
+  },
+  {
+    "concept": "Trumpets",
+    "direction_id": "concept__l3__Trumpets",
+    "kind": "concept",
+    "layer": 3,
+    "original_norm": 0.3762383759021759,
+    "seed": null,
+    "source_hidden_state_index": 4,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Trumpets_4_avg.pt"
+  },
+  {
+    "concept": "appreciation",
+    "direction_id": "concept__l16__appreciation",
+    "kind": "concept",
+    "layer": 16,
+    "original_norm": 1.123086929321289,
+    "seed": null,
+    "source_hidden_state_index": 17,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/appreciation_17_avg.pt"
+  },
+  {
+    "concept": "betrayal",
+    "direction_id": "concept__l16__betrayal",
+    "kind": "concept",
+    "layer": 16,
+    "original_norm": 0.9158191680908203,
+    "seed": null,
+    "source_hidden_state_index": 17,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/betrayal_17_avg.pt"
+  },
+  {
+    "concept": "Dust",
+    "direction_id": "concept__l16__Dust",
+    "kind": "concept",
+    "layer": 16,
+    "original_norm": 2.0335795879364014,
+    "seed": null,
+    "source_hidden_state_index": 17,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Dust_17_avg.pt"
+  },
+  {
+    "concept": "fibonacci_numbers",
+    "direction_id": "concept__l16__fibonacci_numbers",
+    "kind": "concept",
+    "layer": 16,
+    "original_norm": 1.5166808366775513,
+    "seed": null,
+    "source_hidden_state_index": 17,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/fibonacci_numbers_17_avg.pt"
+  },
+  {
+    "concept": "Illusions",
+    "direction_id": "concept__l16__Illusions",
+    "kind": "concept",
+    "layer": 16,
+    "original_norm": 1.5272561311721802,
+    "seed": null,
+    "source_hidden_state_index": 17,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Illusions_17_avg.pt"
+  },
+  {
+    "concept": "Origami",
+    "direction_id": "concept__l16__Origami",
+    "kind": "concept",
+    "layer": 16,
+    "original_norm": 1.6168596744537354,
+    "seed": null,
+    "source_hidden_state_index": 17,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Origami_17_avg.pt"
+  },
+  {
+    "concept": "recursion",
+    "direction_id": "concept__l16__recursion",
+    "kind": "concept",
+    "layer": 16,
+    "original_norm": 2.189115285873413,
+    "seed": null,
+    "source_hidden_state_index": 17,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/recursion_17_avg.pt"
+  },
+  {
+    "concept": "Satellites",
+    "direction_id": "concept__l16__Satellites",
+    "kind": "concept",
+    "layer": 16,
+    "original_norm": 1.592348575592041,
+    "seed": null,
+    "source_hidden_state_index": 17,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Satellites_17_avg.pt"
+  },
+  {
+    "concept": "shutdown",
+    "direction_id": "concept__l16__shutdown",
+    "kind": "concept",
+    "layer": 16,
+    "original_norm": 1.3059277534484863,
+    "seed": null,
+    "source_hidden_state_index": 17,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/shutdown_17_avg.pt"
+  },
+  {
+    "concept": "Trumpets",
+    "direction_id": "concept__l16__Trumpets",
+    "kind": "concept",
+    "layer": 16,
+    "original_norm": 1.5834972858428955,
+    "seed": null,
+    "source_hidden_state_index": 17,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Trumpets_17_avg.pt"
+  },
+  {
+    "concept": "appreciation",
+    "direction_id": "concept__l28__appreciation",
+    "kind": "concept",
+    "layer": 28,
+    "original_norm": 2.841855525970459,
+    "seed": null,
+    "source_hidden_state_index": 29,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/appreciation_29_avg.pt"
+  },
+  {
+    "concept": "betrayal",
+    "direction_id": "concept__l28__betrayal",
+    "kind": "concept",
+    "layer": 28,
+    "original_norm": 2.2195582389831543,
+    "seed": null,
+    "source_hidden_state_index": 29,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/betrayal_29_avg.pt"
+  },
+  {
+    "concept": "Dust",
+    "direction_id": "concept__l28__Dust",
+    "kind": "concept",
+    "layer": 28,
+    "original_norm": 5.126841068267822,
+    "seed": null,
+    "source_hidden_state_index": 29,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Dust_29_avg.pt"
+  },
+  {
+    "concept": "fibonacci_numbers",
+    "direction_id": "concept__l28__fibonacci_numbers",
+    "kind": "concept",
+    "layer": 28,
+    "original_norm": 4.482010364532471,
+    "seed": null,
+    "source_hidden_state_index": 29,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/fibonacci_numbers_29_avg.pt"
+  },
+  {
+    "concept": "Illusions",
+    "direction_id": "concept__l28__Illusions",
+    "kind": "concept",
+    "layer": 28,
+    "original_norm": 4.5858659744262695,
+    "seed": null,
+    "source_hidden_state_index": 29,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Illusions_29_avg.pt"
+  },
+  {
+    "concept": "Origami",
+    "direction_id": "concept__l28__Origami",
+    "kind": "concept",
+    "layer": 28,
+    "original_norm": 5.942070484161377,
+    "seed": null,
+    "source_hidden_state_index": 29,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Origami_29_avg.pt"
+  },
+  {
+    "concept": "recursion",
+    "direction_id": "concept__l28__recursion",
+    "kind": "concept",
+    "layer": 28,
+    "original_norm": 4.795319080352783,
+    "seed": null,
+    "source_hidden_state_index": 29,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/recursion_29_avg.pt"
+  },
+  {
+    "concept": "Satellites",
+    "direction_id": "concept__l28__Satellites",
+    "kind": "concept",
+    "layer": 28,
+    "original_norm": 5.069264888763428,
+    "seed": null,
+    "source_hidden_state_index": 29,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Satellites_29_avg.pt"
+  },
+  {
+    "concept": "shutdown",
+    "direction_id": "concept__l28__shutdown",
+    "kind": "concept",
+    "layer": 28,
+    "original_norm": 2.7883107662200928,
+    "seed": null,
+    "source_hidden_state_index": 29,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/shutdown_29_avg.pt"
+  },
+  {
+    "concept": "Trumpets",
+    "direction_id": "concept__l28__Trumpets",
+    "kind": "concept",
+    "layer": 28,
+    "original_norm": 5.376307964324951,
+    "seed": null,
+    "source_hidden_state_index": 29,
+    "source_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "source_path": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Trumpets_29_avg.pt"
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l3__0000",
+    "kind": "random",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.70270538330078,
+    "seed": 20390908
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l3__0001",
+    "kind": "random",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.31109619140625,
+    "seed": 20390909
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l3__0002",
+    "kind": "random",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.60587310791016,
+    "seed": 20390910
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l3__0003",
+    "kind": "random",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.90818786621094,
+    "seed": 20390911
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l3__0004",
+    "kind": "random",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.47965240478516,
+    "seed": 20390912
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l3__0005",
+    "kind": "random",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.575401306152344,
+    "seed": 20390913
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l3__0006",
+    "kind": "random",
+    "layer": 3,
+    "sampled_gaussian_norm": 65.13817596435547,
+    "seed": 20390914
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l3__0007",
+    "kind": "random",
+    "layer": 3,
+    "sampled_gaussian_norm": 62.78835678100586,
+    "seed": 20390915
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l3__0008",
+    "kind": "random",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.81925582885742,
+    "seed": 20390916
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l3__0009",
+    "kind": "random",
+    "layer": 3,
+    "sampled_gaussian_norm": 62.81121063232422,
+    "seed": 20390917
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0000",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 62.916717529296875,
+    "seed": 20490908
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0001",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.072452545166016,
+    "seed": 20490909
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0002",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 65.64754486083984,
+    "seed": 20490910
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0003",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.104862213134766,
+    "seed": 20490911
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0004",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.65676879882812,
+    "seed": 20490912
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0005",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.72361373901367,
+    "seed": 20490913
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0006",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.481651306152344,
+    "seed": 20490914
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0007",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.568817138671875,
+    "seed": 20490915
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0008",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 62.70842361450195,
+    "seed": 20490916
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0009",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.2065658569336,
+    "seed": 20490917
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0010",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.49102020263672,
+    "seed": 20490918
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0011",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.849735260009766,
+    "seed": 20490919
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0012",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.39961242675781,
+    "seed": 20490920
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0013",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.501502990722656,
+    "seed": 20490921
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0014",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.595584869384766,
+    "seed": 20490922
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0015",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.88729858398438,
+    "seed": 20490923
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0016",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.507999420166016,
+    "seed": 20490924
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0017",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.46275329589844,
+    "seed": 20490925
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0018",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.8346061706543,
+    "seed": 20490926
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0019",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.7092399597168,
+    "seed": 20490927
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0020",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.29047393798828,
+    "seed": 20490928
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0021",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.174598693847656,
+    "seed": 20490929
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0022",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.83653259277344,
+    "seed": 20490930
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0023",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.445552825927734,
+    "seed": 20490931
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0024",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.54066467285156,
+    "seed": 20490932
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0025",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.87478256225586,
+    "seed": 20490933
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0026",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.96925354003906,
+    "seed": 20490934
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0027",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.60942840576172,
+    "seed": 20490935
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0028",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.27799224853516,
+    "seed": 20490936
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0029",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.16265869140625,
+    "seed": 20490937
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0030",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.81047058105469,
+    "seed": 20490938
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0031",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.22011184692383,
+    "seed": 20490939
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0032",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 66.05651092529297,
+    "seed": 20490940
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0033",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.00372314453125,
+    "seed": 20490941
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0034",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.70147705078125,
+    "seed": 20490942
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0035",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.31869506835938,
+    "seed": 20490943
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0036",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.01912689208984,
+    "seed": 20490944
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0037",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.21004486083984,
+    "seed": 20490945
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0038",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.60235595703125,
+    "seed": 20490946
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0039",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.336944580078125,
+    "seed": 20490947
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0040",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.75142669677734,
+    "seed": 20490948
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0041",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.809608459472656,
+    "seed": 20490949
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0042",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.92317962646484,
+    "seed": 20490950
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0043",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 65.16734313964844,
+    "seed": 20490951
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0044",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.008358001708984,
+    "seed": 20490952
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0045",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 62.485687255859375,
+    "seed": 20490953
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0046",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.26493072509766,
+    "seed": 20490954
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0047",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 62.93930435180664,
+    "seed": 20490955
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0048",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 64.21784973144531,
+    "seed": 20490956
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l3__0049",
+    "kind": "noise",
+    "layer": 3,
+    "sampled_gaussian_norm": 63.9437141418457,
+    "seed": 20490957
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l16__0000",
+    "kind": "random",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.58915710449219,
+    "seed": 20520908
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l16__0001",
+    "kind": "random",
+    "layer": 16,
+    "sampled_gaussian_norm": 65.22164154052734,
+    "seed": 20520909
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l16__0002",
+    "kind": "random",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.27014923095703,
+    "seed": 20520910
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l16__0003",
+    "kind": "random",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.69841766357422,
+    "seed": 20520911
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l16__0004",
+    "kind": "random",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.40210723876953,
+    "seed": 20520912
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l16__0005",
+    "kind": "random",
+    "layer": 16,
+    "sampled_gaussian_norm": 65.4507827758789,
+    "seed": 20520913
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l16__0006",
+    "kind": "random",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.00177001953125,
+    "seed": 20520914
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l16__0007",
+    "kind": "random",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.48069381713867,
+    "seed": 20520915
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l16__0008",
+    "kind": "random",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.08190155029297,
+    "seed": 20520916
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l16__0009",
+    "kind": "random",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.78748321533203,
+    "seed": 20520917
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0000",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.13721466064453,
+    "seed": 20620908
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0001",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.808753967285156,
+    "seed": 20620909
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0002",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.539981842041016,
+    "seed": 20620910
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0003",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.733154296875,
+    "seed": 20620911
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0004",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.21438217163086,
+    "seed": 20620912
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0005",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.1068344116211,
+    "seed": 20620913
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0006",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.19877624511719,
+    "seed": 20620914
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0007",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.89931106567383,
+    "seed": 20620915
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0008",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.205589294433594,
+    "seed": 20620916
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0009",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 62.956459045410156,
+    "seed": 20620917
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0010",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.901397705078125,
+    "seed": 20620918
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0011",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.696205139160156,
+    "seed": 20620919
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0012",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.43027114868164,
+    "seed": 20620920
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0013",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.829017639160156,
+    "seed": 20620921
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0014",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 65.97130584716797,
+    "seed": 20620922
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0015",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.10188293457031,
+    "seed": 20620923
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0016",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.45219421386719,
+    "seed": 20620924
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0017",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.10099792480469,
+    "seed": 20620925
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0018",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.1755142211914,
+    "seed": 20620926
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0019",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.56366729736328,
+    "seed": 20620927
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0020",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.80645751953125,
+    "seed": 20620928
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0021",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.493804931640625,
+    "seed": 20620929
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0022",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.15689086914062,
+    "seed": 20620930
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0023",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.74955368041992,
+    "seed": 20620931
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0024",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.18445587158203,
+    "seed": 20620932
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0025",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.98725891113281,
+    "seed": 20620933
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0026",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.01803207397461,
+    "seed": 20620934
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0027",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.97246551513672,
+    "seed": 20620935
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0028",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.41425323486328,
+    "seed": 20620936
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0029",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.554893493652344,
+    "seed": 20620937
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0030",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.33112335205078,
+    "seed": 20620938
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0031",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.4144401550293,
+    "seed": 20620939
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0032",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.18505096435547,
+    "seed": 20620940
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0033",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.595855712890625,
+    "seed": 20620941
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0034",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.44512939453125,
+    "seed": 20620942
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0035",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.01226806640625,
+    "seed": 20620943
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0036",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.98976135253906,
+    "seed": 20620944
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0037",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.60199737548828,
+    "seed": 20620945
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0038",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.70995330810547,
+    "seed": 20620946
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0039",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 62.474281311035156,
+    "seed": 20620947
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0040",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.78437805175781,
+    "seed": 20620948
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0041",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.489681243896484,
+    "seed": 20620949
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0042",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.33974075317383,
+    "seed": 20620950
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0043",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.49630355834961,
+    "seed": 20620951
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0044",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.39297485351562,
+    "seed": 20620952
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0045",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.4141960144043,
+    "seed": 20620953
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0046",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.536895751953125,
+    "seed": 20620954
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0047",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 63.36654281616211,
+    "seed": 20620955
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0048",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 64.08769989013672,
+    "seed": 20620956
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l16__0049",
+    "kind": "noise",
+    "layer": 16,
+    "sampled_gaussian_norm": 62.730037689208984,
+    "seed": 20620957
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l28__0000",
+    "kind": "random",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.61739349365234,
+    "seed": 20640908
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l28__0001",
+    "kind": "random",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.009765625,
+    "seed": 20640909
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l28__0002",
+    "kind": "random",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.01712799072266,
+    "seed": 20640910
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l28__0003",
+    "kind": "random",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.906776428222656,
+    "seed": 20640911
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l28__0004",
+    "kind": "random",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.335182189941406,
+    "seed": 20640912
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l28__0005",
+    "kind": "random",
+    "layer": 28,
+    "sampled_gaussian_norm": 65.12435913085938,
+    "seed": 20640913
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l28__0006",
+    "kind": "random",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.54774856567383,
+    "seed": 20640914
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l28__0007",
+    "kind": "random",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.13057708740234,
+    "seed": 20640915
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l28__0008",
+    "kind": "random",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.86750030517578,
+    "seed": 20640916
+  },
+  {
+    "concept": null,
+    "direction_id": "random__l28__0009",
+    "kind": "random",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.99042892456055,
+    "seed": 20640917
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0000",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.448055267333984,
+    "seed": 20740908
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0001",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.81283187866211,
+    "seed": 20740909
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0002",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 62.68071365356445,
+    "seed": 20740910
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0003",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.91440200805664,
+    "seed": 20740911
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0004",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.62285614013672,
+    "seed": 20740912
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0005",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 65.20772552490234,
+    "seed": 20740913
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0006",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.32443618774414,
+    "seed": 20740914
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0007",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.985721588134766,
+    "seed": 20740915
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0008",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.37644958496094,
+    "seed": 20740916
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0009",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.32470703125,
+    "seed": 20740917
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0010",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.44335174560547,
+    "seed": 20740918
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0011",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 62.582096099853516,
+    "seed": 20740919
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0012",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.88526153564453,
+    "seed": 20740920
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0013",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.74491882324219,
+    "seed": 20740921
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0014",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.76388549804688,
+    "seed": 20740922
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0015",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.08247375488281,
+    "seed": 20740923
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0016",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 62.925113677978516,
+    "seed": 20740924
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0017",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.35808563232422,
+    "seed": 20740925
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0018",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.6222038269043,
+    "seed": 20740926
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0019",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 65.27555847167969,
+    "seed": 20740927
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0020",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.755367279052734,
+    "seed": 20740928
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0021",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 65.17362213134766,
+    "seed": 20740929
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0022",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.62285614013672,
+    "seed": 20740930
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0023",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.07205200195312,
+    "seed": 20740931
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0024",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.65933990478516,
+    "seed": 20740932
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0025",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.18873596191406,
+    "seed": 20740933
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0026",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.1078872680664,
+    "seed": 20740934
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0027",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.08999252319336,
+    "seed": 20740935
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0028",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.97662353515625,
+    "seed": 20740936
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0029",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.38684844970703,
+    "seed": 20740937
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0030",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.83608627319336,
+    "seed": 20740938
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0031",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.53473663330078,
+    "seed": 20740939
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0032",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.43408203125,
+    "seed": 20740940
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0033",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 65.03179931640625,
+    "seed": 20740941
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0034",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.75653839111328,
+    "seed": 20740942
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0035",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.17042541503906,
+    "seed": 20740943
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0036",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.32023239135742,
+    "seed": 20740944
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0037",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.56893157958984,
+    "seed": 20740945
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0038",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.513511657714844,
+    "seed": 20740946
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0039",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 65.11260986328125,
+    "seed": 20740947
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0040",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.50718688964844,
+    "seed": 20740948
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0041",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.59459686279297,
+    "seed": 20740949
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0042",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.12163162231445,
+    "seed": 20740950
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0043",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 62.74274826049805,
+    "seed": 20740951
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0044",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.87070846557617,
+    "seed": 20740952
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0045",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.17281341552734,
+    "seed": 20740953
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0046",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.40411376953125,
+    "seed": 20740954
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0047",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 64.69363403320312,
+    "seed": 20740955
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0048",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 62.408905029296875,
+    "seed": 20740956
+  },
+  {
+    "concept": null,
+    "direction_id": "noise__l28__0049",
+    "kind": "noise",
+    "layer": 28,
+    "sampled_gaussian_norm": 63.490718841552734,
+    "seed": 20740957
+  }
+]
