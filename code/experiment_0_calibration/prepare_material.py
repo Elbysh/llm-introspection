@@ -9,7 +9,7 @@ from typing import Any, Dict, Iterable, List, Sequence, Tuple
 
 import torch
 
-from .config import Experiment0Config, REPO_ROOT
+from .protocol_config import Experiment0Config, REPO_ROOT
 
 
 def write_jsonl(path: Path, rows: Iterable[Dict[str, Any]]) -> None:

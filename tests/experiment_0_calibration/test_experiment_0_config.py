@@ -1,4 +1,4 @@
-from experiment_0_calibration.config import load_config
+from experiment_0_calibration.protocol_config import load_config
 
 
 def test_development_config_covers_every_decoder_block():

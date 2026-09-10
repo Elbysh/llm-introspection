@@ -12,7 +12,7 @@ import sys
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from .config import REPO_ROOT, load_config
+from .protocol_config import REPO_ROOT, load_config
 
 
 def main() -> None:
@@ -90,4 +90,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

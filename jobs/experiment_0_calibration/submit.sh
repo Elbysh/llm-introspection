@@ -10,9 +10,9 @@ if [[ ! -f "${CONFIG}" ]]; then
 fi
 mkdir -p logs
 
-VECTORS_ID=$(sbatch --parsable jobs/experiment_0_calibration/ensure_vectors.sbatch "${CONFIG}")
-PLAN_ID=$(sbatch --parsable --dependency="afterok:${VECTORS_ID}" jobs/experiment_0_calibration/prepare_plan.sbatch "${CONFIG}")
-RUN_ID=$(sbatch --parsable --dependency="afterok:${PLAN_ID}" jobs/experiment_0_calibration/run.sbatch "${CONFIG}")
+VECTORS_ID=$(sbatch --parsable jobs/experiment_0_calibration/01_prepare_concept_vectors.sbatch "${CONFIG}")
+PLAN_ID=$(sbatch --parsable --dependency="afterok:${VECTORS_ID}" jobs/experiment_0_calibration/02_prepare_material_plan.sbatch "${CONFIG}")
+RUN_ID=$(sbatch --parsable --dependency="afterok:${PLAN_ID}" jobs/experiment_0_calibration/03_run_experiment_0.sbatch "${CONFIG}")
 
 echo "Experiment 0 concept vectors: ${VECTORS_ID}"
 echo "Experiment 0 plan: ${PLAN_ID} (afterok:${VECTORS_ID})"

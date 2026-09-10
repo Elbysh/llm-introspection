@@ -2,7 +2,7 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
-from experiment_0_calibration.plan import unit
+from experiment_0_calibration.prepare_material import unit
 
 
 def test_direction_normalization_preserves_original_norm():

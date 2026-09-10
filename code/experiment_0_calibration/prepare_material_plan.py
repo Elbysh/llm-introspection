@@ -3,13 +3,14 @@
 import argparse
 import hashlib
 import json
+from collections import Counter, defaultdict
 
 import torch
 from transformers import AutoTokenizer
 
 from . import EXPERIMENT_ID
-from .config import load_config, repo_path
-from .plan import (
+from .protocol_config import load_config, repo_path
+from .prepare_material import (
     build_context_and_observation_rows,
     build_direction_rows,
     load_protocol_corpus,
@@ -37,6 +38,12 @@ def main() -> None:
     direction_ids = [row["direction_id"] for row in directions]
     if len(direction_ids) != len(set(direction_ids)):
         raise RuntimeError("direction IDs are not unique")
+    counts_by_family = Counter(row["direction_family"] for row in directions)
+    counts_by_block = defaultdict(Counter)
+    for row in directions:
+        counts_by_block[str(row["decoder_block_index"])][
+            row["direction_family"]
+        ] += 1
 
     config.plan_dir.mkdir(parents=True, exist_ok=True)
     write_jsonl(config.plan_dir / "contexts.jsonl", contexts)
@@ -59,6 +66,10 @@ def main() -> None:
         "n_contexts": len(contexts),
         "n_observations": len(observations),
         "n_directions": len(directions),
+        "direction_counts_by_family": dict(counts_by_family),
+        "direction_counts_by_decoder_block": {
+            block: dict(counts) for block, counts in counts_by_block.items()
+        },
     }
     with (config.plan_dir / "manifest.json").open("w", encoding="utf-8") as handle:
         json.dump(manifest, handle, indent=2, ensure_ascii=False, sort_keys=True)
