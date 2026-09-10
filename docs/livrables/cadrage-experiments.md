@@ -588,25 +588,24 @@ Les performances moyennes masquent une variabilité substantielle entre concepts
 
 ### 10.2 Objectif
 
-Déterminer si l'effet moyen se généralise et quantifier les composantes de variance. Cette expérience répond notamment au constat de Macar et al., selon lequel certains concepts sont détectés et d'autres non, sans que la norme du vecteur suffise à le prédire.
+Déterminer si l'effet moyen est homogène entre les concepts, les directions et les couches, et quantifier les composantes de variance. Cette expérience répond notamment au constat de Macar et al., selon lequel certains concepts sont détectés et d'autres non, sans que la norme du vecteur suffise à le prédire.
 
 ### 10.3 Conditions
 
-- au moins 5 concepts, dont des concepts *hold-out*
+- au moins 5 concepts
 - le même nombre de directions aléatoires fixes
 - les 32 couches du modèle principal, de 0 à 31
 - trois doses de $z$, situées sous, près et au-dessus du seuil global
 - les deux ordres et les deux cibles de la tâche 2AFC.
 
-Les phrases proviennent du corpus commun de 100 phrases. Le nombre de paires, le nombre exact de concepts au-delà du minimum de cinq, leur répartition entre mise au point et hold-out, ainsi que les identifiants des directions aléatoires restent à fixer. Les trois doses seront choisies à partir du pilote, sans examiner les résultats des concepts hold-out pour ce choix. Les répétitions par concept et direction, et le total des essais, seront dimensionnés selon la précision et le coût décrits en section 17.6. Cette expérience ne prévoit pas de bruit renouvelé parmi ses conditions actuelles.
+Les phrases proviennent du corpus commun de 100 phrases. Le nombre de paires, le nombre exact de concepts au-delà du minimum de cinq, ainsi que les identifiants des directions aléatoires restent à fixer. Les trois doses seront choisies à partir du pilote avant l'analyse des données de cette expérience. Les répétitions par concept et direction, et le total des essais, seront dimensionnés selon la précision et le coût décrits en section 17.6. Cette expérience ne prévoit pas de bruit renouvelé parmi ses conditions actuelles.
 
 ### 10.4 Déroulé
 
-1. Estimer le seuil global sur les concepts de mise au point.
+1. Estimer le seuil global à partir du pilote.
 2. Figer trois valeurs de $z$ autour de ce seuil.
 3. Exécuter le plan complet pour chaque concept et chaque direction.
-4. Répéter le plan sur les concepts *hold-out* sans modifier les doses.
-5. Répéter sur les 32 couches avec les mêmes valeurs de $z$ et le même plan.
+4. Répéter sur les 32 couches avec les mêmes valeurs de $z$ et le même plan.
 
 ### 10.5 Mesures
 
@@ -615,7 +614,6 @@ Les phrases proviennent du corpus commun de 100 phrases. Le nombre de paires, le
 - variance entre concepts
 - variance entre directions aléatoires
 - interaction direction-couche
-- écart entre concepts de mise au point et concepts *hold-out*.
 
 ### 10.6 Analyse
 
@@ -623,7 +621,7 @@ Un modèle hiérarchique ou un modèle mixte inclut des effets propres aux phras
 
 ### 10.7 Résultats interprétables
 
-- Une faible variance et un effet *hold-out* stable soutiennent une conclusion générale sur la famille.
+- Une faible variance et des effets cohérents entre concepts soutiennent une conclusion robuste dans l'échantillon étudié, sans constituer une validation hors-échantillon.
 - Une forte variance limite la conclusion aux concepts et directions testés.
 - Une interaction avec la couche interdit d'attribuer une différence à la seule architecture sans contrôler le site d'injection.
 
