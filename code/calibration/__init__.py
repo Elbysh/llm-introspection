@@ -1,5 +1,4 @@
-"""Directional-scale calibration utilities."""
+"""Calibration experiments isolated from the repository's existing core code.
 
-from .config import CalibrationConfig, load_config
-
-__all__ = ["CalibrationConfig", "load_config"]
+The protocol-specific implementation currently lives in `experiment_0`.
+"""
