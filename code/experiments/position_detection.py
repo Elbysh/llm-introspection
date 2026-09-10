@@ -12,6 +12,7 @@ import warnings
 
 import torch
 import transformers
+import yaml
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 REPO = Path(__file__).resolve().parents[2]
@@ -46,11 +47,33 @@ def file_digest(path):
     return h.hexdigest()
 
 
+def repo_path(value):
+    path = Path(value)
+    return path if path.is_absolute() else REPO / path
+
+
+def config_display_path(path):
+    try:
+        return str(path.resolve().relative_to(REPO.resolve()))
+    except ValueError:
+        return str(path.resolve())
+
+
+def load_run_config(path):
+    path = repo_path(path)
+    with path.open("r", encoding="utf-8") as stream:
+        config = yaml.safe_load(stream)
+    if not isinstance(config, dict):
+        raise ValueError(f"Run config must be a YAML mapping: {path}")
+    return path, config
+
+
 def vector_inventory(args):
     inventory = []
     for concept in args.concepts:
         for layer in args.layers:
-            path = args.vector_dir / f"{concept}_{layer}_{args.vec_type}.pt"
+            vector_layer = layer + args.vector_hidden_state_offset
+            path = args.vector_dir / f"{concept}_{vector_layer}_{args.vec_type}.pt"
             if not path.is_file():
                 raise FileNotFoundError(f"Required vector is missing: {path}")
             data = torch.load(path, map_location="cpu", weights_only=True)
@@ -58,13 +81,14 @@ def vector_inventory(args):
                 raise ValueError(f"Vector file lacks provenance metadata: {path}")
             inventory.append({
                 "concept": concept, "layer": layer, "path": str(path.resolve()),
+                "vector_file_layer": vector_layer,
                 "sha256": file_digest(path),
                 "saved_metadata": {k: v for k, v in data.items() if k != "vector"},
-                "source_hidden_states_index": layer,
-                "source_location": "embedding output" if layer == 0 else f"block {layer - 1} output",
+                "source_hidden_states_index": vector_layer,
+                "source_location": "embedding output" if vector_layer == 0 else f"block {vector_layer - 1} output",
                 "injection_location": f"model.model.layers.{layer} output (before final model norm)",
-                "location_mismatch": True,
-                "provenance_basis": "repository compute_vector_single_prompt; file metadata does not encode hook location",
+                "location_mismatch": vector_layer != layer + 1,
+                "provenance_basis": "repository compute_vector_single_prompt; hidden-state index is configured explicitly",
             })
     return inventory
 
@@ -81,7 +105,7 @@ def load_vector(info, args, hidden_size):
                           "accepting it for Llama-3.1-8B-Instruct. Original metadata is saved in the manifest.")
         else:
             raise ValueError(f"Vector model {data.get('model_name')!r} differs from {args.model!r}")
-    for field, expected in (("layer", info["layer"]),
+    for field, expected in (("layer", info["vector_file_layer"]),
                             ("concept_name", info["concept"]), ("vec_type", args.vec_type)):
         if data.get(field) != expected:
             raise ValueError(f"Vector {info['path']}: {field}={data.get(field)!r}, expected {expected!r}")
@@ -212,30 +236,66 @@ def run_condition(model, prompt, control, clean, vector, concept, layer, alpha, 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", default="meta-llama/Llama-3.1-8B-Instruct")
-    parser.add_argument("--revision", default="main")
+    parser.add_argument("--config", type=Path,
+                        default=REPO / "configs" / "position_detection" / "alpha_1_20.yaml")
+    parser.add_argument("--model")
+    parser.add_argument("--revision")
     parser.add_argument("--tokenizer-model", help="Optional tokenizer source, recorded in manifest")
-    parser.add_argument("--concepts", nargs="+", default=["all"])
-    parser.add_argument("--layers", nargs="+", type=int, default=LAYERS)
-    parser.add_argument("--alphas", "--strengths", nargs="+", type=float, default=ALPHAS)
-    parser.add_argument("--num-pairs", type=int, default=30)
-    parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--vec-type", choices=["avg", "last"], default="avg")
-    parser.add_argument("--vector-dir", type=Path, default=REPO / "data" / "saved_vectors" / "llama")
+    parser.add_argument("--concepts", nargs="+")
+    parser.add_argument("--layers", nargs="+", type=int)
+    parser.add_argument("--alphas", "--strengths", nargs="+", type=float)
+    parser.add_argument("--num-pairs", type=int)
+    parser.add_argument("--seed", type=int)
+    parser.add_argument("--vec-type", choices=["avg", "last"])
+    parser.add_argument("--vector-dir", type=Path)
     parser.add_argument("--corpus", type=Path, help="Optional JSON list of sentence strings")
-    parser.add_argument("--output-dir", type=Path, default=REPO / "results" / "position_detection")
-    parser.add_argument("--device", choices=["auto", "cpu", "cuda", "mps"], default="auto")
-    parser.add_argument("--dtype", choices=["bfloat16", "float16", "float32"], default="bfloat16")
-    parser.add_argument("--epsilon", type=float, default=1e-8, help="Only for the contamination ratio P")
+    parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--device", choices=["auto", "cpu", "cuda", "mps"])
+    parser.add_argument("--dtype", choices=["bfloat16", "float16", "float32"])
+    parser.add_argument("--epsilon", type=float, help="Only for the contamination ratio P")
+    parser.add_argument("--vector-hidden-state-offset", type=int,
+                        help="Offset from decoder block index to saved hidden-state file index")
     parser.add_argument("--prepare-only", action="store_true", help="Save pair/prompt manifest without loading weights")
     parser.add_argument(
         "--resume", action="store_true",
         help="Require and resume an existing manifest (otherwise an existing manifest is resumed automatically)",
     )
-    parser.add_argument("--log-interval", type=float, default=30,
+    parser.add_argument("--log-interval", type=float,
                         help="Seconds between progress.json and log updates")
     parser.add_argument("--no-progress", action="store_true", help="Disable the interactive tqdm bar")
     args = parser.parse_args()
+
+    config_path, file_config = load_run_config(args.config)
+    paths = file_config.get("paths", {})
+    configured_concepts = file_config.get("concepts", ["all"])
+    if isinstance(configured_concepts, str):
+        configured_concepts = [configured_concepts]
+    defaults = {
+        "model": file_config.get("model", "meta-llama/Llama-3.1-8B-Instruct"),
+        "revision": file_config.get("revision", "main"),
+        "tokenizer_model": file_config.get("tokenizer_model"),
+        "concepts": configured_concepts,
+        "layers": file_config.get("layers", LAYERS),
+        "alphas": file_config.get("alphas", ALPHAS),
+        "num_pairs": file_config.get("num_pairs", 30),
+        "seed": file_config.get("seed", 42),
+        "vec_type": file_config.get("vec_type", "avg"),
+        "vector_hidden_state_offset": file_config.get("vector_hidden_state_offset", 1),
+        "vector_dir": paths.get("vectors", file_config.get("vector_dir", REPO / "data" / "saved_vectors" / "llama")),
+        "corpus": file_config.get("corpus"),
+        "output_dir": paths.get("output_dir", file_config.get("output_dir", REPO / "results" / "position_detection")),
+        "device": file_config.get("device", "auto"),
+        "dtype": file_config.get("dtype", "bfloat16"),
+        "epsilon": file_config.get("epsilon", 1e-8),
+        "log_interval": file_config.get("log_interval", 30),
+    }
+    for name, value in defaults.items():
+        if getattr(args, name) is None:
+            setattr(args, name, value)
+    args.vector_dir = repo_path(args.vector_dir)
+    args.output_dir = repo_path(args.output_dir)
+    if args.corpus is not None:
+        args.corpus = repo_path(args.corpus)
     args.concepts = CONCEPTS.copy() if args.concepts == ["all"] else args.concepts
     if any(c not in CONCEPTS for c in args.concepts):
         parser.error("Unknown concept; use existing concept names or 'all'.")
@@ -243,6 +303,8 @@ def main():
         parser.error("Llama-3.1-8B injection layers must be in [0, 31].")
     if any(not math.isfinite(a) or a < 0 for a in args.alphas):
         parser.error("Alphas must be finite and nonnegative.")
+    if args.vector_hidden_state_offset != 1:
+        parser.error("Decoder block outputs require vector_hidden_state_offset=1 for these vector artifacts.")
     if not math.isfinite(args.epsilon) or args.epsilon <= 0:
         parser.error("Epsilon must be finite and positive.")
     if not math.isfinite(args.log_interval) or args.log_interval <= 0:
@@ -266,12 +328,15 @@ def main():
         parser.error("--resume requires an existing manifest.json.")
     tokenizer = AutoTokenizer.from_pretrained(args.tokenizer_model or args.model, revision=args.revision)
     config = {
+        "config_file": config_display_path(config_path),
+        "config_sha256": file_digest(config_path),
         "model": args.model, "revision": args.revision,
         "tokenizer_model": args.tokenizer_model or args.model,
         "tokenizer_sha256": hashlib.sha256(tokenizer.backend_tokenizer.to_str().encode()).hexdigest(),
         "chat_template": tokenizer.chat_template,
         "concepts": args.concepts, "layers": args.layers, "alphas": args.alphas,
         "num_pairs": args.num_pairs, "seed": args.seed, "vec_type": args.vec_type,
+        "vector_hidden_state_offset": args.vector_hidden_state_offset,
         "dtype": args.dtype, "device": args.device, "epsilon": args.epsilon,
         "corpus_sha256": digest(sentences), "vectors": inventory,
         "implementation_sha256": digest({
@@ -294,11 +359,8 @@ def main():
         atomic_json(manifest_path, manifest)
     print(f"Pairs: {len(manifest['pairs'])} / {manifest['eligible_pair_count']} eligible; "
           f"forward evaluations: {manifest['forward_passes']['total']:,}", flush=True)
-    warnings.warn(
-        "Preserving legacy vector indexing: saved hidden_states[k] is the embedding output "
-        "at k=0, otherwise block k-1 output; injection is at block k output. "
-        "This one-block location mismatch is recorded for every vector in manifest.json."
-    )
+    if any(item["location_mismatch"] for item in inventory):
+        raise ValueError("Vector provenance does not match the decoder-block injection location.")
     if args.prepare_only:
         print(f"Prepared {manifest_path}; no model weights loaded.", flush=True)
         return

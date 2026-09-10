@@ -9,7 +9,9 @@
   Pair-selection seed defaults to 42. A sentence may occur in several pairs.
 - Reuse the same pairs for all 10 existing concepts, strengths and layers.
 - Inject at zero-based decoder-block outputs `0, 3, 6, ..., 30`, before the final
-  model normalization, using the same-numbered `avg` concept vector files.
+  model normalization. Concept vectors are loaded from the corresponding
+  `outputs.hidden_states[layer + 1]` files so the vector and injection hook
+  refer to the same decoder-block output.
 - Normalize each concept vector to unit L2 norm, then add `alpha * vector` at
   every token overlapping the target sentence. Alpha defaults to every integer
   from `1` through `20` (inclusive) and is the intended norm **per token**, not
@@ -60,14 +62,13 @@ target spans; it is not the tokenization of the newline in isolation. Distances
 are recorded from every target token to both the last prompt/logit position
 `N-1` and the next-token answer position `N`. No padding or truncation is applied.
 
-The repository's vector extraction code reads `outputs.hidden_states[k]`, whereas
-the original intervention hooks the output of block `k`. Under Llama's hidden
-state indexing, extraction index 0 is the embedding output, and index k > 0 is
-the output of block k-1 for the indices used here. **The legacy one-block
-location mismatch is intentionally preserved and warned about.** The manifest
-records the inferred source location, injection location, original file metadata,
-and SHA-256 of each vector. The source-location interpretation comes from the
-repository code; the vector files themselves do not encode hook provenance.
+The repository's vector extraction code reads `outputs.hidden_states[k]`, while
+the intervention hooks the output of decoder block `k`. Under Llama's hidden
+state indexing, extraction index 0 is the embedding output and index `k + 1` is
+the output of block `k`. The manifest records the source hidden-state index,
+injection location, original file metadata, and SHA-256 of each vector. The
+runner rejects a non-unit offset for this experiment instead of silently mixing
+vector and hook locations.
 The older saved model spelling `meta-llama/Meta-Llama-3.1-8B-Instruct` is accepted
 with a warning for the configured Llama-3.1 checkpoint. Other model, layer,
 concept, dimension, or vector-type mismatches fail instead of skipping conditions.
@@ -133,11 +134,13 @@ access to the Meta model on Hugging Face:
 
 ```bash
 # Select/save pairs and exact prompts, hash vectors, report cost. No model weights.
-python code/experiments/position_detection.py --prepare-only
+python code/experiments/position_detection.py \
+  --config configs/position_detection/alpha_1_20.yaml --prepare-only
 
 # Continue using that manifest and load the model. Re-running this exact command
 # after an interruption finds the manifest and skips completed artifacts.
-python code/experiments/position_detection.py
+python code/experiments/position_detection.py \
+  --config configs/position_detection/alpha_1_20.yaml
 
 # Analyze completed conditions, even while the experiment is still running.
 python code/analysis/compute_position_detection_accuracy.py \
@@ -150,12 +153,17 @@ vocabulary logits are computed; all prompt hidden states are still processed.
 This count assumes no batching or reuse of prefixes in restoration runs.
 
 `jobs/position_detection.sbatch` follows the existing cluster job conventions and
-automatically resumes when the manifest exists. Its four-hour limit is a job
+automatically resumes when the manifest exists. Its 24-hour limit is a job
 allocation, not a prediction that the full sweep will finish. Supply GPU resource
 flags required by the cluster when submitting. Resubmit after a time limit to resume.
 
-Options include `--output-dir`, `--seed`, `--num-pairs`, `--concepts`, `--layers`,
-`--alphas`, `--vec-type`, `--vector-dir`, `--device`, `--dtype`, and `--revision`.
+The versioned run configuration is
+`configs/position_detection/alpha_1_20.yaml`; relative paths are resolved from
+the repository root and the resolved file plus its SHA-256 are stored in the
+manifest. CLI options can override its values for a deliberate pilot or a new
+output directory. Options include `--output-dir`, `--seed`, `--num-pairs`,
+`--concepts`, `--layers`, `--alphas`, `--vec-type`, `--vector-dir`, `--device`,
+`--dtype`, and `--revision`.
 Use `--corpus path.json` for a future independent corpus supplied as a JSON list
 of single-line strings. The exact-length filter is re-evaluated with that corpus.
 An explicit `--tokenizer-model` override is available for preparatory inspection;
@@ -235,21 +243,24 @@ not accompanied by post-selection significance claims. The representative
 alpha controls only the main propagation figure; every configured alpha remains
 visible in the appendix.
 
-## Validation
+## Pre-registration and validation
+
+The scope and fixed decisions for this PR are recorded in
+[`docs/pre-enregistrement-2afc.md`](pre-enregistrement-2afc.md), alongside the
+broader experimental cadrage. This is the alpha-only localization stage; it is
+not a claim that the later standardized-`z`, random-direction, noise, or full
+32-layer experiments have already been implemented or pre-registered.
 
 ```bash
-pytest tests/test_position_detection.py -q
-pytest tests/test_position_detection_plots.py -q
+pytest tests/position_detection -q
+pytest tests/calibration -q
 ```
 
-Tests use a small randomly initialized Llama on CPU, with no pretrained model
-downloads. They verify token targeting, matched metrics, reproducible pairs,
-counterbalancing, direct scoring, causal propagation, independent restoration,
-zero-alpha identity, hook cleanup on failure, saved analysis and workload counts.
-The plotting tests use JSON-only synthetic fixtures and verify metric alignment,
-pair-cluster bootstrapping, validation failures, cache files, tables, and both
-figure formats without creating or loading activation tensors.
-The large pretrained experiment must be run separately on the intended hardware.
+The unit tests verify token-boundary handling, reproducible pair selection,
+counterbalancing, matched metrics, tie scoring and forward-workload accounting;
+calibration helper tests run independently of model weights. A full model-level
+smoke run still requires the intended environment and hardware, and the large
+pretrained experiment must be run separately without downloading weights in CI.
 
 ## Progress and logs
 
@@ -313,8 +324,8 @@ sbatch jobs/position_detection.sbatch
 ```
 
 The batch file requests one A100, eight CPU cores, 64 GB RAM and 24 hours. Its
-standard streams are `runs/slurm-position-detection-JOBID.out` and `.err`; the
-persistent experiment log and progress snapshot are inside
+standard streams are `slurm-position-detection-JOBID.out` and `.err` in the
+submission directory; the persistent experiment log and progress snapshot are inside
 `runs/position_detection_alpha_1_20/`.
 
 After a timeout or interruption, confirm the previous job has stopped and repeat

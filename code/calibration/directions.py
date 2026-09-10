@@ -15,8 +15,10 @@ def unit(vector: torch.Tensor) -> Tuple[torch.Tensor, float]:
     """Return a float32 CPU unit vector and its original L2 norm."""
     vector = vector.detach().to(dtype=torch.float32, device="cpu").reshape(-1)
     norm = float(torch.linalg.vector_norm(vector).item())
-    if not norm > 0.0 or not torch.isfinite(vector).all():
-        raise ValueError("direction must be finite and have non-zero norm")
+    if not torch.isfinite(vector).all():
+        raise ValueError("direction must be finite")
+    if not norm > 0.0:
+        raise ValueError("direction must be a non-zero vector")
     return vector / norm, norm
 
 
