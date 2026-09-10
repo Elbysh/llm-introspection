@@ -1,0 +1,23 @@
+# Versioned configuration for the reproducible alpha-only 2AFC localization run.
+# Relative paths are resolved from the repository root.
+model: meta-llama/Llama-3.1-8B-Instruct
+revision: main
+seed: 42
+
+# The repository vectors are saved from outputs.hidden_states[i]. A decoder
+# block l output is hidden-state index l + 1.
+vector_hidden_state_offset: 1
+vec_type: avg
+concepts: all
+layers: [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30]
+alphas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+num_pairs: 30
+
+paths:
+  vectors: data/saved_vectors/llama
+  output_dir: runs/position_detection_alpha_1_20
+
+device: auto
+dtype: bfloat16
+epsilon: 1.0e-8
+log_interval: 30
