@@ -2,7 +2,7 @@
 """
 Experiment 1: 2AFC localization and psychometric curves at matched alpha and matched z.
 
-Implements section 5 of docs/propositions/cadrage-experiments.md. One prompt, one
+Implements section 5 of docs/livrables/cadrage-experiments.md. One prompt, one
 presentation plan, four perturbation families, two dose parameterizations:
 
   family   perturbation applied to every token of the targeted sentence
@@ -15,9 +15,9 @@ presentation plan, four perturbation families, two dose parameterizations:
   matching  dose rule
   --------  -----------------------------------------------------------------
   alpha     the raw per-token amplitude is the grid value
-  z         alpha = z * s(layer, direction), s from the code/calibration run;
+  z         alpha = z * s(layer, direction), s from the Experiment 0 calibration;
             dropout chooses no direction and uses the layer reference scale
-            s_bar(layer) = median over the random bank of s(layer, v)
+            s_bar(layer) = median over the fixed-random bank of s(layer, v)
 
 Unlike strength_comparison.py, which perturbs both sentences at two strengths, this
 experiment perturbs exactly one sentence and asks which one was targeted, so every
@@ -28,13 +28,23 @@ comparison is about the nature of the perturbation and not about its site. This
 differs from Fornasiere et al., who perturb the attention and MLP sublayers;
 utils/gaussian_dropout_hooks.py still supports that site.
 
-A z score is only meaningful for the exact direction it was estimated on, so concept
-and random directions are read from the calibration direction bank instead of being
-rebuilt here. Run the calibration first:
+A z score is only meaningful for the exact direction it was estimated on, so every
+direction is taken from the Experiment 0 calibration bank together with the scale
+estimated on it, instead of being rebuilt here. Concept directions come from the .pt
+files of data/saved_vectors/llama; fixed-random and renewed-noise directions are
+regenerated from the seeds Experiment 0 recorded. Nothing is redrawn locally.
 
-    PYTHONPATH=code python -m calibration.directions     --config configs/calibration/pilot.yaml
-    PYTHONPATH=code python -m calibration.compute_scales --config configs/calibration/pilot.yaml
-    python code/experiments/experiment1_psychometrics.py --calibration_config configs/calibration/pilot.yaml
+The committed development calibration is used by default:
+
+    python code/experiments/experiment1_psychometrics.py --dry_run
+
+Point --calibration_dir at another Experiment 0 output directory to use a fresh run:
+
+    python -m experiment_0_calibration.prepare_concept_vectors --config <config>
+    python -m experiment_0_calibration.prepare_material_plan   --config <config>
+    python -m experiment_0_calibration.run_experiment_0        --config <config>
+    python code/experiments/experiment1_psychometrics.py \
+        --calibration_config <config> --calibration_dir <its paths.output_dir>
 
 The contamination ratio P(1->2) of doc 5.13 is available behind --contamination_trials.
 Its restoration counterpart E(1->2) needs activation patching and is left to a
@@ -64,8 +74,11 @@ from all_prompts import LOCALIZATION_SENTENCES
 from gaussian_dropout_hooks import make_dropout_hook, make_vector_injection_hook
 from save_random_vectors import derive_seed
 
-from calibration.config import load_config
-from calibration.directions import load_direction_bank
+from experiment_0_calibration.direction_bank import (
+    DEFAULT_CALIBRATION_DIR,
+    ESTIMATOR_FIELDS,
+    DirectionBank,
+)
 
 FAMILIES = ("concept", "random", "noise", "dropout")
 MATCHINGS = ("alpha", "z")
@@ -201,91 +214,11 @@ def build_sentence_pairs(tokenizer, sentences, num_pairs, seed):
 # --------------------------------------------------------------------------------
 # Calibration
 # --------------------------------------------------------------------------------
-
-class Calibration:
-    """Directions and natural scales produced by code/calibration.
-
-    Holding both in one object keeps a direction and the s(layer, direction) it was
-    calibrated on inseparable, which is what makes the z matching meaningful.
-    """
-
-    def __init__(self, config, directions, metadata, records, layer_norms, estimator):
-        self.config = config
-        self.directions = directions
-        self.metadata = {row["direction_id"]: row for row in metadata}
-        self.records = {row["direction_id"]: row for row in records}
-        self.layer_norms = {int(row["layer"]): row for row in layer_norms}
-        self.estimator = estimator
-
-        self._by_kind_layer = defaultdict(list)
-        for direction_id, row in self.metadata.items():
-            self._by_kind_layer[(row["kind"], int(row["layer"]))].append(direction_id)
-        for ids in self._by_kind_layer.values():
-            ids.sort()
-
-    @classmethod
-    def load(cls, config_path, estimator=None):
-        config = load_config(config_path)
-        directions, metadata = load_direction_bank(config.directions_path)
-        statistics_path = config.output_dir / "calibration.json"
-        if not statistics_path.exists():
-            raise FileNotFoundError(
-                f"missing {statistics_path}. Run calibration.compute_scales for this "
-                "config before the z-matched sweep."
-            )
-        with statistics_path.open("r", encoding="utf-8") as handle:
-            records = json.load(handle)
-        layer_norms_path = config.output_dir / "calibration_layer_norms.json"
-        layer_norms = []
-        if layer_norms_path.exists():
-            with layer_norms_path.open("r", encoding="utf-8") as handle:
-                layer_norms = json.load(handle)
-        return cls(config, directions, metadata, records, layer_norms,
-                   estimator or config.estimator)
-
-    def direction_ids(self, kind, layer, concept=None):
-        ids = self._by_kind_layer.get((kind, int(layer)), [])
-        if concept is not None:
-            ids = [i for i in ids if self.metadata[i].get("concept") == concept]
-        return list(ids)
-
-    def vector(self, direction_id):
-        return self.directions[direction_id]
-
-    def scale(self, direction_id):
-        """s(layer, direction) under the selected estimator."""
-        record = self.records.get(direction_id)
-        if record is None:
-            raise KeyError(
-                f"no calibrated scale for {direction_id}. The direction bank and the "
-                "calibration statistics must come from the same config."
-            )
-        value = float(record[self.estimator])
-        if not value > 0.0:
-            raise ValueError(f"non-positive scale for {direction_id}: {value}")
-        return value
-
-    def reference_scale(self, layer):
-        """s_bar(layer): the natural scale of a generic direction (doc 3.6).
-
-        Dropout picks no direction before the injection, so its standardized dose is
-        matched against the median scale of the random bank at that layer.
-        """
-        ids = self.direction_ids("random", layer)
-        if not ids:
-            raise ValueError(f"no random direction calibrated at layer {layer}")
-        return float(np.median([self.scale(direction_id) for direction_id in ids]))
-
-    def token_norm(self, layer):
-        """h_bar(layer): RMS activation norm, to turn an amplitude into a dropout rate."""
-        row = self.layer_norms.get(int(layer))
-        if row is None:
-            raise KeyError(
-                f"no calibrated activation norm at layer {layer}. Re-run "
-                "calibration.compute_scales to produce calibration_layer_norms.json, "
-                "or use --dropout_norm_source trial."
-            )
-        return float(row["rms_norm"])
+#
+# Directions and their natural scales both come from
+# experiment_0_calibration.direction_bank.DirectionBank, which keeps a direction and
+# the s(layer, direction) estimated on it inseparable. That is what makes the z
+# matching meaningful, so nothing in this file rebuilds a direction of its own.
 
 
 # --------------------------------------------------------------------------------
@@ -1112,12 +1045,19 @@ def parse_doses(explicit, bounds, count, default):
 def build_parser():
     parser = argparse.ArgumentParser(
         description="Experiment 1: 2AFC localization at matched alpha and matched z")
-    parser.add_argument("--calibration_config", default="configs/calibration/pilot.yaml",
-                        help="Calibration config; supplies the direction bank, the layers, "
-                             "the concepts and the scales s(layer, direction).")
-    parser.add_argument("--estimator", choices=["sd", "mad"], default=None,
-                        help="Scale used by the z matching. Defaults to the calibration "
-                             "config; mad is the sensitivity analysis of doc 5.10.")
+    parser.add_argument("--calibration_config",
+                        default="configs/experiment_0_calibration/development_full.yaml",
+                        help="Experiment 0 protocol config; supplies the model, the "
+                             "calibrated layers, the concepts and the concept vectors.")
+    parser.add_argument("--calibration_dir", default=None,
+                        help="Experiment 0 output directory holding directional_scales.json "
+                             f"(default: {DEFAULT_CALIBRATION_DIR.relative_to(REPO_ROOT)}).")
+    parser.add_argument("--allow_calibration_mismatch", action="store_true",
+                        help="Warn instead of failing when the calibration artifacts were "
+                             "produced by a different version of the config.")
+    parser.add_argument("--estimator", choices=sorted(ESTIMATOR_FIELDS), default="sd",
+                        help="Scale used by the z matching. sd is the protocol's primary "
+                             "analysis; mad is the sensitivity analysis of doc 5.10.")
     parser.add_argument("--layers", type=int, nargs="+", default=None,
                         help="Subset of the calibrated layers (default: all of them).")
     parser.add_argument("--families", nargs="+", default=list(FAMILIES), choices=list(FAMILIES))
@@ -1143,7 +1083,9 @@ def build_parser():
                         help="Doses per grid when a range is given (doc 5.5).")
     parser.add_argument("--dropout_norm_source", choices=["trial", "calibration"], default="trial",
                         help="Activation norm turning an amplitude into a rate: the targeted "
-                             "tokens of the trial itself, or h_bar(layer) from the calibration.")
+                             "tokens of the trial itself, or h_bar(layer) from the "
+                             "calibration. Experiment 0 does not record h_bar, so only "
+                             "trial is currently available.")
     parser.add_argument("--contamination_trials", type=int, default=0,
                         help="Number of P(1->2) diagnostics to run (doc 5.13); 0 disables them.")
     parser.add_argument("--measure_amplitude", action="store_true", default=True)
@@ -1178,22 +1120,32 @@ def main():
                   f"{row['metric']:>9} {max(row['accuracy']):>9.0%} {threshold:>12}", flush=True)
         return
 
-    calibration = Calibration.load(args.calibration_config, estimator=args.estimator)
-    args.layers = args.layers or list(calibration.config.layers)
-    missing = [layer for layer in args.layers if layer not in calibration.config.layers]
+    calibration = DirectionBank.load(
+        args.calibration_config,
+        calibration_dir=args.calibration_dir,
+        estimator=args.estimator,
+        strict=not args.allow_calibration_mismatch,
+    )
+    calibrated_layers = calibration.layers
+    args.layers = args.layers or list(calibrated_layers)
+    missing = [layer for layer in args.layers if layer not in calibrated_layers]
     if missing:
-        parser.error(f"layers {missing} are not calibrated in {args.calibration_config}")
-    args.concepts = args.concepts or list(calibration.config.concepts)
+        parser.error(f"decoder blocks {missing} are not calibrated in "
+                     f"{calibration.calibration_dir}")
+    args.concepts = args.concepts or list(calibration.concepts)
     args.dose_grid = {
         "alpha": parse_doses(args.alpha_doses, args.alpha_range, args.num_doses,
                              DEFAULT_ALPHA_DOSES),
         "z": parse_doses(args.z_doses, args.z_range, args.num_doses, DEFAULT_Z_DOSES),
     }
     if "dropout" in args.families and args.dropout_norm_source == "calibration":
-        for layer in args.layers:
-            calibration.token_norm(layer)  # fail before the model is loaded
+        try:
+            for layer in args.layers:
+                calibration.token_norm(layer)  # fail before the model is loaded
+        except (NotImplementedError, KeyError, ValueError) as error:
+            parser.error(str(error))
 
-    model_name = args.model or calibration.config.model
+    model_name = args.model or calibration.model_name
     output_dir = Path(args.output_dir)
     if not output_dir.is_absolute():
         output_dir = REPO_ROOT / output_dir
@@ -1204,7 +1156,8 @@ def main():
     print("EXPERIMENT 1: 2AFC LOCALIZATION, ALPHA- AND Z-MATCHED PSYCHOMETRICS", flush=True)
     print("=" * 72, flush=True)
     print(f"Model:       {model_name}", flush=True)
-    print(f"Calibration: {args.calibration_config} (estimator={calibration.estimator})", flush=True)
+    print(f"Calibration: {calibration.calibration_dir} "
+          f"(config={args.calibration_config}, estimator={calibration.estimator})", flush=True)
     print(f"Layers:      {args.layers}", flush=True)
     print(f"Families:    {args.families}", flush=True)
     print(f"Matchings:   {args.matchings}", flush=True)
@@ -1223,6 +1176,15 @@ def main():
     conditions = build_conditions(calibration, args)
     perturbed_passes, sham_passes = count_forward_passes(conditions, args)
     print(f"Forward passes: {perturbed_passes} perturbed + {sham_passes} sham", flush=True)
+    # Rebuild every fixed direction now: a missing concept vector or a seed that no
+    # longer reproduces must fail here, not once the weights are on the GPU.
+    try:
+        checked = calibration.preflight(args.families, args.layers, concepts=args.concepts,
+                                        num_random=args.num_random)
+    except (FileNotFoundError, ValueError) as error:
+        parser.error(str(error))
+    print(f"Directions:  {checked} rebuilt and matched to their calibrated norms",
+          flush=True)
     if args.dry_run:
         print("Dry run: plan only, no model loaded.", flush=True)
         return
@@ -1244,7 +1206,8 @@ def main():
     summary = {
         "model": model_name,
         "calibration_config": str(args.calibration_config),
-        "calibration_output_dir": str(calibration.config.output_dir),
+        "calibration_dir": str(calibration.calibration_dir),
+        "calibration_manifest": calibration.manifest,
         "estimator": calibration.estimator,
         "seed": args.seed,
         "layers": args.layers,

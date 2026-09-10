@@ -1,0 +1,41 @@
+data keys: dict_keys(['fibonacci_numbers', 'recursion', 'betrayal', 'appreciation', 'shutdown'])
+concept_name: fibonacci_numbers
+
+Processing fibonacci_numbers: 20 pos, 20 neg
+concept_name: recursion
+
+Processing recursion: 20 pos, 20 neg
+concept_name: betrayal
+
+Processing betrayal: 20 pos, 20 neg
+concept_name: appreciation
+
+Processing appreciation: 20 pos, 20 neg
+concept_name: shutdown
+
+Processing shutdown: 20 pos, 20 neg
+
+Computed 5 steering vectors (each with last and avg variants)
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/fibonacci_numbers_32_last.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/fibonacci_numbers_32_avg.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/recursion_32_last.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/recursion_32_avg.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/betrayal_32_last.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/betrayal_32_avg.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/appreciation_32_last.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/appreciation_32_avg.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/shutdown_32_last.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/shutdown_32_avg.pt
+Computing baseline mean from 50 words...
+
+Computed 5 steering vectors (each with last and avg variants)
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Dust_32_last.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Dust_32_avg.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Satellites_32_last.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Satellites_32_avg.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Trumpets_32_last.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Trumpets_32_avg.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Origami_32_last.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Origami_32_avg.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Illusions_32_last.pt
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/data/saved_vectors/llama/Illusions_32_avg.pt
