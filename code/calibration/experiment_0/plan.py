@@ -3,6 +3,7 @@
 import hashlib
 import importlib.util
 import json
+import re
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Sequence, Tuple
 
@@ -21,6 +22,14 @@ def write_jsonl(path: Path, rows: Iterable[Dict[str, Any]]) -> None:
 def read_jsonl(path: Path) -> List[Dict[str, Any]]:
     with path.open("r", encoding="utf-8") as handle:
         return [json.loads(line) for line in handle if line.strip()]
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def load_protocol_corpus() -> List[str]:
@@ -78,6 +87,8 @@ def build_context_and_observation_rows(
     context_ids = [row["context_id"] for row in specifications]
     if len(context_ids) != len(set(context_ids)):
         raise ValueError("presentation context IDs must be unique")
+    if any(not re.fullmatch(r"[A-Za-z0-9_.-]+", str(value)) for value in context_ids):
+        raise ValueError("context IDs may contain only letters, numbers, dot, dash and underscore")
     contexts = []
     observations = []
     observation_index = 0
@@ -185,6 +196,22 @@ def build_direction_rows(
             )
             if not source.exists():
                 raise FileNotFoundError("missing concept vector: {}".format(source))
+            payload = torch.load(source, map_location="cpu", weights_only=False)
+            provenance_complete = all(
+                payload.get(field) is not None
+                for field in (
+                    "model_name",
+                    "model_revision",
+                    "concept_name",
+                    "dataset",
+                    "layer",
+                    "vec_type",
+                )
+            )
+            if config.protocol_status == "frozen" and not provenance_complete:
+                raise ValueError(
+                    "frozen calibration requires complete concept provenance: {}".format(source)
+                )
             rows.append(
                 {
                     "direction_id": "concept__block_{:02d}__{}".format(layer, concept.name),
@@ -196,12 +223,17 @@ def build_direction_rows(
                     "concept_split": concept.split,
                     "concept_vector_type": config.vector_type,
                     "source_path": str(source.relative_to(REPO_ROOT)),
+                    "source_sha256": file_sha256(source),
+                    "source_model_name": payload.get("model_name"),
+                    "source_model_revision": payload.get("model_revision"),
+                    "source_dataset": payload.get("dataset"),
+                    "source_provenance_complete": provenance_complete,
                     "seed": None,
                     "target_observation_id": None,
                     "noise_repetition": None,
                 }
             )
-        for index in range(config.random_per_layer):
+        for index in range(config.fixed_random_count_per_layer):
             seed = config.random_seed + layer * 100_000 + index
             rows.append(
                 {

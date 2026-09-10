@@ -1,13 +1,14 @@
 """Prepare the explicit contexts, positions and directions for Experiment 0."""
 
 import argparse
+import hashlib
 import json
 
 import torch
 from transformers import AutoTokenizer
 
 from . import EXPERIMENT_ID
-from .config import load_config
+from .config import load_config, repo_path
 from .plan import (
     build_context_and_observation_rows,
     build_direction_rows,
@@ -20,6 +21,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Prepare the Experiment 0 calibration plan")
     parser.add_argument("--config", required=True)
     args = parser.parse_args()
+    config_path = repo_path(args.config)
     config = load_config(args.config)
 
     tokenizer = AutoTokenizer.from_pretrained(
@@ -32,6 +34,9 @@ def main() -> None:
     sentences = load_protocol_corpus()
     contexts, observations = build_context_and_observation_rows(tokenizer, sentences, config)
     directions = build_direction_rows(observations, config)
+    direction_ids = [row["direction_id"] for row in directions]
+    if len(direction_ids) != len(set(direction_ids)):
+        raise RuntimeError("direction IDs are not unique")
 
     config.plan_dir.mkdir(parents=True, exist_ok=True)
     write_jsonl(config.plan_dir / "contexts.jsonl", contexts)
@@ -41,6 +46,7 @@ def main() -> None:
         "experiment_id": EXPERIMENT_ID,
         "protocol_version": config.protocol_version,
         "protocol_status": config.protocol_status,
+        "config_sha256": hashlib.sha256(config_path.read_bytes()).hexdigest(),
         "model_name": config.model_name,
         "model_revision": config.model_revision,
         "tokenizer_revision": config.tokenizer_revision,
@@ -61,4 +67,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

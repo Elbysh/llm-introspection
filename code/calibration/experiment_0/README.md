@@ -45,7 +45,9 @@ yet. The resulting plan is nevertheless explicit and auditable.
 Before changing `protocol.status` to `frozen`:
 
 1. replace the presentation template with the exact retained experimental
-   context;
+   context, switch `presentation.mode` to `external_manifest`, and provide a
+   JSONL file whose rows contain `context_id`, `rendered_text`, and target
+   `{sentence_id, char_start, char_end}` spans;
 2. set the required number of renewed-noise repetitions per token;
 3. replace model and tokenizer `main` revisions with immutable commit hashes;
 4. record and approve the development/hold-out concept split.
@@ -86,4 +88,3 @@ and `manifest.json`. Results contain:
   projection-distribution heatmaps covering every block and family.
 
 An existing output directory is never overwritten.
-

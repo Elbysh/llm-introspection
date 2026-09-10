@@ -116,6 +116,38 @@ def plot_sd_mad_ratio(frame: pd.DataFrame, path: Path) -> None:
     plt.close(figure)
 
 
+def plot_sd_vs_mad(frame: pd.DataFrame, path: Path) -> None:
+    """Direction-level SD/MAD comparison on a range-preserving log scale."""
+    figure, axis = plt.subplots(figsize=(7, 7))
+    for family, group in frame.groupby("direction_family"):
+        axis.scatter(
+            group["sd"],
+            group["mad_corrected"],
+            s=9,
+            alpha=0.35,
+            color=FAMILY_COLORS[family],
+            label=family,
+        )
+    positive = np.concatenate(
+        [
+            frame.loc[frame["sd"] > 0.0, "sd"].to_numpy(),
+            frame.loc[frame["mad_corrected"] > 0.0, "mad_corrected"].to_numpy(),
+        ]
+    )
+    low, high = float(positive.min()), float(positive.max())
+    axis.plot([low, high], [low, high], "k--", linewidth=1, label="SD = MAD")
+    axis.set_xscale("log")
+    axis.set_yscale("log")
+    axis.set_xlabel("s_SD")
+    axis.set_ylabel("s_MAD_corrected")
+    axis.set_title("Experiment 0 — direction-level SD versus corrected MAD")
+    axis.grid(alpha=0.25, which="both")
+    axis.legend()
+    figure.tight_layout()
+    figure.savefig(path, dpi=220)
+    plt.close(figure)
+
+
 def plot_bootstrap_stability(frame: pd.DataFrame, path: Path) -> None:
     """Phrase-bootstrap stability, summarized without hiding direction records."""
     figure, axis = plt.subplots(figsize=(11, 6))
@@ -196,6 +228,7 @@ def create_all_plots(statistics_path: Path, projections_path: Path, output_dir: 
     frame.to_csv(output_dir / "directional_scales.csv", index=False)
     plot_scales(frame, figure_dir / "experiment_0_scales_sd.png", False)
     plot_scales(frame, figure_dir / "experiment_0_scales_sd_log.png", True)
+    plot_sd_vs_mad(frame, figure_dir / "experiment_0_sd_vs_mad.png")
     plot_sd_mad_ratio(frame, figure_dir / "experiment_0_sd_over_mad.png")
     plot_bootstrap_stability(frame, figure_dir / "experiment_0_bootstrap_stability.png")
     plot_family_distributions(
@@ -216,4 +249,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

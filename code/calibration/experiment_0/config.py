@@ -34,7 +34,7 @@ class Experiment0Config:
     concepts: List[ConceptSpec]
     vector_type: str
     hidden_state_offset: int
-    random_per_layer: int
+    fixed_random_count_per_layer: int
     random_seed: int
     noise_repetitions_per_position: int
     noise_seed: int
@@ -75,7 +75,9 @@ class Experiment0Config:
             concepts=[ConceptSpec(**entry) for entry in directions["concepts"]],
             vector_type=str(directions["concept_vector_type"]),
             hidden_state_offset=int(directions["hidden_state_offset"]),
-            random_per_layer=int(directions["fixed_random"]["count_per_layer"]),
+            fixed_random_count_per_layer=int(
+                directions["fixed_random"]["count_per_layer"]
+            ),
             random_seed=int(directions["fixed_random"]["seed"]),
             noise_repetitions_per_position=int(
                 directions["renewed_noise"]["repetitions_per_position"]
@@ -125,7 +127,7 @@ class Experiment0Config:
             raise ValueError("concept_vector_type must be avg or last")
         if self.hidden_state_offset != 1:
             raise ValueError("decoder-block outputs require hidden_state_offset=1")
-        if self.random_per_layer < 1 or self.noise_repetitions_per_position < 1:
+        if self.fixed_random_count_per_layer < 1 or self.noise_repetitions_per_position < 1:
             raise ValueError("direction counts must be positive")
         if self.presentation_mode not in {"template_per_sentence", "external_manifest"}:
             raise ValueError("unsupported presentation.mode")

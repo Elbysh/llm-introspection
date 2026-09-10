@@ -14,7 +14,7 @@ import argparse
 import hashlib
 import json
 import subprocess
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
@@ -22,7 +22,7 @@ import numpy as np
 import torch
 
 from . import EXPERIMENT_ID
-from .config import Experiment0Config, load_config
+from .config import Experiment0Config, load_config, repo_path
 from .plan import materialize_direction, read_jsonl
 from .statistics import build_bootstrap_plan, summarize_projection_matrix
 
@@ -59,6 +59,53 @@ def current_commit() -> str:
         ).strip()
     except (OSError, subprocess.CalledProcessError):
         return "unknown"
+
+
+def validate_prepared_plan(
+    config: Experiment0Config,
+    config_path: Path,
+    plan_manifest: Dict[str, Any],
+    contexts: List[Dict[str, Any]],
+    observations: List[Dict[str, Any]],
+    directions: List[Dict[str, Any]],
+) -> None:
+    """Fail before model loading if plan and configuration are inconsistent."""
+    if plan_manifest.get("experiment_id") != EXPERIMENT_ID:
+        raise ValueError("prepared plan belongs to another experiment")
+    if plan_manifest.get("config_sha256") != sha256(config_path):
+        raise ValueError("prepared plan was built from a different configuration")
+    if [row["observation_index"] for row in observations] != list(range(len(observations))):
+        raise ValueError("observation indices must be contiguous and ordered")
+    context_ids = {row["context_id"] for row in contexts}
+    if any(row["context_id"] not in context_ids for row in observations):
+        raise ValueError("an observation references an unknown context")
+    observation_ids = {row["observation_id"] for row in observations}
+    direction_ids = [row["direction_id"] for row in directions]
+    if len(direction_ids) != len(set(direction_ids)):
+        raise ValueError("direction IDs must be unique")
+    for layer in config.layers:
+        counts = Counter(
+            row["direction_family"]
+            for row in directions
+            if int(row["decoder_block_index"]) == layer
+        )
+        expected = {
+            "concept": len(config.concepts),
+            "fixed_random": config.fixed_random_count_per_layer,
+            "renewed_noise": len(observations) * config.noise_repetitions_per_position,
+        }
+        if dict(counts) != expected:
+            raise ValueError(
+                "direction counts at block {} are {}, expected {}".format(
+                    layer, dict(counts), expected
+                )
+            )
+    if any(
+        row["direction_family"] == "renewed_noise"
+        and row["target_observation_id"] not in observation_ids
+        for row in directions
+    ):
+        raise ValueError("a renewed-noise direction references an unknown observation")
 
 
 @torch.inference_mode()
@@ -106,7 +153,10 @@ def collect_activations(
                 if actual != context["input_ids"]:
                     raise RuntimeError("tokenization drift for {}".format(context["context_id"]))
             captured.clear()
-            model(**{key: value.to(input_device) for key, value in encoded.items()}, use_cache=False)
+            model(
+                **{key: value.to(input_device) for key, value in encoded.items()},
+                use_cache=False
+            )
             for layer in layers:
                 selected = []
                 for batch_index, context in enumerate(batch_contexts):
@@ -174,6 +224,7 @@ def calibrate_layer(
                 "n_sentences": len({row["sentence_id"] for row in observations}),
                 "n_positions": len(observations),
                 "original_direction_norm": original_norm,
+                "valid_for_sd_normalization": bool(statistics["sd"][column] > 0.0),
             }
         )
         for name, values in statistics.items():
@@ -192,7 +243,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run Experiment 0 calibration")
     parser.add_argument("--config", required=True)
     args = parser.parse_args()
-    config_path = Path(args.config).resolve()
+    config_path = repo_path(args.config)
     config = load_config(args.config)
     if config.output_dir.exists():
         raise FileExistsError(
@@ -206,6 +257,16 @@ def main() -> None:
     contexts = read_jsonl(contexts_path)
     observations = read_jsonl(observations_path)
     directions = read_jsonl(directions_path)
+    with plan_manifest_path.open("r", encoding="utf-8") as handle:
+        plan_manifest = json.load(handle)
+    validate_prepared_plan(
+        config,
+        config_path,
+        plan_manifest,
+        contexts,
+        observations,
+        directions,
+    )
     directions_by_layer = defaultdict(list)
     for direction in directions:
         directions_by_layer[int(direction["decoder_block_index"])].append(direction)
@@ -263,7 +324,9 @@ def main() -> None:
         "directions_sha256": sha256(directions_path),
         "model_name": config.model_name,
         "model_revision": config.model_revision,
+        "resolved_model_revision": getattr(model.config, "_commit_hash", None),
         "tokenizer_revision": config.tokenizer_revision,
+        "resolved_tokenizer_revision": tokenizer.init_kwargs.get("_commit_hash"),
         "torch_version": torch.__version__,
         "model_dtype": "bfloat16",
         "projection_dtype": "float32",
