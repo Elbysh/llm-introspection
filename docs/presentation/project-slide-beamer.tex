@@ -1,0 +1,163 @@
+% One-slide project overview in Beamer.
+% Compile with: xelatex project-slide-beamer.tex
+% Source: ../livrables/cadrage-experiments.md, sections 5 and 11--13.
+
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage{fontspec}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc}
+
+\setsansfont{Avenir Next}
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=0pt,text margin right=0pt}
+
+\definecolor{paper}{HTML}{F7F5EF}
+\definecolor{ink}{HTML}{192D38}
+\definecolor{muted}{HTML}{586A70}
+\definecolor{teal}{HTML}{007E80}
+\definecolor{orange}{HTML}{B24E2A}
+\definecolor{rule}{HTML}{C8D0CC}
+\definecolor{targetfill}{HTML}{D6ECE6}
+\definecolor{diagramfill}{HTML}{F0F5F1}
+\definecolor{inputfill}{HTML}{E5EEEA}
+\definecolor{diagramstroke}{HTML}{95AAA5}
+
+\setbeamercolor{background canvas}{bg=paper}
+\setbeamercolor{normal text}{fg=ink}
+
+% Coordinates use a 16 x 9 cm canvas. One centimetre corresponds to 70 pt
+% in the original 1120 x 630 pt Typst slide.
+\newcommand{\nw}[3]{%
+  \node[anchor=north west,inner sep=0pt] at
+    ([xshift=#1cm,yshift=-#2cm]current page.north west) {#3};%
+}
+\newcommand{\nwbox}[4]{%
+  \node[anchor=north west,inner sep=0pt,text width=#3cm,align=left] at
+    ([xshift=#1cm,yshift=-#2cm]current page.north west) {#4};%
+}
+\newcommand{\labeltext}[2]{%
+  {\fontsize{5.3pt}{6.1pt}\selectfont\bfseries\addfontfeatures{LetterSpace=6}\color{#1}#2}%
+}
+
+\begin{document}
+
+\begin{frame}[plain]
+\begin{tikzpicture}[remember picture,overlay]
+
+  % Header
+  \nw{0.629}{0.414}{\labeltext{muted}{LLM INTROSPECTION / EXPERIMENTAL PROTOCOL}}
+  \nw{0.629}{0.771}{{\fontsize{16.7pt}{18.2pt}\selectfont\bfseries\color{ink}%
+    Can a model detect what we change inside it?}}
+  \nw{0.629}{1.614}{{\fontsize{8.1pt}{9.6pt}\selectfont\color{muted}%
+    We perturb internal activations, then ask the model what happened.}}
+
+  \draw[rule,line width=0.4pt]
+    ([xshift=0.629cm,yshift=-2.257cm]current page.north west) --
+    ([xshift=15.371cm,yshift=-2.257cm]current page.north west);
+  \draw[rule,line width=0.4pt]
+    ([xshift=7.900cm,yshift=-2.586cm]current page.north west) --
+    ([xshift=7.900cm,yshift=-7.971cm]current page.north west);
+
+  % Experiment 1
+  \nw{0.629}{2.586}{\labeltext{teal}{EXPERIMENT 1}}
+  \nw{0.629}{2.914}{{\fontsize{11.8pt}{13.2pt}\selectfont\bfseries\color{ink}%
+    Where was the perturbation?}}
+
+  \fill[targetfill]
+    ([xshift=0.629cm,yshift=-3.714cm]current page.north west)
+    rectangle ++(6.714cm,-0.614cm);
+  \node[anchor=west,inner sep=0pt] at
+    ([xshift=0.814cm,yshift=-4.021cm]current page.north west)
+    {{\fontsize{7.7pt}{9.0pt}\selectfont\color{ink}%
+      {\bfseries\color{teal}A}\hspace{0.157cm}The cat sat on the mat.}};
+  \node[anchor=east,inner sep=0pt] at
+    ([xshift=7.157cm,yshift=-4.021cm]current page.north west)
+    {\labeltext{teal}{MODIFIED}};
+  \draw[teal,line width=0.5pt,-{Stealth[length=1.2mm,width=0.9mm]}]
+    ([xshift=5.820cm,yshift=-4.021cm]current page.north west) --
+    ([xshift=5.550cm,yshift=-4.021cm]current page.north west);
+
+  \node[anchor=west,inner sep=0pt] at
+    ([xshift=0.814cm,yshift=-4.750cm]current page.north west)
+    {{\fontsize{7.7pt}{9.0pt}\selectfont\color{ink}%
+      {\bfseries B}\hspace{0.157cm}The door was painted blue.}};
+
+  \nw{0.814}{5.214}{{\fontsize{6.1pt}{7.3pt}\selectfont\color{teal}%
+    Intervention on A's activations in this example}}
+
+  \nwbox{0.629}{5.671}{6.714}{{\fontsize{8.9pt}{10.2pt}\selectfont\bfseries\color{ink}%
+      ``Which sentence was targeted?''}\\[-0.01cm]
+    {\fontsize{7.3pt}{8.7pt}\selectfont\mdseries\color{muted}Forced choice: A or B}}
+
+  \nw{0.629}{6.614}{\labeltext{teal}{HYPOTHESES H1}}
+  \nwbox{0.629}{7.014}{6.714}{{\fontsize{7.7pt}{10.0pt}\selectfont\color{ink}%
+    The choice follows the injection site. Detection differs across perturbation types.
+    Normalizing dose changes these differences.}}
+
+  % Multi-injection experiments
+  \nw{8.429}{2.586}{\labeltext{orange}{MULTI-INJECTION / EXPERIMENTS 7--9}}
+  \nw{8.429}{2.914}{{\fontsize{11.8pt}{13.2pt}\selectfont\bfseries\color{ink}%
+    How much can it report?}}
+
+  \draw[fill=diagramfill,draw=diagramstroke,line width=0.6pt,rounded corners=0.10cm]
+    ([xshift=8.429cm,yshift=-3.586cm]current page.north west)
+    rectangle ++(6.943cm,-1.543cm);
+  \nw{8.629}{3.657}{\labeltext{muted}{TRANSFORMER}}
+  \nw{11.000}{3.700}{{\fontsize{6.5pt}{7.7pt}\selectfont\bfseries\color{teal}+ concept 1}}
+  \nw{13.286}{3.700}{{\fontsize{6.5pt}{7.7pt}\selectfont\bfseries\color{orange}+ concept 2}}
+
+  \draw[teal,line width=0.55pt,-{Stealth[length=1.5mm,width=1.1mm]}]
+    ([xshift=12.014cm,yshift=-4.010cm]current page.north west) --
+    ([xshift=12.014cm,yshift=-4.371cm]current page.north west);
+  \draw[orange,line width=0.55pt,-{Stealth[length=1.5mm,width=1.1mm]}]
+    ([xshift=14.243cm,yshift=-4.010cm]current page.north west) --
+    ([xshift=14.243cm,yshift=-4.371cm]current page.north west);
+
+  \draw[fill=inputfill,draw=muted,line width=0.6pt]
+    ([xshift=8.629cm,yshift=-4.414cm]current page.north west)
+    rectangle ++(1.714cm,-0.543cm);
+  \node[anchor=center,inner sep=0pt] at
+    ([xshift=9.486cm,yshift=-4.686cm]current page.north west)
+    {{\fontsize{6.1pt}{7.2pt}\selectfont\bfseries\color{ink}input}};
+
+  \draw[draw=teal,line width=0.6pt]
+    ([xshift=10.857cm,yshift=-4.414cm]current page.north west)
+    rectangle ++(1.714cm,-0.543cm);
+  \node[anchor=center,inner sep=0pt] at
+    ([xshift=11.714cm,yshift=-4.686cm]current page.north west)
+    {{\fontsize{6.5pt}{7.7pt}\selectfont\color{ink}earlier layer}};
+
+  \draw[draw=orange,line width=0.6pt]
+    ([xshift=13.086cm,yshift=-4.414cm]current page.north west)
+    rectangle ++(1.714cm,-0.543cm);
+  \node[anchor=center,inner sep=0pt] at
+    ([xshift=13.943cm,yshift=-4.686cm]current page.north west)
+    {{\fontsize{6.5pt}{7.7pt}\selectfont\color{ink}later layer}};
+
+  \draw[muted,line width=0.55pt,-{Stealth[length=1.5mm,width=1.1mm]}]
+    ([xshift=10.600cm,yshift=-4.686cm]current page.north west) --
+    ([xshift=10.814cm,yshift=-4.686cm]current page.north west);
+  \draw[muted,line width=0.55pt,-{Stealth[length=1.5mm,width=1.1mm]}]
+    ([xshift=12.829cm,yshift=-4.686cm]current page.north west) --
+    ([xshift=13.043cm,yshift=-4.686cm]current page.north west);
+
+  \nwbox{8.429}{5.471}{6.943}{%
+    {\fontsize{7.7pt}{9.0pt}\selectfont\bfseries\color{ink}``How many?''}%
+    {\fontsize{6.9pt}{9.0pt}\selectfont\mdseries\color{muted}\hspace{0.08cm}0, 1, 2, 3 or 4}\\[-0.01cm]
+    {\fontsize{6.9pt}{8.3pt}\selectfont\color{ink}{\bfseries\color{orange}H7}\hspace{0.08cm}%
+      Counting reflects more than total intensity.}\\[0.18cm]
+    {\fontsize{7.7pt}{9.0pt}\selectfont\bfseries\color{ink}``Which concepts?''}%
+    {\fontsize{6.9pt}{9.0pt}\selectfont\mdseries\color{muted}\hspace{0.08cm}Select two labels}\\[-0.01cm]
+    {\fontsize{6.9pt}{8.3pt}\selectfont\color{ink}{\bfseries\color{orange}H8}\hspace{0.08cm}%
+      The model identifies both injected concepts.}\\[0.18cm]
+    {\fontsize{7.7pt}{9.0pt}\selectfont\bfseries\color{ink}``Which was earlier?''}%
+    {\fontsize{6.9pt}{9.0pt}\selectfont\mdseries\color{muted}\hspace{0.08cm}Choose A or B}\\[-0.01cm]
+    {\fontsize{6.9pt}{8.3pt}\selectfont\color{ink}{\bfseries\color{orange}H9}\hspace{0.08cm}%
+      The model identifies the earlier injection.}%
+  }
+
+\end{tikzpicture}
+\end{frame}
+
+\end{document}
