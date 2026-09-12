@@ -92,16 +92,27 @@ def paired_contrasts(rows, extra_key=()):
 
 
 def describe(values):
-    """Mean S, its t against zero, and the share of pairs above zero."""
+    """Mean S, its t against zero, and how the pairs sit around zero.
+
+    Logits are read in bfloat16, so a contrast is quantized to steps of about 0.125
+    and a pair whose two halves land on the same step gives S exactly 0. Where the
+    perturbation does little, most pairs are such ties, and `share_positive` then
+    reads far below 0.5 while saying nothing about direction. `share_zero` exposes
+    that, and `share_positive_of_moved` is the sign test restricted to the pairs
+    that actually moved, which is the readable one in that regime.
+    """
     array = np.asarray(values, dtype=float)
     n = len(array)
     mean = float(array.mean())
     sem = float(array.std(ddof=1) / math.sqrt(n)) if n > 1 else float("nan")
+    moved = array[array != 0.0]
     return {
         "n": n,
         "mean": mean,
         "t": mean / sem if sem and sem == sem and sem > 0 else float("nan"),
         "share_positive": float((array > 0).mean()),
+        "share_zero": float((array == 0.0).mean()),
+        "share_positive_of_moved": float((moved > 0).mean()) if len(moved) else float("nan"),
     }
 
 
@@ -143,6 +154,9 @@ def main():
                         help="restrict to these decoder blocks")
     parser.add_argument("--permutation_draws", type=int, default=200)
     parser.add_argument("--seed", type=int, default=20260912)
+    parser.add_argument("--by_dose", action="store_true",
+                        help="print S against dose, the psychometric curve on the "
+                             "paired estimator, beside accuracy_adjusted")
     parser.add_argument("--json_out", default=None,
                         help="also write the tables to this path as JSON")
     args = parser.parse_args()
@@ -195,11 +209,12 @@ def main():
         stat = describe(pooled[(layer, family)])
         rows.append([f"{layer:>5}", f"{family:>9}", f"{stat['n']:>7}",
                      f"{stat['mean']:>+9.4f}", f"{stat['t']:>8.1f}",
-                     f"{stat['share_positive']:>8.3f}"])
+                     f"{stat['share_zero']:>8.3f}",
+                     f"{stat['share_positive_of_moved']:>9.3f}"])
     print_table("Paired localization contrast S, by block and family "
                 "(pooled over doses and matchings):",
                 [f"{'block':>5}", f"{'family':>9}", f"{'pairs':>7}",
-                 f"{'mean S':>9}", f"{'t':>8}", f"{'share>0':>8}"], rows)
+                 f"{'mean S':>9}", f"{'t':>8}", f"{'S==0':>8}", f"{"+|moved":>9}"], rows)
     report["by_layer_family"] = {f"{layer}|{family}": describe(values)
                                  for (layer, family), values in pooled.items()}
 
@@ -212,12 +227,13 @@ def main():
             by_family[family].extend(values)
         rows = [[f"{family:>9}", f"{describe(v)['n']:>7}",
                  f"{describe(v)['mean']:>+9.4f}", f"{describe(v)['t']:>8.1f}",
-                 f"{describe(v)['share_positive']:>8.3f}"]
+                 f"{describe(v)['share_zero']:>8.3f}",
+                 f"{describe(v)['share_positive_of_moved']:>9.3f}"]
                 for family, v in sorted(by_family.items(),
                                         key=lambda kv: -describe(kv[1])["mean"])]
         print_table(f"Family ordering at matched {matching} (all blocks pooled):",
                     [f"{'family':>9}", f"{'pairs':>7}", f"{'mean S':>9}",
-                     f"{'t':>8}", f"{'share>0':>8}"], rows)
+                     f"{'t':>8}", f"{'S==0':>8}", f"{"+|moved":>9}"], rows)
         report[f"by_family_{matching}"] = {f: describe(v) for f, v in by_family.items()}
 
     # Doc 5.3's label-order control: a cosmetic relabelling must not change the effect.
@@ -226,12 +242,48 @@ def main():
     for key, values in grouped.items():
         by_order[key[3]].extend(values)
     rows = [[f"{order:>11}", f"{describe(v)['n']:>7}", f"{describe(v)['mean']:>+9.4f}",
-             f"{describe(v)['share_positive']:>8.3f}"]
+             f"{describe(v)['share_zero']:>8.3f}",
+             f"{describe(v)['share_positive_of_moved']:>9.3f}"]
             for order, v in sorted(by_order.items())]
     print_table("By label order (AB prints the first sentence as \"A\"):",
                 [f"{'label_order':>11}", f"{'pairs':>7}", f"{'mean S':>9}",
-                 f"{'share>0':>8}"], rows)
+                 f"{'S==0':>8}", f"{"+|moved":>9}"], rows)
     report["by_label_order"] = {o: describe(v) for o, v in by_order.items()}
+
+    # The psychometric curve itself, on the estimator that survives section 1. Reading
+    # accuracy_adjusted instead can show a clean rise that S says is not localization:
+    # a perturbation that merely pulls the gap away from the default answer scores as
+    # a hit on every trial targeting the other letter.
+    if args.by_dose:
+        grouped = paired_contrasts(perturbed, extra_key=("dose",))
+        adjusted = {(row["layer"], row["family"], row["matching"], row["dose"]):
+                    row for row in []}
+        summaries = {}
+        for run_dir in run_dirs:
+            summary_path = run_dir / "summary.json"
+            if summary_path.exists():
+                with summary_path.open(encoding="utf-8") as handle:
+                    for row in json.load(handle).get("per_dose", []):
+                        summaries[(row["layer"], row["family"],
+                                   row["matching"], row["dose"])] = row
+        report["by_dose"] = {}
+        for layer, family, matching in sorted({k[:3] for k in grouped}):
+            rows = []
+            for key in sorted((k for k in grouped if k[:3] == (layer, family, matching)),
+                              key=lambda k: k[3]):
+                stat = describe(grouped[key])
+                cell = summaries.get((layer, family, matching, key[3]))
+                rows.append([
+                    f"{key[3]:>9g}", f"{stat['n']:>7}", f"{stat['mean']:>+9.4f}",
+                    f"{stat['t']:>7.1f}", f"{stat['share_zero']:>7.3f}",
+                    f"{stat['share_positive_of_moved']:>8.3f}",
+                    f"{cell['accuracy_adjusted']:>9.3f}" if cell else f"{'':>9}",
+                ])
+                report["by_dose"][f"{layer}|{family}|{matching}|{key[3]:g}"] = stat
+            print_table(f"S vs dose - block {layer}, {family}, matched {matching}:",
+                        [f"{'dose':>9}", f"{'pairs':>7}", f"{'mean S':>9}",
+                         f"{'t':>7}", f"{'S==0':>7}", f"{'+|moved':>8}",
+                         f"{'acc_adj':>9}"], rows)
 
     null = permutation_null(perturbed, args.permutation_draws, args.seed)
     if null:
