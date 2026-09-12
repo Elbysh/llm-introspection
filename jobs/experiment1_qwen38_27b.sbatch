@@ -70,7 +70,24 @@ LAYERS=${LAYERS:-"3 6 16 32 56"}
 # max 27.9) still has headroom to saturate. Re-check it against that table if the
 # calibration is ever rerun.
 ALPHA_DOSES=${ALPHA_DOSES:-"0.0625 0.125 0.25 0.5 1 2 4 8 16 32 64"}
-# z is dimensionless, so the Llama grid carries over unchanged.
+# z is dimensionless, so the Llama grid carries over unchanged -- but it does not
+# reach far enough on this model to compare families. z = alpha / s(l, v), and Qwen's
+# concept directions have ~16x the scale of its generic ones, so the same nominal z
+# hands concept 16x more raw amplitude. Measured against each family's own threshold
+# on the alpha grid, this ladder overshoots concept by 6-14x at the live blocks and
+# undershoots every control by 5-20x: no control is tested near its transition, and
+# their flat curves are that fact rather than a property of the direction. See
+# docs/livrables/experiment1-qwen38-27b-findings.md section 3.
+#
+# Putting every control a factor of two past its threshold needs z ~ 347 (dropout at
+# block 6). EXTENDED_Z is that ladder, overlapping the one below from 0.64 to 20.48 so
+# the two runs' curves join. Use it for any run whose z-matched family comparison is
+# meant to carry a claim:
+#
+#   Z_DOSES="${EXTENDED_Z}" MATCHINGS=z sbatch jobs/experiment1_qwen38_27b.sbatch
+#
+# The default is kept as the grid the published sweep used, so reruns reproduce it.
+EXTENDED_Z="0.64 1.28 2.56 5.12 10.24 20.48 40.96 81.92 163.84 327.68 655.36"
 Z_DOSES=${Z_DOSES:-"0.01 0.02 0.04 0.08 0.16 0.32 0.64 1.28 2.56 5.12 10.24 20.48"}
 
 python code/experiments/experiment1_psychometrics.py \
@@ -78,8 +95,8 @@ python code/experiments/experiment1_psychometrics.py \
   --calibration_dir "${CALIBRATION_DIR}" \
   --run_name "${RUN_NAME}" \
   --layers ${LAYERS} \
-  --families concept random noise dropout \
-  --matchings alpha z \
+  --families ${FAMILIES:-concept random noise dropout} \
+  --matchings ${MATCHINGS:-alpha z} \
   --concepts Dust Satellites recursion shutdown \
   --num_pairs 5 \
   --num_random 3 \
