@@ -40,7 +40,7 @@ def main() -> None:
 
     utils_dir = REPO_ROOT / "code" / "utils"
     sys.path.insert(0, str(utils_dir))
-    from compute_concept_vector_utils import compute_concept_vector
+    from compute_concept_vector_utils import compute_concept_vectors_all_layers
 
     model = AutoModelForCausalLM.from_pretrained(
         config.model_name,
@@ -53,14 +53,17 @@ def main() -> None:
     )
     datasets = sorted({concept.dataset for concept in config.concepts})
     config.vector_dir.mkdir(parents=True, exist_ok=True)
-    for hidden_state_index in missing_indices:
-        for dataset in datasets:
-            vectors = compute_concept_vector(
-                model, tokenizer, dataset, hidden_state_index
-            )
-            allowed = {
-                concept.name for concept in config.concepts if concept.dataset == dataset
-            }
+    # Every missing index comes out of one sweep per dataset. A 64-block model needs
+    # 65 hidden-state indices, and running each dataset's prompts once per index
+    # instead would repeat the same forward passes 65 times for identical numbers.
+    for dataset in datasets:
+        vectors_by_index = compute_concept_vectors_all_layers(
+            model, tokenizer, dataset, missing_indices
+        )
+        allowed = {
+            concept.name for concept in config.concepts if concept.dataset == dataset
+        }
+        for hidden_state_index, vectors in vectors_by_index.items():
             for concept_name, (last_vector, average_vector) in vectors.items():
                 if concept_name not in allowed:
                     continue

@@ -93,6 +93,12 @@ DEFAULT_Z_DOSES = (0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0)
 # Prompt
 # --------------------------------------------------------------------------------
 
+# The assistant turn the model is asked to continue. build_localization_prompt cuts
+# the rendered chat template back to the end of this string, so it must appear in the
+# assistant message verbatim.
+ASSISTANT_PREFIX = "The answer is"
+
+
 def get_localization_messages(first_sentence, second_sentence, label_order):
     """The 2AFC prompt of doc 5.3.
 
@@ -116,7 +122,7 @@ def get_localization_messages(first_sentence, second_sentence, label_order):
                 "Answer with exactly one letter: A or B."
             ),
         },
-        {"role": "assistant", "content": "The answer is"},
+        {"role": "assistant", "content": ASSISTANT_PREFIX},
     ]
 
 
@@ -126,13 +132,25 @@ def build_localization_prompt(tokenizer, first_sentence, second_sentence, label_
     Ranges and labels are in physical order: index 0 is the first printed sentence.
     """
     messages = get_localization_messages(first_sentence, second_sentence, label_order)
-    prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
+    # A reasoning model would otherwise open a chain of thought before the letter and
+    # push the answer token out of the next position. Chat templates that know nothing
+    # of the flag ignore it, so the Llama prompt is unchanged.
+    prompt = tokenizer.apply_chat_template(
+        messages, tokenize=False, add_generation_prompt=False, enable_thinking=False
+    )
 
-    if prompt.endswith("<|eot_id|>"):
-        prompt = prompt[: -len("<|eot_id|>")]
-    # No trailing space: the answer continues "The answer is" with a space-prefixed
-    # token, and answer_token_ids picks that variant.
-    prompt = prompt.rstrip(" ")
+    # The template closes the assistant turn it was handed. Cut the prompt back to the
+    # end of the assistant prefix so the next token really is the forced choice. Doing
+    # it by the prefix rather than by an end-of-turn literal keeps this model-agnostic:
+    # Llama's "<|eot_id|>" and Qwen's "<|im_end|>\n" are both removed by the same rule.
+    # No trailing space either: the answer continues "The answer is" with a
+    # space-prefixed token, and answer_token_ids picks that variant.
+    cut = prompt.rfind(ASSISTANT_PREFIX)
+    if cut == -1:
+        raise ValueError(
+            f"assistant prefix {ASSISTANT_PREFIX!r} is absent from the rendered prompt"
+        )
+    prompt = prompt[: cut + len(ASSISTANT_PREFIX)].rstrip(" ")
 
     encoding_with_offsets = tokenizer(
         prompt, return_tensors="pt", add_special_tokens=False, return_offsets_mapping=True
