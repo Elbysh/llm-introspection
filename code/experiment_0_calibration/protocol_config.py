@@ -29,6 +29,7 @@ class Experiment0Config:
     model_name: str
     model_revision: str
     tokenizer_revision: str
+    num_decoder_blocks: Optional[int]
     layers: List[int]
     activation_site: str
     concepts: List[ConceptSpec]
@@ -71,6 +72,13 @@ class Experiment0Config:
             model_name=str(model["name"]),
             model_revision=str(model["revision"]),
             tokenizer_revision=str(model["tokenizer_revision"]),
+            # Optional, and checked against `layers` so that a config written for one
+            # model cannot silently calibrate a different block count on another.
+            num_decoder_blocks=(
+                int(model["num_decoder_blocks"])
+                if model.get("num_decoder_blocks") is not None
+                else None
+            ),
             layers=[int(layer) for layer in raw["layers"]],
             activation_site=str(raw["activation_site"]),
             concepts=[ConceptSpec(**entry) for entry in directions["concepts"]],
@@ -118,8 +126,17 @@ class Experiment0Config:
     def validate(self) -> None:
         if self.protocol_status not in {"development", "frozen"}:
             raise ValueError("protocol.status must be development or frozen")
-        if self.layers != list(range(32)):
-            raise ValueError("Experiment 0 must calibrate decoder blocks 0 through 31")
+        if not self.layers or self.layers != list(range(len(self.layers))):
+            raise ValueError(
+                "Experiment 0 must calibrate every decoder block, listed as the "
+                "contiguous range 0 through N-1"
+            )
+        if self.num_decoder_blocks is not None and len(self.layers) != self.num_decoder_blocks:
+            raise ValueError(
+                "model.num_decoder_blocks is {} but {} layers are listed".format(
+                    self.num_decoder_blocks, len(self.layers)
+                )
+            )
         if self.activation_site != "decoder_block_output":
             raise ValueError("Experiment 0 requires activation_site=decoder_block_output")
         if len({concept.name for concept in self.concepts}) != len(self.concepts):
