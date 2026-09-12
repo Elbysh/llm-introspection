@@ -8,7 +8,11 @@ protocol is validated on `meta-llama/Llama-3.1-8B-Instruct`. This is that run. I
 read against `experiment1-full32-findings.md`, the Llama sweep, throughout.
 
 Provenance: blocks 3, 6, 16 from job 8162 and blocks 32, 56 from job 8163, pooled by
-`code/analysis/merge_experiment1_runs.py`. Calibration is
+`code/analysis/merge_experiment1_runs.py`. Two follow-up sweeps extend it, and their
+results are folded into sections 1.1 and 3 below: job 8164 (`qwen38-mid`) adds blocks
+8, 10, 12, and job 8165 (`qwen38-zext`) reruns blocks 3, 6, 16 on a z ladder reaching
+655.36 instead of 20.48. Section 3 is written on that extended run; the original z
+grid could not support the comparison it appeared to. Calibration is
 `configs/experiment_0_calibration/qwen38_27b_full.yaml` →
 `results/experiment_0_calibration_qwen38_27b`, whose manifest reports
 `protocol_status: development`; these numbers are not on the frozen protocol. Unlike
@@ -88,10 +92,32 @@ perturbation no longer reaches the answer token.
 ### 1.1 The live band is far shallower than Llama's, in relative depth
 
 Llama's effect was confined to blocks 0–13 of 32 — the first 44% of the stack. Qwen's
-is essentially gone by block 16 of 64, the first 25%, and concept S has already fallen
-by 39% between blocks 3 and 6. Relative depth is *not* the invariant across the two
-models. Anyone rescaling a Llama layer choice to a deeper model by proportion — which
-is what this job's first draft did — will sample mostly dead stack.
+is essentially gone by block 16 of 64, the first 25%. Relative depth is *not* the
+invariant across the two models. Anyone rescaling a Llama layer choice to a deeper
+model by proportion — which is what this job's first draft did — will sample mostly
+dead stack.
+
+Job 8164 added blocks 8, 10 and 12 to resolve the shape of the decay, which the first
+sweep left as a jump from 0.194 at block 6 to 0.033 at block 16 with nothing between.
+Mean S, **α-matched only** so that every block is compared on an identical grid:
+
+| block | concept | random | noise | dropout | concept ÷ random |
+|---|---|---|---|---|---|
+| 3 | +0.3531 | +0.1828 | +0.1278 | +0.1598 | 1.9× |
+| 6 | +0.2124 | +0.0822 | +0.0699 | +0.0582 | 2.6× |
+| 8 | +0.1615 | +0.0693 | +0.0447 | +0.0236 | 2.3× |
+| 10 | +0.1313 | +0.0432 | +0.0581 | +0.0240 | 3.0× |
+| 12 | +0.0555 | +0.0554 | +0.0443 | +0.0138 | **1.0×** |
+| 16 | +0.0400 | +0.0360 | +0.0291 | +0.0071 | 1.1× |
+| 32 | +0.0161 | −0.0217 | −0.0131 | −0.0165 | — |
+| 56 | +0.0003 | +0.0006 | −0.0001 | −0.0001 | — |
+
+The decay is smooth rather than a cliff: concept loses roughly half its effect every
+five blocks. The more interesting column is the last one. **Concept's advantage over a
+fixed random direction is itself confined to the shallowest blocks and is gone by block
+12**, where the two are equal to three decimal places, while both are still measurably
+above zero. Whatever distinguishes a concept direction from an arbitrary one is a
+property of early layers, not of the stack.
 
 ### 1.2 The label-order control, which Llama failed, Qwen passes
 
@@ -140,9 +166,12 @@ detects *any* sufficiently large perturbation, and would be right.
 
 ## 3. H1c — the z result, and why it does not mean what it appears to
 
-This is the methodological finding of the run, and it is a negative one.
+This is the methodological finding of the run, and the first sweep got it wrong in a
+way worth recording, because the wrong version is the flattering one.
 
-Pooled over all blocks at matched z:
+### 3.1 What the published grid showed
+
+Pooled over all blocks at matched z, on the original ladder topping out at z = 20.48:
 
 | family | mean S | t | share positive among moved |
 |---|---|---|---|
@@ -156,26 +185,11 @@ are weak but real, and under z matching they vanish to **exactly zero** while co
 is barely touched. It would say that standardizing by the natural scale isolates
 conceptual content.
 
-**It says no such thing.** The control families never receive enough amplitude to be
-detectable under the z grid at all. Comparing the raw amplitude each grid actually
-delivers at its top dose against each family's median calibrated scale:
+### 3.2 It was a range artefact
 
-| block | family | median s(l,v) | max α reached at z = 20.48 | max α on the α grid |
-|---|---|---|---|---|
-| 3 | concept | 2.779 | **87.6** | 64 |
-| 3 | random | 0.176 | **3.7** | 64 |
-| 3 | noise | 0.141 | **3.3** | 64 |
-| 6 | concept | 1.983 | 74.5 | 64 |
-| 6 | random | 0.233 | 5.2 | 64 |
-| 16 | random | 0.501 | 10.3 | 64 |
-
-At block 3 the entire z grid delivers at most **α = 3.7** to a fixed-random direction.
-But section 2 shows random produces nothing until α = 8 and transitions at α = 16. The
-z sweep stops below the amplitude at which that family would first respond. Its flat
-curve is a **range artefact of the grid**, not a property of the direction.
-
-The comparison that makes this exact: for each family, the raw amplitude the top z dose
-actually delivers, against that family's own 75% threshold measured on the α grid.
+The control families never received enough amplitude to be detectable. Comparing the
+raw amplitude the top z dose actually delivers against each family's own 75% threshold
+measured on the α grid:
 
 | block | family | α delivered at z = 20.48 | α threshold (75%, raw) | ratio |
 |---|---|---|---|---|
@@ -190,34 +204,62 @@ actually delivers, against that family's own 75% threshold measured on the α gr
 | 16 | random | 10.3 | 54.5 | **0.19×** |
 | 16 | noise | 12.1 | 61.3 | **0.20×** |
 
-The z grid overshoots the concept threshold by 6 to 14 times at the two live blocks and
-undershoots every control's by 5 to 20 times. No control family is tested anywhere near
-its own transition under z matching, at any block. The flat control curves of the table
-above are that fact and nothing else.
+The grid overshot concept's threshold by 6 to 14 times at the live blocks and
+undershot every control's by 5 to 20 times. No control was tested anywhere near its
+own transition, at any block.
 
-The mechanism is the ~16× gap between concept and generic scales in this model
-(2.779 against 0.176 at block 3). Dividing by s(l, v) hands concept directions sixteen
-times more raw amplitude than controls at the same nominal z. The z parameterization
-does not neutralize the families; on this model it systematically starves the controls.
+### 3.3 The extended sweep settles it
 
-Note the one row where the two nearly meet: concept at block 16 gets 0.97× its
-threshold, and its z-matched curve there peaks at 0.747 adjusted — just short of the
-75% mark, exactly as that ratio predicts. The grid's reach, not the direction's nature,
-is what each curve is tracking.
+Job 8165 reran blocks 3, 6 and 16 with z reaching 655.36 — chosen as twice the
+largest control threshold in z units, 173.6 for dropout at block 6. The controls
+respond. At block 3, fixed-random:
 
-**What this costs.** H1c as stated — "l'appariement en z modifie les différences
-observées à α apparié" — is technically confirmed, since the numbers plainly differ.
-But the interesting reading, that the difference is about the nature of the directions,
-is not supported by this run. To test it the z grid must reach each control's own transition: at
-block 3 that is **z ≈ 90** for random (α = 16 ÷ 0.176), and at block 16 **z ≈ 109**
-(α = 54.5 ÷ 0.501) — a factor of 4.5 to 5.3 beyond the current top of 20.48.
-Until then the two matchings are not comparable on this model, and the α-matched
-comparison of section 2 is the only one that should carry a claim.
+| z | 2.56 | 10.24 | **20.48** | 40.96 | 81.92 | **163.84** | 327.68 | 655.36 |
+|---|---|---|---|---|---|---|---|---|
+| mean S | +0.003 | −0.006 | **−0.005** | +0.076 | +0.515 | **+0.792** | +0.644 | +0.300 |
+| share + of moved | 0.64 | 0.36 | **0.42** | 0.82 | 1.000 | **1.000** | 1.000 | 0.74 |
 
-This is worth stating plainly because the artefact is flattering: it produces exactly
-the clean, concept-is-special result the project would like to find.
+Flat to z = 20.48, exactly reproducing the published result, and then a clean
+transition immediately above where the old grid stopped. Random's z-matched peak S is
+**+0.792** against concept's +0.959 — comparable magnitudes. Peak raw accuracy under
+the extended z grid, every family and block:
 
----
+| block | concept | random | noise | dropout |
+|---|---|---|---|---|
+| 3 | 0.875 | 0.967 | 0.994 | 0.875 |
+| 6 | 0.984 | 0.929 | 0.969 | 0.806 |
+| 16 | 0.900 | 0.933 | 0.900 | 0.850 |
+
+**Every family reaches ceiling under z matching.** The claim that z matching isolates
+conceptual content is false. The families are ordered by threshold, in z exactly as
+in α.
+
+### 3.4 What z matching actually does, quantitatively
+
+It multiplies the family separation by the ratio of their natural scales. Since
+z = α / s(l, v), a family's threshold in z is its threshold in α divided by its scale,
+so at block 3 for concept against random:
+
+```
+z threshold ratio  =  (α ratio)  ×  (scale ratio)
+     40.1          =    2.54     ×     15.8
+                        (16/6.3)   (2.779/0.176)
+```
+
+and the measured brackets agree: concept transitions in z ∈ [1.28, 2.56], the controls
+in z ∈ [40.96, 81.92], a ratio near 30. So the separation between concept and controls
+is **2.5× under α matching and 40× under z matching** — and the extra factor of 16 is
+arithmetic on the calibration, not a fact about the model's representations.
+
+H1c is therefore **confirmed as stated** — the z parameterization does change the
+observed differences, by a factor we can now predict exactly — while the interpretation
+it invites, that the change reveals something categorical about conceptual directions,
+is **refuted**. Both matchings tell the same story: every family is detectable, and
+concept needs less amplitude to get there.
+
+Recorded because the first version of this section reported §3.1 as a result. It
+survived one round of checking and was caught only when the realized amplitudes were
+compared against the α-grid thresholds, which is not part of the standard output.
 
 ## 4. Dose response is non-monotonic at the top
 
@@ -271,24 +313,36 @@ Established:
 
 - The 2AFC localization task works **behaviourally** on this model, reaching raw
   accuracy 1.000 at block 3. H1a is confirmed at 41 sd against a permutation null.
-- The effect is confined to roughly the first quarter of the stack, shallower in
-  relative depth than Llama's first 44%.
-- At matched α the families are ordered concept > random > noise ≈ dropout, as a
-  difference in detection threshold — every family reaches ceiling eventually.
+- The effect is confined to roughly the first quarter of the stack and decays
+  smoothly, halving about every five blocks, rather than falling off a cliff.
+- **Every family is detectable under both parameterizations**, given enough amplitude.
+  The families differ in detection threshold, not in kind. Concept needs about 2.5×
+  less raw amplitude than a fixed random direction; under z matching that separation
+  reads as 40×, and the extra factor of 16 is the ratio of their calibrated scales
+  rather than anything about the representations (§3.4).
+- **Concept's advantage over a random direction is gone by block 12**, where the two
+  are equal while both remain above zero (§1.1).
 - The label-order instability that undermined the Llama headline number is absent.
 - Contamination between the two sentences is an order of magnitude lower than Llama's.
 
+Settled by the follow-up sweeps, having been open in the first version of this
+document: the z-matched family comparison (§3.3, job 8165) and the shape of the decay
+between blocks 6 and 16 (§1.1, job 8164).
+
 Not established, and needing more runs:
 
-1. **The z-matched comparison.** Section 3: the grid starves the control families. Rerun
-   with z extending to ~90 before any family comparison at matched z is quoted.
-2. **Blocks between 6 and 16.** S falls from 0.194 to 0.033 across that gap with nothing
-   sampled in between, so the shape of the decay is unknown. Blocks 8, 10, 12 would fix
-   it at about one hour each.
-3. **Block 32's late onset.** S there is +0.019 pooled but +0.120 at the top α dose
-   alone, still rising. The deep stack is not inert, merely far less sensitive; the α
-   grid would need to extend past 64 to characterize it.
-4. **Whether concept directions are special at all.** Section 2 shows a threshold
-   advantage, not a categorical difference, and section 3 removes the evidence that
-   looked categorical. This is the open question the project actually cares about, and
-   this run narrows it rather than settling it.
+1. **Block 32's late onset.** S there is +0.016 pooled over the α grid but +0.120 at
+   the top α dose alone, still rising. The deep stack is not inert, merely far less
+   sensitive; the α grid would need to extend past 64 to characterize it. This is the
+   mirror of the mistake in §3 — a grid stopping short of a transition — and it is
+   still uncorrected for α, which is why it is named here rather than left implicit.
+2. **Whether concept directions are special at all.** §2 shows a threshold advantage,
+   §3 removes the evidence that looked categorical, and §1.1 shows even the threshold
+   advantage disappears below block 12. The honest summary is that on this model a
+   concept direction is a *somewhat more efficient* perturbation in the first ten
+   blocks and an ordinary one thereafter. Establishing more than that needs a design
+   that separates content from efficiency, which Experiment 1 does not.
+3. **Whether any of this is introspection.** Unchanged by this run and outside its
+   scope. The model's answer tracks which sentence was perturbed; nothing here
+   distinguishes a report about an internal state from a discrimination driven by the
+   perturbed tokens' downstream effects. That is what Experiments 2 and 4 are for.
