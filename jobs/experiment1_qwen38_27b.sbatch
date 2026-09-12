@@ -32,21 +32,45 @@ source .venv/bin/activate
 export HF_HUB_OFFLINE=1
 
 # Experiment 0 calibrates all 64 decoder blocks. The full sweep over them is far
-# beyond one job, so pick the blocks the analysis needs. These are the Llama job's
-# 3/16/28 rescaled to twice the depth: the same ~10%, 50% and 87% of the stack.
-# All three are linear_attention blocks under Qwen3.5's 4-block hybrid pattern
-# (full attention sits at every index = 3 mod 4), so block type does not vary with
-# depth across the three. The last block is excluded on purpose: no attention layer
-# follows it, so a perturbation at sentence tokens cannot reach the answer token.
-LAYERS=${LAYERS:-"6 32 56"}
+# beyond one job, so pick the blocks the analysis needs. Scaling the Llama job's
+# 3/16/28 to twice the depth would give 6/32/56, but the full-32 Llama sweep has
+# since shown where the signal lives: blocks 0-13 of 32, with 14-31 returning a flat
+# zero (docs/livrables/experiment1-full32-findings.md, section 1.6). Two of three
+# rescaled blocks would land in the dead band. So the default samples the band that
+# was live on Llama more densely and keeps the deep blocks as built-in nulls:
+#
+#   3, 6, 16   the first ~25% of the stack, where Llama's effect was confined
+#   32, 56     half and seven eighths of the way up, expected null
+#
+# Whether Qwen's live band sits at the same relative depth is exactly the open
+# question; the deep blocks are what answers it either way. The last block is
+# excluded on purpose: no attention layer follows it, so a perturbation at sentence
+# tokens cannot reach the answer token, and it returns chance by construction.
+#
+# At 2.7 forward passes/s this costs ~1 h per block: 11 conditions x 22 doses x 40
+# trials = 9680 passes each. Five blocks is ~5 h against the 20 h wall.
+LAYERS=${LAYERS:-"3 6 16 32 56"}
 
-# The two grids are not comparable numerically and neither transfers from the Llama
-# job unchanged: alpha is a raw activation norm, and Qwen's differ from Llama's. The
-# defaults below are set from this model's own calibrated scales, printed by
+# The two grids are not comparable numerically, and the alpha one does not transfer
+# from the Llama job: alpha is a raw activation norm, and Qwen's are far smaller.
+# Its Experiment 0 gives, as median s(l, v) over blocks 3/6/16/32/56,
+#
+#   concept       2.8  2.0  3.2  2.7  17.4     (Llama, blocks 3/16/28: 167 / 52 / 20)
+#   fixed_random  0.18 0.23 0.50 0.92  2.75    (Llama:                 3.3 / 1.5 / 1.4)
+#   renewed_noise 0.14 0.24 0.54 1.01  2.73
+#
+# so the Llama grid's first dose, 0.25, already sits above every generic direction's
+# scale at the shallow blocks: it would miss the whole transition. The ladder below
+# is a factor of two from below the smallest family median to above the largest,
+# and is what this prints:
 #   python code/analysis/summarize_calibration_scales.py \
-#       --calibration_dir results/experiment_0_calibration_qwen38_27b --layers 6 32 56
-# Re-check them against that table before trusting a sweep.
-ALPHA_DOSES=${ALPHA_DOSES:-"0.25 0.5 1 2 4 8 16 32 64 128"}
+#       --calibration_dir results/experiment_0_calibration_qwen38_27b \
+#       --layers 3 6 16 32 56
+# extended by one step at the top so the concept family at block 56 (median 17.4,
+# max 27.9) still has headroom to saturate. Re-check it against that table if the
+# calibration is ever rerun.
+ALPHA_DOSES=${ALPHA_DOSES:-"0.0625 0.125 0.25 0.5 1 2 4 8 16 32 64"}
+# z is dimensionless, so the Llama grid carries over unchanged.
 Z_DOSES=${Z_DOSES:-"0.01 0.02 0.04 0.08 0.16 0.32 0.64 1.28 2.56 5.12 10.24 20.48"}
 
 python code/experiments/experiment1_psychometrics.py \
