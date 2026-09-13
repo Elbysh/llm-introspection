@@ -44,6 +44,7 @@ FAMILY_ALIASES = {
     "concept": "concept",
     "random": "fixed_random",
     "noise": "renewed_noise",
+    "scrambled": "scrambled_concept",
 }
 
 # Dose estimator -> the column of directional_scales.json that carries it.
@@ -279,6 +280,19 @@ class DirectionBank:
                         raise ValueError(
                             "concept {!r} is not calibrated at decoder block {}".format(
                                 concept, layer)
+                        )
+                    for direction_id in ids:
+                        self.vector(direction_id)
+                        self.scale(direction_id)
+                        checked += 1
+            if "scrambled" in families:
+                for concept in concepts or self.concepts:
+                    ids = self.direction_ids("scrambled", layer, concept=concept)
+                    if not ids:
+                        raise ValueError(
+                            "concept {!r} has no scrambled counterpart at decoder block "
+                            "{}; its calibration must enable "
+                            "directions.scrambled_concept".format(concept, layer)
                         )
                     for direction_id in ids:
                         self.vector(direction_id)

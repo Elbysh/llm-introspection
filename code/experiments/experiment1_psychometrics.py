@@ -80,7 +80,10 @@ from experiment_0_calibration.direction_bank import (
     DirectionBank,
 )
 
-FAMILIES = ("concept", "random", "noise", "dropout")
+# "scrambled" is the content control of doc 3.3: a coordinate permutation of a concept
+# vector, identical to it in norm and coordinate distribution and aligned with nothing.
+# It is only available from a calibration whose config enabled it.
+FAMILIES = ("concept", "random", "noise", "dropout", "scrambled")
 MATCHINGS = ("alpha", "z")
 
 # Seven non-null doses one factor-two step apart, plus the sham. The pilot of doc 14.6
@@ -505,6 +508,15 @@ def build_conditions(calibration, args):
                         f"concept {concept!r} is not in the calibration bank at layer {layer}")
                 for direction_id in ids:
                     conditions[layer].append(("concept", direction_id))
+        if "scrambled" in args.families:
+            for concept in args.concepts:
+                ids = calibration.direction_ids("scrambled", layer, concept=concept)
+                if not ids:
+                    raise ValueError(
+                        f"concept {concept!r} has no scrambled counterpart at layer {layer}. "
+                        "Its calibration must set directions.scrambled_concept.enabled.")
+                for direction_id in ids:
+                    conditions[layer].append(("scrambled", direction_id))
         if "random" in args.families:
             ids = calibration.direction_ids("random", layer)[: args.num_random]
             if not ids:

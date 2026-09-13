@@ -40,6 +40,8 @@ class Experiment0Config:
     fixed_random_layer_stride: int
     noise_repetitions_per_position: int
     renewed_noise_base_seed: int
+    scrambled_concept_enabled: bool
+    scrambled_concept_base_seed: int
     presentation_mode: str
     context_id: str
     context_template: str
@@ -99,6 +101,15 @@ class Experiment0Config:
             renewed_noise_base_seed=int(
                 directions["renewed_noise"]["base_seed"]
             ),
+            # Optional content control (doc 3.3): a coordinate permutation of each
+            # concept vector. Absent from a config means absent from the plan, so
+            # existing calibrations are unaffected.
+            scrambled_concept_enabled=bool(
+                directions.get("scrambled_concept", {}).get("enabled", False)
+            ),
+            scrambled_concept_base_seed=int(
+                directions.get("scrambled_concept", {}).get("base_seed", 0)
+            ),
             presentation_mode=str(presentation["mode"]),
             context_id=str(presentation["context_id"]),
             context_template=str(presentation.get("template", "")),
@@ -156,6 +167,10 @@ class Experiment0Config:
             raise ValueError("direction counts must be positive")
         if min(self.fixed_random_base_seed, self.renewed_noise_base_seed) < 0:
             raise ValueError("direction base seeds must be non-negative")
+        if self.scrambled_concept_enabled and self.scrambled_concept_base_seed <= 0:
+            raise ValueError(
+                "scrambled_concept requires a positive recorded base_seed"
+            )
         if self.fixed_random_layer_stride < self.fixed_random_count_per_layer:
             raise ValueError(
                 "fixed-random layer_stride must cover every per-layer sample"
