@@ -20,7 +20,20 @@ grid could not support the comparison it appeared to. Calibration is
 the Llama calibration, this one was launched from a committed config, so Experiment 1
 runs against it without `--allow_calibration_mismatch`.
 
-Figures: `results/experiment1/qwen38_all/layer_maps/`. Tables below come from
+Figures: `results/experiment1/qwen38_all_layers/layer_maps/`, which covers every block
+tested — 3, 6, 8, 10, 12, 16, 32, 56 — by taking each matching from the run that swept
+it on a uniform grid (α at 0.0625–64 from jobs 8162/8163/8164, z at 0.64–655.36 from
+8164/8165/8166). `results/experiment1/qwen38_all/layer_maps/` is the earlier five-block
+version on the published z grid, kept because §3.1 quotes it.
+
+One caveat on those figures, for the same reason §3.4 exists: on the extended z ladder
+the families peak about 30× apart, concept near z = 5 and the controls near z = 164. A
+view that pools one dose window therefore puts concept in its post-peak decay beside
+controls at their peak and shows a *negative* concept-minus-control gap, which is an
+artefact of the pooling window and not a result. `profile_z_*.png` and
+`localization_z_*.png` pool and must not be read as family comparisons; the per-dose
+views — `heatmap_z_*.png`, `surface3d_z_*.png`, `effect_z_*.png` — are safe, as are all
+the α-matched figures, whose families peak within a factor of two of each other. Tables below come from
 `code/analysis/experiment1_localization_report.py`, which was checked against the
 numbers already published for Llama and reproduces all of them.
 
