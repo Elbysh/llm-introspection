@@ -233,6 +233,42 @@ def build_direction_rows(
                     "noise_repetition": None,
                 }
             )
+        if config.scrambled_concept_enabled:
+            # Doc 3.3 content control. A coordinate permutation of the concept vector
+            # holds its norm and its coordinate distribution exactly while destroying
+            # any alignment with a feature direction, so a difference between the two
+            # at matched alpha cannot be a difference of magnitude. Experiment 1 varies
+            # amplitude and never content at fixed amplitude; this is what does.
+            for concept_index, concept in enumerate(config.concepts):
+                source = config.vector_dir / "{}_{}_{}.pt".format(
+                    concept.name, hidden_state_index, config.vector_type
+                )
+                if not source.exists():
+                    raise FileNotFoundError("missing concept vector: {}".format(source))
+                seed = (
+                    config.scrambled_concept_base_seed
+                    + layer * config.fixed_random_layer_stride
+                    + concept_index
+                )
+                rows.append(
+                    {
+                        "direction_id": "scrambled_concept__block_{:02d}__{}".format(
+                            layer, concept.name
+                        ),
+                        "direction_family": "scrambled_concept",
+                        "decoder_block_index": layer,
+                        "hidden_state_index": hidden_state_index,
+                        "concept": concept.name,
+                        "concept_dataset": concept.dataset,
+                        "concept_split": concept.split,
+                        "concept_vector_type": config.vector_type,
+                        "source_path": str(source.relative_to(REPO_ROOT)),
+                        "source_sha256": file_sha256(source),
+                        "seed": seed,
+                        "target_observation_id": None,
+                        "noise_repetition": None,
+                    }
+                )
         for index in range(config.fixed_random_count_per_layer):
             # Match the persisted random_s{index}_{block}_avg.pt bank exactly.
             # Global uniqueness against renewed noise is checked below before
@@ -328,6 +364,16 @@ def materialize_direction(
         payload = torch.load(REPO_ROOT / row["source_path"], map_location="cpu", weights_only=False)
         vector = payload["vector"]
         normalized, original_norm = unit(vector)
+    elif row["direction_family"] == "scrambled_concept":
+        payload = torch.load(
+            REPO_ROOT / row["source_path"], map_location="cpu", weights_only=False
+        )
+        vector = payload["vector"].detach().to(device="cpu", dtype=torch.float32).reshape(-1)
+        generator = torch.Generator(device="cpu").manual_seed(int(row["seed"]))
+        permutation = torch.randperm(vector.numel(), generator=generator)
+        # A permutation is norm-preserving, so original_norm here equals the concept's
+        # and the pair is matched in raw amplitude by construction, not by adjustment.
+        normalized, original_norm = unit(vector[permutation])
     elif row["direction_family"] == "fixed_random":
         payload = torch.load(
             REPO_ROOT / row["source_path"], map_location="cpu", weights_only=False
