@@ -84,6 +84,13 @@ from experiment_0_calibration.direction_bank import (
 # vector, identical to it in norm and coordinate distribution and aligned with nothing.
 # It is only available from a calibration whose config enabled it.
 FAMILIES = ("concept", "random", "noise", "dropout", "scrambled")
+
+# Families whose perturbation is alpha times one fixed unit direction, chosen before
+# the trial. They share every path that needs the vector itself: building the device
+# cache, turning a dose into injection parameters, and registering the hook. Named
+# once because naming them at each of those three sites is how "scrambled" reached a
+# GPU without an injection branch.
+FIXED_DIRECTION_FAMILIES = ("concept", "random", "scrambled")
 MATCHINGS = ("alpha", "z")
 
 # Seven non-null doses one factor-two step apart, plus the sham. The pilot of doc 14.6
@@ -344,7 +351,7 @@ def intervention(model, layer, token_range, family, vector=None, alpha=None,
             handles.append(block.register_forward_hook(
                 make_capture_hook(measure, "clean", token_range)))
 
-        if family in ("concept", "random"):
+        if family in FIXED_DIRECTION_FAMILIES:
             handles.append(block.register_forward_hook(
                 make_vector_injection_hook(vector, [(token_range, float(alpha))])))
         elif family == "noise":
@@ -829,7 +836,7 @@ def perturbation_kwargs(calibration, args, family, direction_id, matching, dose,
     """Turn a dose into this family's injection parameters (doc 5.5 and 5.9)."""
     kwargs = {"seed": trial_seed}
     rate = None
-    if family in ("concept", "random"):
+    if family in FIXED_DIRECTION_FAMILIES:
         alpha = (float(dose) if matching == "alpha"
                  else float(dose) * calibration.scale(direction_id))
         kwargs.update(vector=vectors[direction_id], alpha=alpha)
@@ -838,7 +845,7 @@ def perturbation_kwargs(calibration, args, family, direction_id, matching, dose,
         delta, used = noise_delta(calibration, layer, num_tokens, matching, dose, trial_seed)
         alpha = float(np.mean([amplitude for _, amplitude in used]))
         kwargs.update(delta=delta)
-    else:
+    elif family == "dropout":
         if args.dropout_norm_source == "trial":
             token_norm = sham["token_norms"][(layer, target_index)]
         else:
@@ -847,6 +854,8 @@ def perturbation_kwargs(calibration, args, family, direction_id, matching, dose,
                  else float(dose) * calibration.reference_scale(layer))
         rate = dropout_rate_for_amplitude(alpha, token_norm)
         kwargs.update(rate=rate)
+    else:
+        raise ValueError(f"unknown family {family!r}")
     return kwargs, alpha, rate
 
 
@@ -899,7 +908,7 @@ def run_experiment(model, tokenizer, calibration, args):
     for layer in args.layers:
         vectors = {}
         for family, direction_id in conditions[layer]:
-            if family in ("concept", "random"):
+            if family in FIXED_DIRECTION_FAMILIES:
                 vectors[direction_id] = calibration.vector(direction_id).reshape(-1).to(
                     device=device, dtype=model_dtype)
 

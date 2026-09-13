@@ -120,8 +120,11 @@ def main():
     print(f"Calibration: {calibration_dir}")
     print(f"Estimator:   {args.estimator}\n")
     print(f"{'block':>6} {'family':>9} {'n':>6} {'min':>12} {'median':>12} {'max':>12}")
+    # Families are whatever the calibration recorded, not a fixed list: a config can
+    # enable scrambled_concept, and a hardcoded tuple silently omits it from the table.
+    families = sorted({key[1] for key in by_key})
     for layer in layers:
-        for family in ("concept", "fixed_random", "renewed_noise", "random", "noise"):
+        for family in families:
             scales = by_key.get((layer, family))
             if not scales:
                 continue
