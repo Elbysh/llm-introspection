@@ -304,18 +304,120 @@ stopped at 64, which is exactly the peak. The curve was not truncated mid-transi
 it was truncated at its maximum, and the effect never reaches the 75% criterion at any
 amplitude. Concept's raw accuracy tops out at 0.616.
 
-Second, and more important: at this depth the families differ **in the sign of the
-effect, not in the amplitude needed to produce it**. That is a qualitative difference,
-and it is the only place in this study where one appears. At the shallow blocks every
-family pushes the same way and they separate only by threshold (§2); the α-matched
-sign flips between block 16 (random S = +0.036) and block 32 (−0.022).
+Second, at this depth the families differ **in the sign of the effect, not in the
+amplitude needed to produce it**. At the shallow blocks every family pushes the same
+way and they separate only by threshold (§2); the α-matched sign flips between block
+16 (random S = +0.036) and block 32 (−0.022).
 
-A plausible reading, which this design cannot confirm: a generic perturbation degrades
-the targeted sentence's representation so that it contributes less to the answer, and
-the model falls back on the other sentence; a concept direction instead adds coherent
-content that the answer can key on. If that is right, the mid-stack sign is a better
-discriminator of "content" against "damage" than anything the psychometric curves
-measure, and Experiment 2's sham contrast is the natural place to test it.
+> **Corrected by §3ter.** This section originally read the sign split as the study's
+> one qualitative family difference, on the reading that a generic perturbation
+> degrades the targeted sentence while a concept direction adds content the answer can
+> key on. The scrambled control refutes that: a coordinate permutation of a concept
+> vector carries no content and still produces the positive sign. The numbers below
+> stand; the interpretation is in §3ter.4.
+
+---
+
+## 3ter. The scrambled control: the sign is not about content
+
+§3bis proposed that the block-32 sign split was the study's one qualitative family
+difference, and §6 of the first version called it the strongest available evidence
+that concept directions differ in kind. A control run says that reading is wrong.
+
+### 3ter.1 The control
+
+Experiment 1 varies amplitude and never content at fixed amplitude, so it cannot
+separate the two on its own. A **coordinate permutation** of a concept vector can:
+it preserves the L2 norm and the multiset of coordinates *exactly* while destroying
+any alignment with a feature direction. Concept against scrambled at matched α is
+therefore a comparison of content with magnitude held fixed by construction.
+
+Added as the `scrambled_concept` family of Experiment 0 (opt-in, seeds recorded) and
+calibrated in `results/experiment_0_calibration_qwen38_27b_scramble`, whose shared
+families reproduce the original calibration bit for bit. Jobs 8172 and 8173.
+
+### 3ter.2 Scrambling collapses the natural scale
+
+Before a single trial, Experiment 0 reports that a permutation destroys the property
+that made concept directions special in §3.4:
+
+| block | concept | **scrambled** | fixed_random |
+|---|---|---|---|
+| 3 | 2.779 | **0.172** | 0.176 |
+| 6 | 1.983 | **0.232** | 0.233 |
+| 12 | 2.583 | **0.419** | 0.445 |
+| 32 | 2.690 | **0.806** | 0.917 |
+
+The scrambled vector lands on the fixed-random scale to within a few percent at every
+block. So the ~16× scale gap driving the z artefact is **genuine alignment with the
+directions along which activations actually vary**, not a consequence of how concept
+vectors are built — their norm and coordinate distribution produce none of it.
+
+### 3ter.3 Magnitude is about alignment; sign is not
+
+Mean S, α-matched:
+
+| block | concept | scrambled | random |
+|---|---|---|---|
+| 3 | **+0.4453** | +0.2545 | +0.2275 |
+| 6 | **+0.2999** | +0.0716 | +0.1281 |
+| 12 | +0.1122 | +0.0749 | +0.1115 |
+| **32** | **+0.0257** | **+0.0218** | **−0.0270** |
+
+Two different things happen, and they separate cleanly.
+
+**At the shallow blocks, scrambled falls back to random.** Concept leads scrambled by
+1.75× at block 3 and 4.19× at block 6, while scrambled and random are comparable.
+Concept's threshold advantage is therefore about *where the direction points*, and it
+is content in the only sense this design can test. This survives.
+
+**At block 32, scrambled sides with concept.** It is positive, S = +0.0218 at
+t = +7.5 with 61.9% of moved pairs positive, where random is negative at t = −16.2
+with 21.7% positive. Against dose the two run together and away from random:
+
+| α | 16 | 32 | 64 | 128 |
+|---|---|---|---|---|
+| concept | +0.020 | +0.027 | **+0.120** | +0.077 |
+| scrambled | +0.009 | +0.015 | +0.034 | **+0.127** |
+| random | −0.028 | −0.062 | **−0.130** | −0.031 |
+
+So the sign does **not** track content. A permuted concept vector carries none, and
+still produces the positive sign.
+
+### 3ter.4 What the sign does track
+
+The only property concept and scrambled share by construction, and a Gaussian draw
+lacks, is the coordinate distribution. Measured on the bank at block 32:
+
+| direction | kurtosis | energy in top 10 coordinates | max coordinate |
+|---|---|---|---|
+| concept Dust | 8.3 | 7.7% | 0.1076 |
+| **scrambled Dust** | **8.3** | **7.7%** | **0.1076** |
+| concept Illusions | 8.5 | 8.0% | 0.1233 |
+| **scrambled Illusions** | **8.5** | **8.0%** | **0.1233** |
+| fixed_random 0000 | 3.0 | 2.4% | 0.0556 |
+| Gaussian reference | 3.0 | 2.2% | 0.0527 |
+
+Concept vectors are differences of activation means, and transformer activations have
+outlier dimensions, so their coordinates are heavy-tailed: kurtosis 6–8.5 against a
+Gaussian's 3, with ten coordinates of 5120 carrying 6–8% of the energy against 2%. A
+permutation preserves that exactly, which is why the rows are identical.
+
+The block-32 sign therefore tracks **whether the perturbation is heavy-tailed or
+Gaussian**, not whether it is meaningful. That is a property of the concept vectors'
+construction, not of their semantics.
+
+### 3ter.5 The correction
+
+§3bis's numbers stand; its interpretation does not. The sign split is real, orderly
+and many sigma from zero, and it is **not** evidence that concept directions differ
+in kind. The study's one apparently categorical result has a non-semantic
+explanation, and the surviving evidence for content is the quieter one: the threshold
+advantage at blocks 3 and 6, which the scramble removes.
+
+A useful follow-up, cheap and not run here: a Gaussian direction rescaled to the
+concept vectors' coordinate distribution but aligned with nothing, which would test
+the heavy-tail account directly rather than by elimination.
 
 ---
 
@@ -372,41 +474,43 @@ Established:
 - The 2AFC localization task works **behaviourally** on this model, reaching raw
   accuracy 1.000 at block 3. H1a is confirmed at 41 sd against a permutation null.
 - The effect is confined to roughly the first quarter of the stack and decays
-  smoothly, halving about every five blocks, rather than falling off a cliff.
+  smoothly, halving about every five blocks.
 - **Every family is detectable under both parameterizations**, given enough amplitude.
-  The families differ in detection threshold, not in kind. Concept needs about 2.5×
-  less raw amplitude than a fixed random direction; under z matching that separation
-  reads as 40×, and the extra factor of 16 is the ratio of their calibrated scales
-  rather than anything about the representations (§3.4).
-- **Concept's advantage over a random direction is gone by block 12**, where the two
-  are equal while both remain above zero (§1.1).
-- The label-order instability that undermined the Llama headline number is absent.
-- Contamination between the two sentences is an order of magnitude lower than Llama's.
+  They differ in threshold, not in kind. The 40× separation that z matching reports is
+  the 2.5× α separation multiplied by the 16× ratio of calibrated scales (§3.4).
+- **Concept directions are aligned with high-variance directions, and that alignment
+  is what their large calibrated scale measures.** Permuting a concept vector's
+  coordinates — same norm, same coordinate multiset — collapses its scale from ~2.7 to
+  ~0.17, onto the fixed-random scale, at every block (§3ter.2).
+- **Concept's threshold advantage at the shallow blocks is about alignment**, and
+  survives the control: concept leads its own permutation by 1.75× at block 3 and
+  4.19× at block 6, while the permutation falls back to the random family (§3ter.3).
+- **The block-32 sign split is not about content.** A permuted concept vector produces
+  the same positive sign, and what distinguishes both from a Gaussian direction is a
+  heavy-tailed coordinate distribution — kurtosis 6–8.5 against 3, ten coordinates of
+  5120 carrying 6–8% of the energy against 2% (§3ter.4).
+- The label-order instability that undermined the Llama headline number is absent, and
+  contamination between the two sentences is an order of magnitude lower.
 
-- **At block 32 the families differ in the sign of the effect** (§3bis): concept
-  positive at t = +8.2, all three controls negative at t = −12 to −18. This is the one
-  qualitative family difference in the study, and it is at mid-depth rather than where
-  the psychometric curves are strongest.
-- **Block 56 is genuinely inert**, not merely insensitive: flat at chance for every
-  family up to α = 1024, about five times its RMS token norm.
+Corrected during the work, both recorded rather than quietly fixed: the z-matched
+family comparison of §3.1, which was a grid-range artefact (§3.2–3.3), and the
+interpretation of the block-32 sign in §3bis, which the scrambled control refutes
+(§3ter.5). Both errors pointed the same way — toward concept directions being special
+— which is the direction this project would like its results to point.
 
-Every item left open by the first version of this document has been closed: the
-z-matched comparison (§3.3, job 8165), the decay shape between blocks 6 and 16 (§1.1,
-job 8164), and block 32's α curve (§3bis, job 8166), which turned out not to be
-truncated mid-transition but truncated at its maximum.
+Not established:
 
-Not established, and needing a different design rather than more runs:
-
-1. **Whether concept directions carry content or are merely efficient.** The picture is
-   now two-part and the parts disagree. Above block 12 the families separate only by
-   threshold, and concept's advantage there is gone by block 12 (§1.1) — consistent
-   with concept directions being nothing but larger-norm perturbations. But at block 32
-   they separate by *sign* (§3bis), which no amplitude story explains. Experiment 1
-   cannot adjudicate this, because it varies amplitude and never content at fixed
-   amplitude. A norm-matched scramble of a concept direction — same layer, same norm,
-   same scale, shuffled coordinates — would, and it is cheap: one extra family in the
-   existing job.
-2. **Whether any of this is introspection.** Unchanged by this run and outside its
+1. **Whether the heavy-tail account of the block-32 sign is right.** It currently rests
+   on elimination: content is excluded, and the coordinate distribution is the only
+   remaining property concept and scrambled share. A direct test is cheap and not run
+   here — a Gaussian direction reshaped to the concept coordinate distribution but
+   aligned with nothing. If it reproduces the positive sign, the account holds.
+2. **What the alignment at shallow blocks means.** §3ter.3 shows concept beats its own
+   permutation there, so something about pointing along a real feature direction
+   matters. Whether that is *the concept's* content or merely *a* high-variance
+   direction is untested: the control for it is a high-variance direction carrying no
+   concept, such as a leading principal component of the activations.
+3. **Whether any of this is introspection.** Unchanged and outside this experiment's
    scope. The model's answer tracks which sentence was perturbed; nothing here
    distinguishes a report about an internal state from a discrimination driven by the
    perturbed tokens' downstream effects. That is what Experiments 2 and 4 are for.
