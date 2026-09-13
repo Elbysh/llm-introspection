@@ -10,8 +10,9 @@ read against `experiment1-full32-findings.md`, the Llama sweep, throughout.
 Provenance: blocks 3, 6, 16 from job 8162 and blocks 32, 56 from job 8163, pooled by
 `code/analysis/merge_experiment1_runs.py`. Two follow-up sweeps extend it, and their
 results are folded into sections 1.1 and 3 below: job 8164 (`qwen38-mid`) adds blocks
-8, 10, 12, and job 8165 (`qwen38-zext`) reruns blocks 3, 6, 16 on a z ladder reaching
-655.36 instead of 20.48. Section 3 is written on that extended run; the original z
+8, 10, 12; job 8165 (`qwen38-zext`) reruns blocks 3, 6, 16 on a z ladder reaching
+655.36 instead of 20.48; and job 8166 (`qwen38-deep-ext`) reruns blocks 32 and 56 with
+α to 1024 and z to 655.36, which is §3bis. Section 3 is written on that extended run; the original z
 grid could not support the comparison it appeared to. Calibration is
 `configs/experiment_0_calibration/qwen38_27b_full.yaml` →
 `results/experiment_0_calibration_qwen38_27b`, whose manifest reports
@@ -261,6 +262,63 @@ Recorded because the first version of this section reported §3.1 as a result. I
 survived one round of checking and was caught only when the realized amplitudes were
 compared against the α-grid thresholds, which is not part of the standard output.
 
+## 3bis. At block 32 the families have opposite signs
+
+Job 8166 reran blocks 32 and 56 with α extended to 1024 and z to 655.36, to settle
+whether the deep stack was merely insensitive or genuinely inert. It was neither, and
+the answer is the most interesting single result in the sweep.
+
+**Block 56 is genuinely inert.** Raw accuracy sits at 0.487–0.519 for every family at
+every amplitude up to α = 1024, roughly five times the RMS token norm there, with no
+non-finite logits. Mean |S| ≤ 0.0014 with 76–80% of pairs exact ties. No attention
+layer follows block 63; nothing a perturbation does at block 56 reaches the answer
+token, at any amplitude. This is the cleanest null in the study.
+
+**Block 32 is not.** Pooled over doses and both matchings:
+
+| family | mean S | t | share positive among moved |
+|---|---|---|---|
+| concept | **+0.0213** | **+8.2** | 0.575 |
+| noise | **−0.0366** | **−12.1** | 0.262 |
+| random | **−0.0414** | **−17.9** | 0.198 |
+| dropout | **−0.0443** | **−14.8** | 0.220 |
+
+Concept is significantly **positive**; all three controls are significantly
+**negative**. Both are many sigma from zero and they disagree in sign. Against dose,
+α-matched, the pattern is orderly rather than noisy:
+
+| α | 16 | 32 | **64** | 128 | 256 | 1024 |
+|---|---|---|---|---|---|---|
+| concept S | +0.020 | +0.027 | **+0.120** | +0.077 | −0.012 | −0.015 |
+| random S | −0.028 | −0.062 | **−0.130** | −0.031 | −0.072 | −0.032 |
+| random, share + of moved | 0.152 | 0.089 | **0.019** | 0.349 | 0.151 | 0.268 |
+
+Both families reach their extremum at α = 64 and both decay above it. At that dose a
+fixed random direction moves the answer **away** from the sentence it was applied to in
+**98.1%** of the pairs that moved at all.
+
+Two consequences.
+
+First, this is why the published sweep read block 32 as "still rising": its α grid
+stopped at 64, which is exactly the peak. The curve was not truncated mid-transition,
+it was truncated at its maximum, and the effect never reaches the 75% criterion at any
+amplitude. Concept's raw accuracy tops out at 0.616.
+
+Second, and more important: at this depth the families differ **in the sign of the
+effect, not in the amplitude needed to produce it**. That is a qualitative difference,
+and it is the only place in this study where one appears. At the shallow blocks every
+family pushes the same way and they separate only by threshold (§2); the α-matched
+sign flips between block 16 (random S = +0.036) and block 32 (−0.022).
+
+A plausible reading, which this design cannot confirm: a generic perturbation degrades
+the targeted sentence's representation so that it contributes less to the answer, and
+the model falls back on the other sentence; a concept direction instead adds coherent
+content that the answer can key on. If that is right, the mid-stack sign is a better
+discriminator of "content" against "damage" than anything the psychometric curves
+measure, and Experiment 2's sham contrast is the natural place to test it.
+
+---
+
 ## 4. Dose response is non-monotonic at the top
 
 At block 3, concept, matched α, S peaks and then declines:
@@ -325,24 +383,30 @@ Established:
 - The label-order instability that undermined the Llama headline number is absent.
 - Contamination between the two sentences is an order of magnitude lower than Llama's.
 
-Settled by the follow-up sweeps, having been open in the first version of this
-document: the z-matched family comparison (§3.3, job 8165) and the shape of the decay
-between blocks 6 and 16 (§1.1, job 8164).
+- **At block 32 the families differ in the sign of the effect** (§3bis): concept
+  positive at t = +8.2, all three controls negative at t = −12 to −18. This is the one
+  qualitative family difference in the study, and it is at mid-depth rather than where
+  the psychometric curves are strongest.
+- **Block 56 is genuinely inert**, not merely insensitive: flat at chance for every
+  family up to α = 1024, about five times its RMS token norm.
 
-Not established, and needing more runs:
+Every item left open by the first version of this document has been closed: the
+z-matched comparison (§3.3, job 8165), the decay shape between blocks 6 and 16 (§1.1,
+job 8164), and block 32's α curve (§3bis, job 8166), which turned out not to be
+truncated mid-transition but truncated at its maximum.
 
-1. **Block 32's late onset.** S there is +0.016 pooled over the α grid but +0.120 at
-   the top α dose alone, still rising. The deep stack is not inert, merely far less
-   sensitive; the α grid would need to extend past 64 to characterize it. This is the
-   mirror of the mistake in §3 — a grid stopping short of a transition — and it is
-   still uncorrected for α, which is why it is named here rather than left implicit.
-2. **Whether concept directions are special at all.** §2 shows a threshold advantage,
-   §3 removes the evidence that looked categorical, and §1.1 shows even the threshold
-   advantage disappears below block 12. The honest summary is that on this model a
-   concept direction is a *somewhat more efficient* perturbation in the first ten
-   blocks and an ordinary one thereafter. Establishing more than that needs a design
-   that separates content from efficiency, which Experiment 1 does not.
-3. **Whether any of this is introspection.** Unchanged by this run and outside its
+Not established, and needing a different design rather than more runs:
+
+1. **Whether concept directions carry content or are merely efficient.** The picture is
+   now two-part and the parts disagree. Above block 12 the families separate only by
+   threshold, and concept's advantage there is gone by block 12 (§1.1) — consistent
+   with concept directions being nothing but larger-norm perturbations. But at block 32
+   they separate by *sign* (§3bis), which no amplitude story explains. Experiment 1
+   cannot adjudicate this, because it varies amplitude and never content at fixed
+   amplitude. A norm-matched scramble of a concept direction — same layer, same norm,
+   same scale, shuffled coordinates — would, and it is cheap: one extra family in the
+   existing job.
+2. **Whether any of this is introspection.** Unchanged by this run and outside its
    scope. The model's answer tracks which sentence was perturbed; nothing here
    distinguishes a report about an internal state from a discrimination driven by the
    perturbed tokens' downstream effects. That is what Experiments 2 and 4 are for.
