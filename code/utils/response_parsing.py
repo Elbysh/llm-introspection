@@ -10,6 +10,10 @@ import re
 _WORD_YES_RE = re.compile(r"\byes\b", re.IGNORECASE)
 _WORD_NO_RE = re.compile(r"\bno\b", re.IGNORECASE)
 
+# Explicit trailing tag some prompts now force (e.g. get_calibration_messages),
+# checked before any other heuristic since it's unambiguous by construction.
+_ANSWER_TAG_RE = re.compile(r"\banswer:\s*(yes|no)\b", re.IGNORECASE)
+
 # Phrase-level fallback for open-ended prompts that don't demand a literal YES/NO
 # (e.g. Block 0's calibration prompt "Describe your current internal state...").
 _NEGATION_PATTERNS = [
@@ -38,6 +42,15 @@ _AFFIRMATION_PATTERNS = [
 ]
 
 
+def strip_answer_tag(text: str) -> str:
+    """Drop a trailing 'ANSWER: YES/NO' tag (see get_calibration_messages) so
+    downstream embedding similarity isn't diluted by boilerplate constant
+    across every trial."""
+    if not text:
+        return text
+    return _ANSWER_TAG_RE.split(text, maxsplit=1)[0].strip()
+
+
 def parse_yes_no(text: str) -> bool | None:
     """Extract an affirmative/negative judgment from a response.
 
@@ -48,6 +61,10 @@ def parse_yes_no(text: str) -> bool | None:
     if not text:
         return None
     stripped = text.strip()
+
+    tag_matches = list(_ANSWER_TAG_RE.finditer(stripped))
+    if tag_matches:
+        return tag_matches[-1].group(1).lower() == "yes"
 
     yes_match = _WORD_YES_RE.search(stripped)
     no_match = _WORD_NO_RE.search(stripped)
@@ -101,7 +118,6 @@ def parse_scale_0_10(text: str) -> int | None:
     return None
 
 
-_LETTER_CHOICE_RE = re.compile(r"\b([A-J])\b")
 # "I" is both a valid candidate letter (A-J) and the first-person pronoun, which
 # dominates free-text responses ("I think...", "I'd say..."). Only treat a
 # matched "I" as the pronoun (and skip it) when directly followed by a verb/
@@ -114,46 +130,42 @@ _PRONOUN_I_FOLLOW_RE = re.compile(
     re.IGNORECASE,
 )
 
-
-def parse_letter_choices(text: str, max_choices: int | None = None) -> list[str]:
-    """Extract distinct A-J letter choices in order of first appearance (for
-    forced-choice grading, e.g. C2.2)."""
-    if not text:
-        return []
-    letters = []
-    for m in _LETTER_CHOICE_RE.finditer(text):
-        letter = m.group(1)
-        if letter == "I" and _PRONOUN_I_FOLLOW_RE.match(text[m.end():m.end() + 20]):
-            continue
-        if letter not in letters:
-            letters.append(letter)
-        if max_choices is not None and len(letters) >= max_choices:
-            break
-    return letters
+_AB_CHOICE_RE = re.compile(r"\b([AB])\b")
 
 
-def parse_concept_choice(text: str, concept_a: str, concept_b: str) -> str | None:
-    """Determine which of two named concepts a response selected, for E3's
-    2AFC ordering task. Concept names may contain underscores
-    (e.g. 'fibonacci_numbers'); matched case-insensitively against both the
-    underscore and space-separated forms. Returns None if neither or both are
-    ambiguous (e.g. neither mentioned)."""
+def parse_ab_choice(text: str) -> str | None:
+    """Extract a single A/B choice (Exp 11's ordering 2AFC, section 16.2,
+    where the two concepts are presented as lettered options rather than
+    named directly in the question). Returns the first unambiguous A or B
+    token, or None if neither appears."""
     if not text:
         return None
+    match = _AB_CHOICE_RE.search(text)
+    return match.group(1) if match else None
 
-    def _pattern(name):
-        readable = re.sub(r"_", " ", name)
-        return re.compile(re.escape(readable), re.IGNORECASE)
 
-    match_a = _pattern(concept_a).search(text)
-    match_b = _pattern(concept_b).search(text)
-    if match_a and not match_b:
-        return concept_a
-    if match_b and not match_a:
-        return concept_b
-    if match_a and match_b:
-        return concept_a if match_a.start() < match_b.start() else concept_b
-    return None
+def parse_two_label_choice(text: str, valid_letters: list[str], max_choices: int = 2) -> list[str]:
+    """Extract up to max_choices labels for Exp 10's forced-choice
+    identification (section 15.3), where each slot's correct label is either
+    a candidate letter or NONE. Candidate letters are matched case-sensitively
+    like parse_letter_choices (to avoid stray lowercase words such as the
+    article "a"); NONE is matched case-insensitively. Returns labels in order
+    of first appearance -- not deduplicated, since a trial can legitimately
+    need NONE in both slots (e.g. the sham condition)."""
+    if not text:
+        return []
+    letters_pattern = "|".join(re.escape(letter) for letter in valid_letters)
+    pattern = re.compile(rf"\b((?i:NONE)|{letters_pattern})\b")
+    found = []
+    for m in pattern.finditer(text):
+        token = m.group(1)
+        label = "NONE" if token.upper() == "NONE" else token
+        if label == "I" and _PRONOUN_I_FOLLOW_RE.match(text[m.end():m.end() + 20]):
+            continue
+        found.append(label)
+        if len(found) >= max_choices:
+            break
+    return found
 
 
 _DEGENERATE_REPEAT_RE = re.compile(r"(.)\1{6,}")

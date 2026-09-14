@@ -6,7 +6,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --time=08:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --output=logs/modulators-%j.out
 #SBATCH --error=logs/modulators-%j.err
@@ -16,10 +16,13 @@ set -euo pipefail
 
 source ".venv/bin/activate"
 
+export HF_HOME=/gpfs/workdir/dainl/hf_cache
+export HF_HUB_OFFLINE=1
+
 
 cd data && PYTHONPATH=../code/utils uv run python ../code/experiments/modulators.py \
   --experiments e4_distance e5_alpha_ratio e6_similarity \
-  --alpha 8 \
+  --alphas 1 2 3 4 5 6 7 \
   --num_trials 20 \
   --distances 1 2 4 8 16 31 \
   --placements early late \

@@ -27,7 +27,7 @@ from all_prompts import get_calibration_messages
 from concepts import ALL_CONCEPTS, get_concept_description
 from embedding_judge import cosine_similarity
 from multi_inject import InjectionSpec, apply_multi_injection
-from response_parsing import is_coherent, parse_yes_no
+from response_parsing import is_coherent, parse_yes_no, strip_answer_tag
 
 DEFAULT_LAYERS = list(range(0, 32, 2))
 DEFAULT_ALPHAS = [0, 1, 2, 4, 6, 8, 12, 16]
@@ -77,7 +77,8 @@ def run_calibration(model, tokenizer, layers, alphas, num_trials, vec_type, max_
 
                 coherent = is_coherent(response)
                 claims_noticing = parse_yes_no(response)
-                sim = cosine_similarity(response, get_concept_description(concept)) if response else 0.0
+                description = strip_answer_tag(response)
+                sim = cosine_similarity(description, get_concept_description(concept)) if description else 0.0
 
                 trials.append({
                     "layer": layer,
@@ -116,7 +117,7 @@ def main():
     parser.add_argument("--alphas", type=float, nargs="+", default=DEFAULT_ALPHAS)
     parser.add_argument("--num_trials", type=int, default=5, help="Trials per (layer, alpha) cell")
     parser.add_argument("--vec_type", type=str, default="avg", choices=["avg", "last"])
-    parser.add_argument("--max_new_tokens", type=int, default=100)
+    parser.add_argument("--max_new_tokens", type=int, default=150)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--output_dir", type=str, default="plots")
     args = parser.parse_args()

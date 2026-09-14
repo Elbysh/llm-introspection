@@ -1,0 +1,71 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  12%|█▏        | 34/291 [00:00<00:01, 205.27it/s]Loading weights:  19%|█▉        | 55/291 [00:00<00:03, 64.46it/s] Loading weights:  23%|██▎       | 66/291 [00:01<00:05, 42.29it/s]Loading weights:  26%|██▌       | 76/291 [00:01<00:04, 47.55it/s]Loading weights:  29%|██▉       | 84/291 [00:01<00:04, 49.70it/s]Loading weights:  31%|███▏      | 91/291 [00:01<00:05, 37.61it/s]Loading weights:  35%|███▌      | 102/291 [00:02<00:04, 38.46it/s]Loading weights:  38%|███▊      | 111/291 [00:02<00:04, 42.35it/s]Loading weights:  40%|████      | 117/291 [00:03<00:09, 19.26it/s]Loading weights:  42%|████▏     | 121/291 [00:03<00:08, 20.13it/s]Loading weights:  44%|████▍     | 129/291 [00:03<00:08, 18.50it/s]Loading weights:  45%|████▌     | 132/291 [00:04<00:09, 16.62it/s]Loading weights:  49%|████▉     | 143/291 [00:05<00:10, 13.61it/s]Loading weights:  51%|█████     | 149/291 [00:05<00:08, 16.72it/s]Loading weights:  52%|█████▏    | 152/291 [00:06<00:12, 11.37it/s]Loading weights:  58%|█████▊    | 169/291 [00:06<00:05, 21.01it/s]Loading weights:  61%|██████    | 177/291 [00:06<00:04, 23.66it/s]Loading weights:  62%|██████▏   | 181/291 [00:06<00:04, 22.61it/s]Loading weights:  65%|██████▍   | 188/291 [00:07<00:04, 21.79it/s]Loading weights:  67%|██████▋   | 196/291 [00:07<00:03, 27.43it/s]Loading weights:  69%|██████▊   | 200/291 [00:08<00:07, 12.91it/s]Loading weights:  71%|███████   | 207/291 [00:08<00:05, 16.77it/s]Loading weights:  73%|███████▎  | 211/291 [00:08<00:05, 13.84it/s]Loading weights:  77%|███████▋  | 223/291 [00:09<00:03, 19.77it/s]Loading weights:  79%|███████▉  | 231/291 [00:09<00:03, 19.74it/s]Loading weights:  86%|████████▌ | 250/291 [00:09<00:01, 32.75it/s]Loading weights:  88%|████████▊ | 255/291 [00:10<00:01, 18.72it/s]Loading weights:  91%|█████████ | 265/291 [00:11<00:01, 20.30it/s]Loading weights:  96%|█████████▌| 278/291 [00:11<00:00, 29.12it/s]Loading weights: 100%|██████████| 291/291 [00:11<00:00, 25.80it/s]
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s][ALoading weights: 100%|██████████| 103/103 [00:00<00:00, 2085.39it/s]
+Traceback (most recent call last):
+  File "/gpfs/users/dainl/llm-introspection/data/../code/experiments/multi_identification.py", line 278, in <module>
+    main()
+    ~~~~^^
+  File "/gpfs/users/dainl/llm-introspection/data/../code/experiments/multi_identification.py", line 258, in main
+    trials = run_identification(
+        model, tokenizer, cond["n_real"], cond["n_random"],
+        args.layer_pool, args.alphas, args.num_trials, args.vec_type,
+        args.max_new_tokens, args.seed,
+    )
+  File "/gpfs/users/dainl/llm-introspection/.venv/lib/python3.13/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/gpfs/users/dainl/llm-introspection/data/../code/experiments/multi_identification.py", line 198, in run_identification
+    cosine_similarity(response, get_concept_description(c)) for c in real_concepts
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/gpfs/users/dainl/llm-introspection/code/utils/embedding_judge.py", line 30, in cosine_similarity
+    model = _get_model(model_name)
+  File "/gpfs/users/dainl/llm-introspection/code/utils/embedding_judge.py", line 18, in _get_model
+    return SentenceTransformer(model_name)
+  File "/gpfs/users/dainl/llm-introspection/.venv/lib/python3.13/site-packages/sentence_transformers/util/decorators.py", line 46, in wrapper
+    return func(*args, **kwargs)
+  File "/gpfs/users/dainl/llm-introspection/.venv/lib/python3.13/site-packages/sentence_transformers/sentence_transformer/model.py", line 194, in __init__
+    super().__init__(
+    ~~~~~~~~~~~~~~~~^
+        model_name_or_path=model_name_or_path,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<13 lines>...
+        default_prompt_name=default_prompt_name,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/gpfs/users/dainl/llm-introspection/.venv/lib/python3.13/site-packages/sentence_transformers/base/model.py", line 275, in __init__
+    self.to(device)
+    ~~~~~~~^^^^^^^^
+  File "/gpfs/users/dainl/llm-introspection/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1388, in to
+    return self._apply(convert)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/gpfs/users/dainl/llm-introspection/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+    ~~~~~~~~~~~~~^^^^
+  File "/gpfs/users/dainl/llm-introspection/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+    ~~~~~~~~~~~~~^^^^
+  File "/gpfs/users/dainl/llm-introspection/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+    ~~~~~~~~~~~~~^^^^
+  [Previous line repeated 1 more time]
+  File "/gpfs/users/dainl/llm-introspection/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 966, in _apply
+    param_applied = fn(param)
+  File "/gpfs/users/dainl/llm-introspection/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1374, in convert
+    return t.to(
+           ~~~~^
+        device,
+        ^^^^^^^
+        dtype if t.is_floating_point() or t.is_complex() else None,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        non_blocking,
+        ^^^^^^^^^^^^^
+    )
+    ^
+torch.AcceleratorError: CUDA error: CUDA-capable device(s) is/are busy or unavailable
+Search for `cudaErrorDevicesUnavailable' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+The CUDA driver logged these messages, which may provide useful details:
+Returning 999 (CUDA_ERROR_UNKNOWN) from cuDevicePrimaryCtxRetain
+
+

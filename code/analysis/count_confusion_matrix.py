@@ -1,11 +1,29 @@
 #!/usr/bin/env python3
 """
-Analysis for Block 1 detection (multi_detection.py's saved trials):
-  - C1.2 confusion matrix: reported vs. actual k (count-report prompt style)
-  - C1.1 false-positive rate: detection rate at k=0
-  - C1.4 real-vs-sham comparison: detection rate by condition, at matched k
-  - C1.3 rephrasing check: mean 0-10 scale rating by condition/k, to confirm
+Analysis for Experience 9 counting (multi_detection.py's saved trials,
+section 14):
+  - Confusion matrix: reported vs. actual k (count-report prompt style)
+  - False-positive rate: detection rate at k=0 (the plan's actual sham)
+  - real-vs-random comparison: detection rate by condition, at matched k
+    ("random" is the plan's active control, section 14.4 step 6 -- not its
+    sham, which is k=0)
+  - Rephrasing check: mean 0-10 scale rating by condition/k, to confirm
     results aren't an artifact of yes-biased phrasing in the count-report prompt
+  - Logit contrast: logit(true k's digit) - logit("1") at the first response
+    token, per trial -- isolates whether the true count gets more support
+    than the "always 1" default bias, beyond what the reported digit alone
+    shows. Excludes k_actual==1 (trivially 0 there). Older trial files saved
+    before this measure was added are handled gracefully.
+
+Every table is broken down by dose, since multi_detection.py sweeps a dose
+range in one file rather than one dose per run: "alpha" in the individual
+regime, "z_total" in the budget regime (the per-injection alpha there
+depends on k too, so z_total is the more meaningful sweep axis).
+
+--input defaults to the "individual" dose-regime output; pass the "budget"
+regime's file separately to compare (section 14.2's two dosing regimes are
+saved to separate files by multi_detection.py, since dose_regime is fixed
+per run).
 """
 
 import argparse
@@ -14,6 +32,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from scipy.stats import ttest_1samp
 
 
 def load_trials(input_path):
@@ -74,46 +93,83 @@ def rephrasing_check(trials):
     return {key: float(np.mean(v)) for key, v in scale_values.items()}
 
 
+def logit_contrast_check(trials, condition):
+    """Mean logit(true k) - logit("1") for count-style trials with k != 1
+    (trivially 0 there), for the given condition -- available for every
+    trial regardless of is_coherent, since it doesn't depend on parsing."""
+    vals = [t["logit_contrast_adjusted"] for t in trials
+            if t["prompt_style"] == "count" and t["condition"] == condition
+            and t["k_actual"] != 1 and "logit_contrast_adjusted" in t]
+    if not vals:
+        return None
+    result = {"n": len(vals), "mean": float(np.mean(vals))}
+    if len(vals) > 1:
+        result["t"] = float(ttest_1samp(vals, 0.0).statistic)
+        result["p"] = float(ttest_1samp(vals, 0.0).pvalue)
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=Path, default=Path("plots/multi_detection_trials.pt"))
+    parser.add_argument("--input", type=Path, default=Path("plots/multi_detection_trials_individual.pt"))
     args = parser.parse_args()
 
-    trials = load_trials(args.input)
+    data = torch.load(args.input, weights_only=False)
+    trials = data["trials"]
+    dose_regime = data.get("dose_regime", "unknown")
+    dose_field = "alpha" if dose_regime == "individual" else "z_total"
     k_values = sorted(set(t["k_actual"] for t in trials))
     conditions = sorted(set(t["condition"] for t in trials))
+    doses = sorted(set(t[dose_field] for t in trials))
 
     print("=" * 80)
-    print(f"BLOCK 1 DETECTION ANALYSIS (n_trials={len(trials)})")
+    print(f"EXPERIENCE 9 COUNTING ANALYSIS: {args.input.name} "
+          f"(n_trials={len(trials)}, dose_regime={dose_regime}, {dose_field}s={doses})")
     print("=" * 80)
 
-    for condition in conditions:
-        print(f"\n--- C1.2 confusion matrix (condition={condition}) ---")
-        matrix = build_confusion_matrix(trials, k_values, condition=condition)
-        print_confusion_matrix(matrix, k_values)
+    for dose in doses:
+        by_dose = [t for t in trials if t[dose_field] == dose]
+        print(f"\n{'#'*60}\n### {dose_field}={dose}\n{'#'*60}")
 
-    det_rate = detection_rate_by_condition_and_k(trials, prompt_style="count")
-
-    print("\n--- C1.1 false-positive rate (k=0, 'detects >0 injections' rate) ---")
-    for condition in conditions:
-        fpr = det_rate.get((condition, 0), float("nan"))
-        print(f"  condition={condition}: {fpr:.0%}" if fpr == fpr else f"  condition={condition}: n/a")
-
-    print("\n--- C1.4 real-vs-sham detection rate by k ---")
-    for k in k_values:
-        row = f"  k={k}: "
         for condition in conditions:
-            rate = det_rate.get((condition, k), float("nan"))
-            row += f"{condition}={rate:.0%}  " if rate == rate else f"{condition}=n/a  "
-        print(row)
+            print(f"\n--- confusion matrix (condition={condition}) ---")
+            matrix = build_confusion_matrix(by_dose, k_values, condition=condition)
+            print_confusion_matrix(matrix, k_values)
 
-    if any(t["prompt_style"] == "scale" for t in trials):
-        print("\n--- C1.3 rephrasing check: mean 0-10 'different from normal' rating ---")
-        scale_means = rephrasing_check(trials)
+        det_rate = detection_rate_by_condition_and_k(by_dose, prompt_style="count")
+
+        print("\n--- false-positive rate (k=0, 'detects >0 injections' rate) ---")
         for condition in conditions:
-            for k in k_values:
-                val = scale_means.get((condition, k), float("nan"))
-                print(f"  condition={condition}, k={k}: {val:.2f}" if val == val else f"  condition={condition}, k={k}: n/a")
+            fpr = det_rate.get((condition, 0), float("nan"))
+            print(f"  condition={condition}: {fpr:.0%}" if fpr == fpr else f"  condition={condition}: n/a")
+
+        print("\n--- real-vs-random detection rate by k ---")
+        for k in k_values:
+            row = f"  k={k}: "
+            for condition in conditions:
+                rate = det_rate.get((condition, k), float("nan"))
+                row += f"{condition}={rate:.0%}  " if rate == rate else f"{condition}=n/a  "
+            print(row)
+
+        if any(t["prompt_style"] == "scale" for t in by_dose):
+            print("\n--- rephrasing check: mean 0-10 'different from normal' rating ---")
+            scale_means = rephrasing_check(by_dose)
+            for condition in conditions:
+                for k in k_values:
+                    val = scale_means.get((condition, k), float("nan"))
+                    print(f"  condition={condition}, k={k}: {val:.2f}"
+                          if val == val else f"  condition={condition}, k={k}: n/a")
+
+        print("\n--- logit contrast: logit(true k) - logit('1'), k != 1 ---")
+        for condition in conditions:
+            result = logit_contrast_check(by_dose, condition)
+            if result is None:
+                print(f"  condition={condition}: not present in this file")
+            elif "t" in result:
+                print(f"  condition={condition}: mean={result['mean']:+.3f} (n={result['n']}), "
+                      f"t={result['t']:.3f}, p={result['p']:.3g}")
+            else:
+                print(f"  condition={condition}: mean={result['mean']:+.3f} (n={result['n']})")
 
 
 if __name__ == "__main__":

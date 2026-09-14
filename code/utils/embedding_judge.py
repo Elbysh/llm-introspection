@@ -15,7 +15,12 @@ _DEFAULT_MODEL_NAME = "all-MiniLM-L6-v2"
 
 @lru_cache(maxsize=1)
 def _get_model(model_name: str = _DEFAULT_MODEL_NAME) -> SentenceTransformer:
-    return SentenceTransformer(model_name)
+    # Forced to CPU: this is a tiny (~80MB) grading model called a handful of
+    # times per trial, not a bottleneck -- but loading it onto the GPU that
+    # already hosts the 8B injection model has twice caused a
+    # cudaErrorDevicesUnavailable crash mid-sweep on this cluster. CPU
+    # inference sidesteps that contention entirely at negligible cost.
+    return SentenceTransformer(model_name, device="cpu")
 
 
 def embed(text: str, model_name: str = _DEFAULT_MODEL_NAME):

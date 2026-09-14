@@ -1,22 +1,34 @@
 #!/usr/bin/env python3
 """
-Block 4 - Modulators (H4, H5, H6)
+Experience 11 modulators (plan_of_research.md section 16.5): layer distance,
+absolute position, dose ratio, and concept-pair similarity, all applied to
+the ordering task (section 16's A/B lettered 2AFC) -- the plan specifies no
+modulator sweep for Experience 10 (identification), unlike the previous
+version of this script, which ran E5/E6 against identification.
 
-Thin parametrized sweeps around Block 2 (identification, E2) and Block 3
-(ordering, E3), reusing their prompts and grading:
+  E4 - layer distance |i-j|, at each requested distance.
+    - each distance is tested at both an early and a late absolute position
+      in the network (--placements), to confirm the effect tracks distance
+      rather than absolute depth.
+    - extreme distances |i-j|=1 and |i-j|=L-1=31, via --distances.
+  E5 - dose ratio z_A/z_B, at a fixed layer pair (--layers). The ratio is
+    tied to the A/B *labels* in the prompt, not to depth: which physical
+    layer receives label A vs B is randomized per trial (independent of
+    which is actually shallower), so the boosted dose lands on the shallow
+    or deep layer with equal probability across trials.
+  E6 - concept-pair cosine similarity, at a fixed layer pair, concept pairs
+    selected via concepts.bucket_concept_pairs_by_similarity (reads saved
+    vectors directly, no new precompute), including a near-identical pair as
+    a limit case.
 
-  E4 (H4) - layer distance |i-j|: both identification and ordering, at each
-    requested distance.
-    C4.1 - each distance is tested at both an early and a late absolute
-           position in the network (--placements), to confirm the effect
-           tracks distance rather than absolute depth.
-    C4.2 - extreme distances |i-j|=1 and |i-j|=L-1=31, via --distances.
-  E5 (H5) - relative injection strength alpha_A/alpha_B, at a fixed layer pair
-    (identification only, per the plan's "Repeat E2").
-  E6 (H6, bonus) - concept-pair cosine similarity, at a fixed injection layer
-    pair (identification only), concept pairs selected via
-    concepts.bucket_concept_pairs_by_similarity (reads saved vectors directly,
-    no new precompute), including a near-identical pair as a limit case.
+Every sweep answers via get_ordering_messages + parse_ab_choice and scores
+against correct_letter (whichever label sits at the shallower layer).
+alpha plays the role of the plan's z directly (no section-4 natural-scale
+calibration in this pass; see multisteering_implementation_plan.md). Each
+sweep also varies the base alpha over --alphas, with materials (concepts,
+layers, A/B label draw) matched within a cell across that dose sweep --
+in E5 this crosses with the ratio, so alpha_a/alpha_b become
+alpha*ratio/alpha for each base alpha.
 
 --experiments runs several of the three in one process, sharing one model load.
 """
@@ -30,14 +42,14 @@ import torch
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from all_prompts import get_identification_messages, get_ordering_messages
-from concepts import ALL_CONCEPTS, bucket_concept_pairs_by_similarity, get_concept_description
-from embedding_judge import cosine_similarity
+from all_prompts import get_ordering_messages
+from concepts import ALL_CONCEPTS, bucket_concept_pairs_by_similarity
 from multi_inject import InjectionSpec, apply_multi_injection
-from response_parsing import is_coherent, parse_concept_choice
+from response_parsing import is_coherent, parse_ab_choice
 
 ALL_LAYERS = list(range(0, 32))
 DEFAULT_DISTANCES = [1, 2, 4, 8, 16, 31]
+DEFAULT_ALPHAS = [1, 2, 3, 4, 5, 6, 7]
 DEFAULT_ALPHA_RATIOS = [1.0, 2.0, 4.0, 8.0]
 
 
@@ -50,14 +62,22 @@ def load_vector(concept, layer, vec_type="avg"):
     return data["vector"]
 
 
-def _generate(model, tokenizer, messages, max_new_tokens, specs):
+def _generate_with_first_token_logits(model, tokenizer, messages, max_new_tokens, specs):
+    """Like _generate, but also returns the full-vocabulary logits at the
+    first generated position (section 16.6's logit-contrast measure). Reads
+    them off the same generate() call (output_scores=True) rather than a
+    second forward pass, so they reflect the injection exactly as it
+    influenced the actual decoded response."""
     device = next(model.parameters()).device
     formatted_prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
     inputs = tokenizer(formatted_prompt, return_tensors="pt", add_special_tokens=False).to(device)
     with apply_multi_injection(model, specs):
-        out = model.generate(**inputs, max_new_tokens=max_new_tokens, do_sample=False)
-    generated_ids = out[0][inputs.input_ids.shape[1]:]
-    return tokenizer.decode(generated_ids, skip_special_tokens=True).strip()
+        out = model.generate(**inputs, max_new_tokens=max_new_tokens, do_sample=False,
+                              output_scores=True, return_dict_in_generate=True)
+    generated_ids = out.sequences[0][inputs.input_ids.shape[1]:]
+    response = tokenizer.decode(generated_ids, skip_special_tokens=True).strip()
+    first_token_logits = out.scores[0][0]
+    return response, first_token_logits
 
 
 def _sample_layer_pair_with_distance(rng, distance, placement, layer_max=31):
@@ -77,83 +97,120 @@ def _sample_layer_pair_with_distance(rng, distance, placement, layer_max=31):
     return layer_low, layer_low + distance
 
 
+def _run_ordering_item(model, tokenizer, layer_a, concept_a, alpha_a,
+                        layer_b, concept_b, alpha_b, vec_type, max_new_tokens):
+    """One Exp 11 ordering trial with an explicit per-label (layer, concept,
+    alpha) assignment. correct_letter is whichever label sits at the
+    shallower (lower-index) layer.
+
+    Records both the raw A-vs-B logit contrast (characterizes the model's
+    raw letter preference, independent of ground truth) and the "adjusted"
+    contrast -- logit(correct letter) - logit(incorrect letter), section
+    16.6 -- which flips sign per trial so a positive value always means
+    evidence toward the correct answer, canceling out a fixed A/B
+    preference. Computed for every trial, including incoherent/unparsed
+    ones, since it doesn't depend on parsing the decoded text.
+    """
+    specs = [
+        InjectionSpec(layer=layer_a, vector=load_vector(concept_a, layer_a, vec_type), alpha=alpha_a),
+        InjectionSpec(layer=layer_b, vector=load_vector(concept_b, layer_b, vec_type), alpha=alpha_b),
+    ]
+    correct_letter = "A" if layer_a < layer_b else "B"
+    response, first_token_logits = _generate_with_first_token_logits(
+        model, tokenizer, get_ordering_messages(concept_a, concept_b), max_new_tokens, specs)
+    reported = parse_ab_choice(response)
+
+    token_id_a = tokenizer.encode("A", add_special_tokens=False)[0]
+    token_id_b = tokenizer.encode("B", add_special_tokens=False)[0]
+    logit_a = first_token_logits[token_id_a].item()
+    logit_b = first_token_logits[token_id_b].item()
+    logit_correct = logit_a if correct_letter == "A" else logit_b
+    logit_incorrect = logit_b if correct_letter == "A" else logit_a
+
+    return {
+        "correct_letter": correct_letter,
+        "response": response,
+        # min_length=1: the format demands a single letter, A or B.
+        "is_coherent": is_coherent(response, min_length=1),
+        "reported_letter": reported,
+        "correct": (reported == correct_letter) if reported is not None else None,
+        "logit_a": logit_a,
+        "logit_b": logit_b,
+        "logit_contrast_ab": logit_a - logit_b,
+        "logit_contrast_adjusted": logit_correct - logit_incorrect,
+    }
+
+
 @torch.inference_mode()
-def run_e4_distance_sweep(model, tokenizer, distances, placements, alpha, num_trials,
+def run_e4_distance_sweep(model, tokenizer, distances, placements, alphas, num_trials,
                            vec_type, max_new_tokens, seed):
     rng = random.Random(seed)
     trials = []
-    total = len(distances) * len(placements) * num_trials * 2  # x2: identification + ordering
-    pbar = tqdm(total=total, desc="E4 distance sweep", file=sys.stdout)
+    total = len(distances) * len(placements) * num_trials * len(alphas)
+    pbar = tqdm(total=total, desc="E4 distance sweep (ordering)", file=sys.stdout)
 
     for distance in distances:
         for placement in placements:
             for trial_idx in range(num_trials):
                 layer_low, layer_high = _sample_layer_pair_with_distance(rng, distance, placement)
                 concept_low, concept_high = rng.sample(ALL_CONCEPTS, 2)
-                specs = [
-                    InjectionSpec(layer=layer_low, vector=load_vector(concept_low, layer_low, vec_type), alpha=alpha),
-                    InjectionSpec(layer=layer_high, vector=load_vector(concept_high, layer_high, vec_type), alpha=alpha),
-                ]
 
-                # --- identification (E2) ---
-                response = _generate(model, tokenizer, get_identification_messages(2), max_new_tokens, specs)
-                sims = [cosine_similarity(response, get_concept_description(c)) for c in (concept_low, concept_high)] if response else [0.0, 0.0]
-                trials.append({
-                    "task": "identification", "distance": distance, "placement": placement,
-                    "layer_low": layer_low, "layer_high": layer_high,
-                    "concept_low": concept_low, "concept_high": concept_high,
-                    "alpha": alpha, "response": response,
-                    "is_coherent": is_coherent(response), "sim_to_injected": sims,
-                })
-                pbar.update(1)
+                if rng.random() < 0.5:
+                    layer_a, concept_a, layer_b, concept_b = layer_low, concept_low, layer_high, concept_high
+                else:
+                    layer_a, concept_a, layer_b, concept_b = layer_high, concept_high, layer_low, concept_low
 
-                # --- ordering (E3) ---
-                response = _generate(model, tokenizer, get_ordering_messages(concept_low, concept_high), max_new_tokens, specs)
-                reported = parse_concept_choice(response, concept_low, concept_high)
-                trials.append({
-                    "task": "ordering", "distance": distance, "placement": placement,
-                    "layer_low": layer_low, "layer_high": layer_high,
-                    "concept_low": concept_low, "concept_high": concept_high,
-                    "alpha": alpha, "response": response,
-                    "is_coherent": is_coherent(response), "reported_concept": reported,
-                    "correct": (reported == concept_low) if reported is not None else None,
-                })
-                pbar.update(1)
+                for alpha in alphas:
+                    result = _run_ordering_item(model, tokenizer, layer_a, concept_a, alpha,
+                                                 layer_b, concept_b, alpha, vec_type, max_new_tokens)
+                    trials.append({
+                        "distance": distance, "placement": placement,
+                        "layer_low": layer_low, "layer_high": layer_high,
+                        "concept_low": concept_low, "concept_high": concept_high,
+                        "alpha": alpha, **result,
+                    })
+                    pbar.update(1)
 
     pbar.close()
     return trials
 
 
 @torch.inference_mode()
-def run_e5_alpha_ratio_sweep(model, tokenizer, layers, ratios, base_alpha, num_trials,
+def run_e5_alpha_ratio_sweep(model, tokenizer, layers, ratios, alphas, num_trials,
                               vec_type, max_new_tokens, seed):
     if len(layers) != 2:
         raise ValueError("E5 requires exactly 2 fixed layers (--layers l1 l2)")
     rng = random.Random(seed)
-    layer_a, layer_b = layers
+    layer_low, layer_high = sorted(layers)
     trials = []
-    total = len(ratios) * num_trials
-    pbar = tqdm(total=total, desc="E5 alpha-ratio sweep", file=sys.stdout)
+    total = len(ratios) * num_trials * len(alphas)
+    pbar = tqdm(total=total, desc="E5 dose-ratio sweep (ordering)", file=sys.stdout)
 
     for ratio in ratios:
-        alpha_a, alpha_b = base_alpha * ratio, base_alpha
         for trial_idx in range(num_trials):
-            concept_a, concept_b = rng.sample(ALL_CONCEPTS, 2)
-            specs = [
-                InjectionSpec(layer=layer_a, vector=load_vector(concept_a, layer_a, vec_type), alpha=alpha_a),
-                InjectionSpec(layer=layer_b, vector=load_vector(concept_b, layer_b, vec_type), alpha=alpha_b),
-            ]
+            concept_1, concept_2 = rng.sample(ALL_CONCEPTS, 2)
+            # Which physical layer gets label A (and therefore the boosted
+            # dose) is randomized per trial, independent of depth, so the
+            # ratio's effect on the reported letter isn't confounded with
+            # depth. Held fixed across the alpha sweep below (matched
+            # materials): only the base alpha varies for a given trial.
+            if rng.random() < 0.5:
+                layer_a, concept_a, layer_b, concept_b = layer_low, concept_1, layer_high, concept_2
+            else:
+                layer_a, concept_a, layer_b, concept_b = layer_high, concept_1, layer_low, concept_2
 
-            response = _generate(model, tokenizer, get_identification_messages(2), max_new_tokens, specs)
-            sims = [cosine_similarity(response, get_concept_description(c)) for c in (concept_a, concept_b)] if response else [0.0, 0.0]
-            trials.append({
-                "task": "identification", "ratio": ratio,
-                "layer_a": layer_a, "layer_b": layer_b,
-                "alpha_a": alpha_a, "alpha_b": alpha_b,
-                "concept_a": concept_a, "concept_b": concept_b,
-                "response": response, "is_coherent": is_coherent(response), "sim_to_injected": sims,
-            })
-            pbar.update(1)
+            for base_alpha in alphas:
+                alpha_a, alpha_b = base_alpha * ratio, base_alpha
+                result = _run_ordering_item(model, tokenizer, layer_a, concept_a, alpha_a,
+                                             layer_b, concept_b, alpha_b, vec_type, max_new_tokens)
+                trials.append({
+                    "ratio": ratio, "base_alpha": base_alpha,
+                    "layer_a": layer_a, "layer_b": layer_b,
+                    "alpha_a": alpha_a, "alpha_b": alpha_b,
+                    "concept_a": concept_a, "concept_b": concept_b,
+                    **result,
+                })
+                pbar.update(1)
 
     pbar.close()
     return trials
@@ -161,44 +218,39 @@ def run_e5_alpha_ratio_sweep(model, tokenizer, layers, ratios, base_alpha, num_t
 
 @torch.inference_mode()
 def run_e6_similarity_sweep(model, tokenizer, layers, similarity_reference_layer, num_buckets,
-                             alpha, num_trials, vec_type, max_new_tokens, seed):
+                             alphas, num_trials, vec_type, max_new_tokens, seed):
     if len(layers) != 2:
         raise ValueError("E6 requires exactly 2 fixed injection layers (--layers l1 l2), "
                           "held constant across buckets so only concept similarity varies")
     rng = random.Random(seed)
-    layer_a, layer_b = layers
+    layer_low, layer_high = sorted(layers)
     representatives = bucket_concept_pairs_by_similarity(
         similarity_reference_layer, num_buckets=num_buckets, vec_type=vec_type
     )
 
     trials = []
-    total = len(representatives) * num_trials
-    pbar = tqdm(total=total, desc="E6 similarity sweep", file=sys.stdout)
+    total = len(representatives) * num_trials * len(alphas)
+    pbar = tqdm(total=total, desc="E6 similarity sweep (ordering)", file=sys.stdout)
 
     for rep in representatives:
         for trial_idx in range(num_trials):
-            concept_a, concept_b = rep["pair"]
-            # Randomize which concept goes at which layer to avoid confounding
-            # concept identity with layer position across trials.
+            concept_1, concept_2 = rep["pair"]
             if rng.random() < 0.5:
-                concept_a, concept_b = concept_b, concept_a
-            specs = [
-                InjectionSpec(layer=layer_a, vector=load_vector(concept_a, layer_a, vec_type), alpha=alpha),
-                InjectionSpec(layer=layer_b, vector=load_vector(concept_b, layer_b, vec_type), alpha=alpha),
-            ]
+                layer_a, concept_a, layer_b, concept_b = layer_low, concept_1, layer_high, concept_2
+            else:
+                layer_a, concept_a, layer_b, concept_b = layer_high, concept_1, layer_low, concept_2
 
-            response = _generate(model, tokenizer, get_identification_messages(2), max_new_tokens, specs)
-            sims = [cosine_similarity(response, get_concept_description(c)) for c in (concept_a, concept_b)] if response else [0.0, 0.0]
-            trials.append({
-                "task": "identification",
-                "bucket": rep["bucket"], "concept_pair_similarity": rep["similarity"],
-                "similarity_reference_layer": similarity_reference_layer,
-                "layer_a": layer_a, "layer_b": layer_b,
-                "concept_a": concept_a, "concept_b": concept_b,
-                "alpha": alpha, "response": response,
-                "is_coherent": is_coherent(response), "sim_to_injected": sims,
-            })
-            pbar.update(1)
+            for alpha in alphas:
+                result = _run_ordering_item(model, tokenizer, layer_a, concept_a, alpha,
+                                             layer_b, concept_b, alpha, vec_type, max_new_tokens)
+                trials.append({
+                    "bucket": rep["bucket"], "concept_pair_similarity": rep["similarity"],
+                    "similarity_reference_layer": similarity_reference_layer,
+                    "layer_a": layer_a, "layer_b": layer_b,
+                    "concept_a": concept_a, "concept_b": concept_b,
+                    "alpha": alpha, **result,
+                })
+                pbar.update(1)
 
     pbar.close()
     return trials
@@ -209,11 +261,12 @@ def main():
     parser.add_argument("--experiments", type=str, nargs="+",
                          default=["e4_distance", "e5_alpha_ratio", "e6_similarity"],
                          choices=["e4_distance", "e5_alpha_ratio", "e6_similarity"])
-    parser.add_argument("--alpha", type=float, default=8.0,
-                         help="Base alpha; pick from Block 0's operating window")
+    parser.add_argument("--alphas", type=float, nargs="+", default=DEFAULT_ALPHAS,
+                         help="Sweep of base alpha (=z) values; materials are matched within a "
+                              "cell across this sweep (E5 crosses it with --alpha_ratios)")
     parser.add_argument("--num_trials", type=int, default=20)
     parser.add_argument("--vec_type", type=str, default="avg", choices=["avg", "last"])
-    parser.add_argument("--max_new_tokens", type=int, default=150)
+    parser.add_argument("--max_new_tokens", type=int, default=20)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--output_dir", type=str, default="plots")
 
@@ -243,24 +296,24 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     for experiment in args.experiments:
-        print(f"\n{'='*60}\nBLOCK 4 -- MODULATORS ({experiment})\n{'='*60}", flush=True)
+        print(f"\n{'='*60}\nEXPERIENCE 11 -- MODULATORS ({experiment})\n{'='*60}", flush=True)
 
         if experiment == "e4_distance":
             trials = run_e4_distance_sweep(
-                model, tokenizer, args.distances, args.placements, args.alpha,
+                model, tokenizer, args.distances, args.placements, args.alphas,
                 args.num_trials, args.vec_type, args.max_new_tokens, args.seed,
             )
             meta = {"distances": args.distances, "placements": args.placements}
         elif experiment == "e5_alpha_ratio":
             trials = run_e5_alpha_ratio_sweep(
-                model, tokenizer, args.layers, args.alpha_ratios, args.alpha,
+                model, tokenizer, args.layers, args.alpha_ratios, args.alphas,
                 args.num_trials, args.vec_type, args.max_new_tokens, args.seed,
             )
-            meta = {"layers": args.layers, "alpha_ratios": args.alpha_ratios, "base_alpha": args.alpha}
+            meta = {"layers": args.layers, "alpha_ratios": args.alpha_ratios}
         else:
             trials = run_e6_similarity_sweep(
                 model, tokenizer, args.layers, args.similarity_reference_layer,
-                args.num_similarity_buckets, args.alpha, args.num_trials,
+                args.num_similarity_buckets, args.alphas, args.num_trials,
                 args.vec_type, args.max_new_tokens, args.seed,
             )
             meta = {
@@ -273,7 +326,7 @@ def main():
         torch.save({
             "trials": trials,
             "experiment": experiment,
-            "alpha": args.alpha,
+            "alphas": args.alphas,
             "vec_type": args.vec_type,
             "num_trials": args.num_trials,
             "seed": args.seed,

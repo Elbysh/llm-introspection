@@ -1,176 +1,237 @@
-# Multi-Steering: Adapt Code & Build Experiment Pipeline
+# Multi-Steering: Adapting the Codebase to Experiments 9-11
 
 ## Context
 
-`plan_of_research.md` (already on this branch, `louis/multisteering`) lays out a 5-block
-experimental program testing whether Llama-3.1-8B-Instruct can introspect on **multiple
-simultaneous concept injections at different layers** — extending the repo's existing
-single-concept work (Lindsey 2025 replication in `code/experiments/position_detection.py`
-and `strength_comparison.py`).
+`plan_of_research.md` was rewritten wholesale into a psychophysics protocol (Experiences
+0-11). Multi-steering is no longer "Blocks 1-4" — it is now:
 
-The current codebase only injects **one vector at one layer** at a time
-(`code/utils/inject_concept_vector.py`), or one vector at **two token positions within a
-single layer** (`strength_comparison.py`'s `make_dual_injection_hook`). Nothing injects
-different vectors at different *layers* simultaneously, which is the core mechanic every
-block of the plan needs. There's also no sham/control-vector generator, no free-response
-grading, and no confusion-matrix / distance-sweep analysis — all required by Blocks 1-4.
+- **Experience 9** (`plan_of_research.md` §14) — counting distinct injections, k in {0..4}.
+- **Experience 10** (§15) — identifying the content of two injected concepts.
+- **Experience 11** (§16) — reporting the relative layer-depth order of two injections,
+  plus modulators (layer distance, absolute position, dose ratio, concept-pair similarity).
 
-This was planned in a sandbox with no GPU, no `torch`, and no SLURM client, so nothing was
-executed there. This pass produces **code + sbatch jobs** to submit on the cluster
-(`prod40`/`prod80`, matching the existing `jobs/*.sbatch` pattern) — not live experiment
-runs. Grading uses **local embedding similarity** (no LLM-judge API), and the sham/hook
-infra is written **fresh** rather than pulling in `origin/feat/random_vectors` /
-`origin/feat/gaussian_noise_dropout_hooks`.
+This document replaces the previous version of this plan (which targeted the old
+"Block 0-4 / H1-H6" structure) and replaces `next_steps.md`, whose to-do list was written
+against that old structure and against a calibration gate this pass no longer uses.
 
-Given the size of the plan, Phase 1 below delivers the **shared multi-injection
-infrastructure + Block 0 (calibration)**, meant to be validated end-to-end before Blocks
-1-4 are built on top of it as follow-up work, so the core injection engine doesn't need to
-be redesigned mid-way.
+**Scope decision: z ≡ alpha, no natural-scale calibration.** The new plan's dosing formula
+is `alpha = z * s(l, v)`, where `s(l, v)` is the natural variability of un-injected
+activations (Experience 0, §4). We are **not** implementing Experience 0 for this pass. `z`
+plays exactly the role the old code's `alpha` already plays: a raw amplitude multiplying a
+unit-normalized steering vector. Every place the plan writes `z`, this codebase reads
+`alpha`. CLI flags stay named `--alpha` (not `--z`) to avoid a pure-rename diff across four
+scripts and their sbatch jobs — this document just makes the equivalence explicit. One
+consequence: `calibration.py` / `jobs/calibration.sbatch` (the old Block 0 self-report
+sweep) is **not** a prerequisite gate for Exp 9-11 anymore, since there is no scale-derived
+operating window to compute from it. It can still be eyeballed informally to pick a
+reasonable alpha range, but nothing here depends on rerunning it.
 
----
+Everything below is scoped to Exp 9-11 only. Experiences 0-8 (single-injection
+psychophysics — 2AFC localization, presence detection, alpha vs. z comparison, the pilot in
+§17.6) are a separate workstream and out of scope here.
 
-## Phase 1: Core infra + Block 0
+## What's already reusable, unchanged
 
-### 1. `code/utils/multi_inject.py` — the engine every later block reuses
+From the Phase 1 infra (already implemented, still correct for this pass):
 
-Generalizes `inject_concept_vector.py`'s single-hook pattern to **K simultaneous
-injections at arbitrary (possibly repeated) layers**:
+- `code/utils/multi_inject.py` — the K-way injection engine (`InjectionSpec`,
+  `apply_multi_injection`). No changes needed.
+- `code/utils/sham_vectors.py` — `make_random_direction`, `infer_hidden_dim`. No changes.
+- `code/utils/embedding_judge.py`, `code/utils/concepts.py` — concept registry, cosine
+  similarity, distractor/bucket helpers. No changes.
+- `code/utils/response_parsing.py`'s `is_coherent`, `parse_count` — kept as-is (see Exp 9
+  below for why `parse_count` doesn't need touching).
 
-```python
-@dataclass
-class InjectionSpec:
-    layer: int
-    vector: torch.Tensor      # will be unit-normalized internally
-    alpha: float
-    token_range: tuple | None = None   # None = all tokens, prompt + every generated token
+## Per-experiment deltas
 
-@contextmanager
-def apply_multi_injection(model, specs: list[InjectionSpec]):
-    ...
-```
+### Experience 9 — counting (`code/experiments/multi_detection.py`)
 
-- Groups specs by `layer`, registers **one forward hook per distinct layer** on
-  `model.model.layers[l]`, summing each spec's `alpha * unit(vector)` contribution —
-  handles the (rare but real) case of two injections landing on the same layer.
-- Default `token_range=None` reproduces `inject_concept_vector.py`'s "inject at all
-  tokens" behavior, which — because hooks fire on every incremental decode step too —
-  keeps the injection *sustained through generation*, matching the plan's prompts
-  ("I may or may not have injected ... while processing this message").
-- Optional `token_range` per spec reuses the position-specific pattern from
-  `position_detection.py` / `strength_comparison.py`, for later logit-lens /
-  non-verbal-readout cross-checks (cross-cutting validity check #2).
-- Context manager guarantees hook removal even on exception (existing scripts do manual
-  `handle.remove()`, which leaks hooks on error paths).
+Current script implements the old Block 1 (`E1` count-report + `C1.1-C1.4`). Required
+changes:
 
-### 2. `code/utils/sham_vectors.py` — control vectors for C1.4 / C2.3
+1. **Prompt.** `all_prompts.py:get_count_report_messages()` currently asks an open "do you
+   detect any injected content? If so, how many..." question. Replace with §14.3's exact
+   wording, which forces a single-token numeric answer ("Answer with exactly one number: 0,
+   1, 2, 3, or 4"). `response_parsing.parse_count` already extracts a bare digit or number
+   word 0-4 and needs no change — it just gets a cleaner signal once the prompt is tightened.
+2. **Two dosing regimes (§14.2).** Add `--dose_regime {individual,budget}`:
+   - `individual` (current behavior): every injection gets the same `alpha` (=z).
+   - `budget` (new): fix `--z_total`, and for `k>0` set each injection's
+     `alpha_i = z_total / sqrt(k)`; `k=0` is unaffected (no formula applied, matching
+     §14.2's note that the sham has no injections to scale).
+   `build_specs()` needs to branch on this and `run_detection()` needs to record
+   `dose_regime`, `z_total` (when applicable), and the per-injection `alpha_i` list rather
+   than a single scalar `alpha` (today it records one shared `alpha` for all k slots, which
+   is only correct for the `individual` regime).
+3. **Layer pool.** `DEFAULT_LAYER_POOL = list(range(0, 32, 2))` only covers 16 of the 32
+   layers. §14.2/3.6 require drawing from all 32 blocks. Change the default to
+   `list(range(0, 32))`; `--layer_pool` can still be narrowed via CLI for cheaper runs.
+4. **Terminology fix, not a behavior change.** The script's `condition="sham"` currently
+   means "k random directions instead of k concepts, same alpha" — that is the plan's
+   *active control* (§14.4 step 6: "Repeter avec des directions aleatoires comme controle
+   actif"), not its *sham* (which is `k=0`, no injection at all — already covered by
+   `--k_values` including 0). Rename `condition` values from `{"real", "sham"}` to
+   `{"real", "random"}` so "sham" consistently means zero injections everywhere in the
+   codebase, matching Exp 10's fix below.
+5. Concept pool already has 10 concepts, comfortably above the "at least 4 distinct
+   concepts" requirement — no change.
 
-`make_random_direction(hidden_dim, seed) -> torch.Tensor`: deterministic, unit-norm,
-isotropic random direction (`torch.Generator().manual_seed(seed)`), generated on the fly
-per trial — no disk precompute needed (unlike real concept vectors, a sham direction
-carries no semantics to cache). `hidden_dim` inferred from an existing file under
-`data/saved_vectors/llama` (same trick as reading any saved concept vector's shape), so it
-never needs hardcoding to 4096.
+### Experience 10 — identify two injected concepts (`code/experiments/multi_identification.py`)
 
-### 3. `code/utils/response_parsing.py` — deterministic label extraction
+Current script implements the old Block 2 (`E2`/`C2.1-C2.3`). Required changes:
 
-Since grading is local/embedding-based rather than an LLM judge, free-text responses still
-need robust extraction of the structured part of the answer:
-- `parse_yes_no(text) -> bool | None`
-- `parse_count(text, max_k=4) -> int | None` (for E1, later)
-- `parse_scale_0_10(text) -> int | None` (for C1.3, later)
-- `is_coherent(text) -> bool`: cheap heuristic filter (min length, not degenerate/repeated
-  tokens, actually answers) standing in for the paper's `coherence_prompt` LLM check —
-  flagged and excluded from accuracy denominators, with the exclusion rate reported.
+1. **Conditions must match §15.2's four rows exactly:** (a) one concept, (b) two concepts,
+   (c) one concept + one random direction, (d) sham (zero injections). Today's
+   `CANONICAL_CONDITIONS` has `c2_1_single` (a), `e2_free`/`c2_2_forced_choice` (b, split
+   awkwardly by mode), and `c2_3_sham` (c, but named "sham" even though it's a random
+   direction, not zero injections). There is **no true zero-injection condition** yet.
+   Fixes:
+   - Add a `true_sham` condition with `n_injections=0` (empty spec list).
+   - Rename `c2_3_sham` → `concept_plus_random` and rename the `sham_slots` parameter/CLI
+     flag to `random_slots` throughout, so "sham" is reserved for zero injections.
+2. **Every condition runs in both response formats (§15.2, §15.5).** The plan evaluates all
+   four conditions in forced-choice *and* free-response, as separate trials, forced-choice
+   first so the candidate list can't contaminate the free-response wording (§15.4: "Elle
+   vient apres le choix force dans des essais distincts afin que la liste de candidats ne
+   contamine pas la reponse libre"). Today, mode is fixed per condition (forced-choice only
+   for `c2_2_forced_choice`, free only for the rest). Restructure to a 4 (conditions) x 2
+   (modes) matrix: for each sampled item (same drawn concepts/layers), run the forced-choice
+   prompt first, then a second, independent generation call with the free-response prompt on
+   the same injection — two trial records sharing an item id, sequenced in that order.
+3. **Forced-choice format (§15.3).** Needs a `NONE` option per slot and an answer of
+   "exactly two labels in alphabetical order," replacing today's open letter-set
+   exact-match. Concretely:
+   - `all_prompts.py:get_forced_choice_identification_messages` needs new wording matching
+     §15.3, and the candidate list needs a `NONE` entry (its own letter, per the existing
+     `CANDIDATE_LETTERS` scheme) alongside the concept distractors.
+   - New parser in `response_parsing.py`, e.g. `parse_two_label_choice(text, valid_labels)`,
+     tolerant of alphabetical-order formatting, returning up to two labels drawn from the
+     concept letters plus `NONE`'s letter.
+   - Grading in `identification_accuracy.py` needs a NONE-aware exact match: a random-slot's
+     correct label is `NONE`, a real-concept slot's correct label is its assigned letter.
+4. **Free-response format** stays close to today's `get_identification_messages` — just
+   needs to be sequenced after forced-choice per item (point 2) rather than run standalone.
+5. **Dosing.** Exp 10 only specifies one z per injection ("z identique pour chaque injection
+   dans l'analyse principale") — no budget-constant regime here, unlike Exp 9.
+6. **Layer pool** — same widening to all 32 layers as Exp 9.
+7. **Distractors** — current code already builds distractors from the full 10-concept pool
+   minus the injected concepts, satisfying §15.2's "regle de choix des distracteurs"
+   requirement; just needs the `NONE` entry added alongside them.
 
-### 4. `code/utils/embedding_judge.py` — local grading
+### Experience 11 — layer order + modulators (`code/experiments/layer_ordering.py`, `code/experiments/modulators.py`)
 
-Thin wrapper around `sentence-transformers` (new dependency): `embed(text)`,
-`cosine_similarity(response_text, concept_description) -> float`. Used in calibration to
-cross-check that an affirmative "yes I notice something" is *concept-specific* and not
-generic yes-bias, and reused as-is for Block 2's free-response grading later.
+Current scripts implement the old Block 3 (`E3`/`C3.1-C3.2`) and Block 4
+(`E4`/`E5`/`E6`, the last two hard-restricted to identification). Required changes:
 
-### 5. `code/utils/concepts.py` — concept registry (minimal now, extended later)
+1. **Prompt (§16.2).** `get_ordering_messages` currently narrates "Between {concept_1} and
+   {concept_2}, which one entered your processing first?" with the concept names filled
+   directly into a sentence. Replace with the plan's `A) {CONCEPT_1}` / `B) {CONCEPT_2}`
+   lettered format, answered with exactly one letter. This introduces a third
+   counterbalancing axis that doesn't exist today: which concept is labeled `A` vs. `B` is
+   independent of (i) which concept is actually shallow vs. deep, and (ii) the existing
+   `presentation_order` (`shallow_first`/`deep_first`, which today conflates "order named in
+   the sentence" with what should become "which letter it's given"). Add an independent
+   random `A`/`B` assignment per trial, and a strict new parser (e.g.
+   `parse_ab_choice(text) -> "A" | "B" | None`) replacing the current text-matching
+   `parse_concept_choice`, since the model is now answering with a letter, not naming the
+   concept.
+2. **Modulators target ordering, not identification (§16.5).** The plan applies all four
+   modulators — layer distance `|i-j|`, absolute position at fixed distance, dose ratio
+   `z_A/z_B`, and concept-pair cosine similarity — to Exp 11 (ordering). It specifies no
+   modulator sweep for Exp 10 at all. Today's `modulators.py` does the opposite for two of
+   the three sweeps: `run_e5_alpha_ratio_sweep` and `run_e6_similarity_sweep` are hard-wired
+   to identification (`get_identification_messages`, cosine-similarity scoring); only `E4`
+   (distance/placement) currently runs both tasks. Required change:
+   - Retarget `run_e5_alpha_ratio_sweep` and `run_e6_similarity_sweep` to use the new Exp 11
+     ordering prompt/parser instead of identification, scoring by the A/B-letter `correct`
+     field rather than concept-description cosine similarity.
+   - Retarget `run_e4_distance_sweep` to ordering only (drop or flag-gate the identification
+     arm, since it's no longer specified by the plan).
+   - Keep the existing `--distances`/`--placements` defaults and the
+     `_sample_layer_pair_with_distance` fallback for the extreme distances 1 and 31 — that
+     logic already satisfies §16.5's "distances extremes 1 et 31 ... si les hooks le
+     permettent."
+3. **Layer pool** — `layer_ordering.py`'s default also needs widening to all 32 layers
+   (`modulators.py`'s `ALL_LAYERS = list(range(0, 32))` is already correct).
+4. **Presentation-order control (C3.1)** stays valid but is now a 2x2 with the new A/B-label
+   assignment (order named x letter assigned), not a single axis.
 
-One-line canonical descriptions for the 10 existing concepts (5 from `complex_data.json`:
-`fibonacci_numbers, recursion, betrayal, appreciation, shutdown`; 5 from
-`simple_data.json`: `Dust, Satellites, Trumpets, Origami, Illusions`), used by
-`embedding_judge.py`. Kept small and separate from prompt templates so Block 2's
-candidate-list / cosine-similarity-bucket helpers (Block 4/E6) can extend it later without
-touching calibration.
+## Cross-cutting changes
 
-### 6. `code/experiments/calibration.py` — Block 0
+- **Layer pool default**: bump to `list(range(0, 32))` in `multi_detection.py`,
+  `multi_identification.py`, `layer_ordering.py` (`modulators.py` already uses the full
+  range). This roughly doubles the layer-combination space versus today's every-other-layer
+  default; manage cost via `--num_trials` / sbatch time budgets rather than narrowing the
+  pool, since the plan requires the full 32-layer draw.
+- **"sham" naming**: reserve it for zero injections everywhere. `multi_detection.py`'s
+  random-direction condition becomes `"random"`; `multi_identification.py`'s `sham_slots`
+  becomes `random_slots`, freeing up `sham` for the new true-zero-injection condition.
+- **Journaling (plan §18)**: no major gaps beyond what falls out of the changes above — dose
+  regime, per-injection alpha, and label/order assignments just need to land in the trial
+  records described per-experiment above. Existing records already capture layer, concept,
+  vec_type, seed-derived direction identity, and presentation order.
 
-Single-injection sweep using `apply_multi_injection` with a single `InjectionSpec`
-(K=1 is just the general engine's base case — this is also the first real exercise of the
-engine before Blocks 1-4 stack multiple specs on it):
+## Consequences for analysis scripts and sbatch jobs
 
-- Sweep `layer ∈ {0,2,...,30}` × `alpha ∈ {0, 1, 2, 4, 6, 8, 12, 16}` (α=0 doubles as the
-  null/false-positive condition — no separate no-injection branch needed).
-- Concept for each trial drawn randomly from the 10-concept pool (cross-cutting validity
-  check #4: randomize concept↔layer assignment).
-- Prompt: the plan's exact calibration prompt via `tokenizer.apply_chat_template`.
-- `model.generate(..., do_sample=False)` with injection sustained throughout (per engine
-  default).
-- Per trial, record: raw response text, `is_coherent`, `parse_yes_no` (did it claim
-  noticing something), `cosine_similarity(response, concept_description)` (is it the
-  *right* concept, not just generic anomaly-detection).
-- Save trial-level records as `.pt` (same convention as `strength_comparison.py`), one file
-  per run.
+- `code/analysis/count_confusion_matrix.py`: add a `dose_regime` split so the confusion
+  matrix and false-positive-rate tables can be reported separately for `individual` vs.
+  `budget`.
+- `code/analysis/identification_accuracy.py`: NONE-aware exact match for forced choice; a
+  false-identification check for the new true-sham condition (parallel to the existing
+  `sham_false_identification_rate`, which now applies to the renamed
+  `concept_plus_random` condition instead).
+- `code/analysis/ordering_accuracy.py`: switch from name-matched `reported_concept`/`correct`
+  fields to the new letter-based `reported_letter`/`correct_letter`; add a label-assignment
+  bias breakdown alongside the existing presentation-order bias breakdown.
+- `code/analysis/modulator_plots.py`: `plot_e5`/`plot_e6` currently score via
+  `identification_correct()` (cosine-similarity threshold) — switch to the ordering task's
+  `correct` field. `plot_e4` drops its identification panel (or keeps it behind a flag) once
+  `run_e4_distance_sweep` is ordering-only.
+- `jobs/multi_detection.sbatch`: add `--dose_regime` / `--z_total` (run `individual` and
+  `budget` as two submissions, or loop both inside one job); layer pool widens automatically
+  once the script's default changes (no `--layer_pool` flag is currently passed).
+- `jobs/multi_identification.sbatch`: `--run_all_conditions` needs to pick up the new
+  4x2 condition/mode matrix; downstream, `identification_accuracy.py --inputs` default list
+  needs updating to the new set of output filenames.
+- `jobs/layer_ordering.sbatch`: no flag changes required — picks up the new prompt/parser and
+  wider layer pool via the script's own defaults.
+- `jobs/modulators.sbatch`: `--experiments e4_distance e5_alpha_ratio e6_similarity` flag
+  names stay stable even though `e5_alpha_ratio`/`e6_similarity` now target ordering instead
+  of identification — no CLI change needed, only the scripts' internals.
 
-### 7. `code/analysis/calibration_accuracy.py`
+## Explicitly out of scope for this pass
 
-Loads calibration's saved trials, produces: detection-rate and false-positive-rate
-(α=0 rows) table by `(layer, alpha)`, a similarity-vs-baseline check, and a heatmap plot
-(reusing the `matplotlib` conventions in `plot_strength_comparison_adjusted.py`) — this is
-literally "select operating window for Blocks 1-4" from the plan.
+- Experience 0 (`s(l,v)` natural-scale calibration, SD/MAD) — not implemented; `z` is used
+  directly as the injection amplitude, per the scope decision above.
+- Experiences 1-8 (single-injection 2AFC localization, presence detection, alpha-vs-z
+  comparison, the §17.6 pilot) — separate workstream.
+- `code/experiments/calibration.py` / `jobs/calibration.sbatch` (old Block 0) — left as-is;
+  no longer a required gate before Exp 9-11, since there's no scale-derived window to
+  compute from it.
 
-### 8. `jobs/calibration.sbatch`
+## Next steps
 
-Same shape as `jobs/strength_comparison.sbatch` (source `.venv`, `cd data && PYTHONPATH=../code/utils uv run python ../code/experiments/calibration.py ...`, `prod40`, 4h).
-
-### 9. `pyproject.toml`
-
-Add `sentence-transformers` (embedding grading) and `scipy` (binomial tests needed
-starting Block 3's C3.2 — adding now avoids a second dependency-touching PR).
-
----
-
-## Phase 2 (follow-up): Blocks 1-4
-
-Recorded here so the file layout is planned ahead, not built in Phase 1:
-
-- `code/experiments/multi_detection.py` (Block 1, E1 + C1.1-C1.4) — first real multi-spec
-  use of `apply_multi_injection` (K ∈ {0..4} distinct layers), sham specs via
-  `sham_vectors.py` for C1.4.
-- `code/experiments/multi_identification.py` (Block 2, E2 + C2.1-C2.3) — free response
-  graded via `embedding_judge.py`; forced-choice (C2.2) via `response_parsing`'s
-  letter-parser (new, small addition) against a randomized 10-concept candidate list from
-  `concepts.py`.
-- `code/experiments/layer_ordering.py` (Block 3, E3 + C3.1-C3.2) — 2AFC "first/second"
-  parser, `scipy.stats.binomtest` vs 50%.
-- `code/experiments/modulators.py` (Block 4, E4/E5/E6) — thin parametrized wrappers around
-  the Block 2/3 scripts sweeping `|layer_i - layer_j|`, `alpha_i/alpha_j`, and a
-  cosine-similarity-bucketed concept-pair selector (new helper in `concepts.py` that reads
-  `data/saved_vectors/llama` directly, no new precompute).
-- `code/analysis/count_confusion_matrix.py`, `identification_accuracy.py`,
-  `ordering_accuracy.py`, `modulator_plots.py` — one analysis script per block, following
-  the existing `compute_position_detection_accuracy.py` / `generate_adjusted_accuracy_table.py` pattern.
-- Matching `jobs/*.sbatch` per script.
-
----
-
-## Verification plan (for whoever implements Phase 1)
-
-No real model is available in the environment this plan was written in, so implementation
-should:
-1. **Static review** of `multi_inject.py` against the existing single-injection behavior in
-   `inject_concept_vector.py` and the dual-position hook in `strength_comparison.py` —
-   confirm the K=1, single-layer case reduces to identical tensor math.
-2. **Synthetic hook test** (`code/utils/test_multi_inject.py`): a tiny fake decoder stack
-   (a few `nn.Module`s returning `(hidden_states,)` tuples, small hidden dim, no HF
-   download) exercising `apply_multi_injection` with multiple specs — asserts per-layer
-   additive combination, correct broadcasting, and hook cleanup on exception. This needs
-   only CPU `torch`, not the 8B model, so it can run without cluster access.
-3. Submit `jobs/calibration.sbatch` on the cluster; `calibration_accuracy.py`'s output
-   table is the actual go/no-go signal for picking Blocks 1-4's operating window before
-   writing Phase 2.
+1. Update `all_prompts.py`: rewrite `get_count_report_messages`, the forced-choice
+   identification prompt (+ `NONE` handling), and `get_ordering_messages` (A/B lettered) to
+   match §14.3 / §15.3 / §16.2 verbatim.
+2. Extend `response_parsing.py`: add `parse_ab_choice` (Exp 11) and
+   `parse_two_label_choice` (Exp 10, letters + `NONE`); `parse_count` needs no change.
+3. Update `multi_detection.py`: add `--dose_regime {individual,budget}` + `--z_total`, widen
+   the default layer pool to 32, rename `condition="sham"` → `"random"`.
+4. Update `multi_identification.py`: add the true zero-injection sham condition, cross all
+   four conditions with both response formats (forced-choice before free-response per item),
+   rewire forced-choice to the `NONE`/alphabetical-order format, rename
+   `sham_slots`→`random_slots`, widen the layer pool.
+5. Update `layer_ordering.py`: add independent A/B label counterbalancing, new prompt and
+   parser, widen the layer pool.
+6. Update `modulators.py`: retarget `E5`/`E6` (and `E4`'s primary arm) from identification to
+   ordering, using the new Exp 11 prompt/parser.
+7. Update the four analysis scripts (`identification_accuracy.py`, `ordering_accuracy.py`,
+   `modulator_plots.py`, `count_confusion_matrix.py`) for the record-schema changes above.
+8. Update `jobs/multi_detection.sbatch` and `jobs/multi_identification.sbatch` for the new
+   CLI flags / output filenames; `layer_ordering.sbatch` and `modulators.sbatch` need no flag
+   changes.
+9. Smoke-test all four scripts with a small `--num_trials` locally/interactively before
+   resubmitting full sbatch runs.
+10. Resubmit `multi_detection`, `multi_identification`, `layer_ordering`, `modulators` on the
+    cluster, then rerun the updated analysis scripts.

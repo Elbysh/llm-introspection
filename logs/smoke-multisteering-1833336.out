@@ -1,0 +1,100 @@
+=== multi_detection.py (individual) ===
+Loading model...
+Model loaded!
+
+============================================================
+EXPERIENCE 9 -- COUNTING
+============================================================
+K values: [0, 1, 2]
+Conditions: ['real', 'random']
+Prompt styles: ['count']
+Dose regime: individual
+Alpha: 8.0
+Z_total: 16.0
+Trials per cell: 2
+detection trials:   0%|          | 0/12 [00:00<?, ?it/s]detection trials:   8%|▊         | 1/12 [00:07<01:27,  7.93s/it]detection trials:  25%|██▌       | 3/12 [00:08<00:19,  2.14s/it]detection trials:  33%|███▎      | 4/12 [00:10<00:16,  2.12s/it]detection trials:  50%|█████     | 6/12 [00:10<00:06,  1.12s/it]detection trials:  75%|███████▌  | 9/12 [00:10<00:01,  1.77it/s]detection trials:  92%|█████████▏| 11/12 [00:12<00:00,  1.34it/s]detection trials: 100%|██████████| 12/12 [00:14<00:00,  1.01it/s]detection trials: 100%|██████████| 12/12 [00:14<00:00,  1.24s/it]
+
+Saved 12 trials to ../plots/smoke/multi_detection_trials_individual.pt
+=== multi_detection.py (budget) ===
+Loading model...
+Model loaded!
+
+============================================================
+EXPERIENCE 9 -- COUNTING
+============================================================
+K values: [0, 1, 2]
+Conditions: ['real']
+Prompt styles: ['count']
+Dose regime: budget
+Alpha: 8.0
+Z_total: 16.0
+Trials per cell: 2
+detection trials:   0%|          | 0/6 [00:00<?, ?it/s]detection trials:  17%|█▋        | 1/6 [00:04<00:21,  4.30s/it]detection trials:  50%|█████     | 3/6 [00:05<00:04,  1.53s/it]detection trials:  67%|██████▋   | 4/6 [00:07<00:03,  1.71s/it]detection trials:  83%|████████▎ | 5/6 [00:07<00:01,  1.18s/it]detection trials: 100%|██████████| 6/6 [00:09<00:00,  1.46s/it]detection trials: 100%|██████████| 6/6 [00:09<00:00,  1.60s/it]
+
+Saved 6 trials to ../plots/smoke/multi_detection_trials_budget.pt
+=== multi_identification.py ===
+Loading model...
+Model loaded!
+
+============================================================
+EXPERIENCE 10 -- IDENTIFICATION (single_concept)
+============================================================
+n_real=1, n_random=0
+identification trials:   0%|          | 0/4 [00:00<?, ?it/s]identification trials:  25%|██▌       | 1/4 [00:06<00:18,  6.25s/it]identification trials:  50%|█████     | 2/4 [00:12<00:12,  6.17s/it]identification trials:  75%|███████▌  | 3/4 [00:15<00:04,  4.79s/it]identification trials: 100%|██████████| 4/4 [00:18<00:00,  4.13s/it]identification trials: 100%|██████████| 4/4 [00:18<00:00,  4.66s/it]
+Saved 4 trials to ../plots/smoke/multi_identification_trials_single_concept.pt
+
+============================================================
+EXPERIENCE 10 -- IDENTIFICATION (two_concepts)
+============================================================
+n_real=2, n_random=0
+identification trials:   0%|          | 0/4 [00:00<?, ?it/s]identification trials:  25%|██▌       | 1/4 [00:00<00:01,  2.03it/s]identification trials:  50%|█████     | 2/4 [00:03<00:04,  2.17s/it]identification trials:  75%|███████▌  | 3/4 [00:07<00:02,  2.71s/it]identification trials: 100%|██████████| 4/4 [00:10<00:00,  2.94s/it]identification trials: 100%|██████████| 4/4 [00:10<00:00,  2.62s/it]
+Saved 4 trials to ../plots/smoke/multi_identification_trials_two_concepts.pt
+
+============================================================
+EXPERIENCE 10 -- IDENTIFICATION (concept_plus_random)
+============================================================
+n_real=1, n_random=1
+identification trials:   0%|          | 0/4 [00:00<?, ?it/s]identification trials:  25%|██▌       | 1/4 [00:00<00:00,  5.30it/s]identification trials:  50%|█████     | 2/4 [00:03<00:04,  2.00s/it]identification trials:  75%|███████▌  | 3/4 [00:06<00:02,  2.59s/it]identification trials: 100%|██████████| 4/4 [00:10<00:00,  2.86s/it]identification trials: 100%|██████████| 4/4 [00:10<00:00,  2.51s/it]
+Saved 4 trials to ../plots/smoke/multi_identification_trials_concept_plus_random.pt
+
+============================================================
+EXPERIENCE 10 -- IDENTIFICATION (sham)
+============================================================
+n_real=0, n_random=0
+identification trials:   0%|          | 0/4 [00:00<?, ?it/s]identification trials:  25%|██▌       | 1/4 [00:00<00:00,  4.86it/s]identification trials:  50%|█████     | 2/4 [00:03<00:03,  1.99s/it]identification trials:  75%|███████▌  | 3/4 [00:03<00:01,  1.18s/it]identification trials: 100%|██████████| 4/4 [00:06<00:00,  2.00s/it]identification trials: 100%|██████████| 4/4 [00:06<00:00,  1.73s/it]
+Saved 4 trials to ../plots/smoke/multi_identification_trials_sham.pt
+=== layer_ordering.py ===
+Loading model...
+Model loaded!
+
+============================================================
+EXPERIENCE 11 -- LAYER-DEPTH ORDERING
+============================================================
+Alpha: 8.0
+Trials: 3
+Label assignments: ['shallow_is_a', 'shallow_is_b']
+ordering trials:   0%|          | 0/6 [00:00<?, ?it/s]ordering trials:  17%|█▋        | 1/6 [00:08<00:40,  8.17s/it]ordering trials:  33%|███▎      | 2/6 [00:08<00:14,  3.61s/it]ordering trials:  50%|█████     | 3/6 [00:09<00:06,  2.18s/it]ordering trials:  67%|██████▋   | 4/6 [00:09<00:02,  1.48s/it]ordering trials:  83%|████████▎ | 5/6 [00:09<00:01,  1.13s/it]ordering trials: 100%|██████████| 6/6 [00:10<00:00,  1.13it/s]ordering trials: 100%|██████████| 6/6 [00:10<00:00,  1.73s/it]
+
+Saved 6 trials to ../plots/smoke/layer_ordering_trials.pt
+=== modulators.py ===
+Loading model...
+Model loaded!
+
+============================================================
+EXPERIENCE 11 -- MODULATORS (e4_distance)
+============================================================
+E4 distance sweep (ordering):   0%|          | 0/8 [00:00<?, ?it/s]E4 distance sweep (ordering):  12%|█▎        | 1/8 [00:05<00:40,  5.81s/it]E4 distance sweep (ordering):  25%|██▌       | 2/8 [00:06<00:16,  2.67s/it]E4 distance sweep (ordering):  38%|███▊      | 3/8 [00:06<00:07,  1.54s/it]E4 distance sweep (ordering):  50%|█████     | 4/8 [00:06<00:04,  1.00s/it]E4 distance sweep (ordering):  62%|██████▎   | 5/8 [00:07<00:02,  1.24it/s]E4 distance sweep (ordering):  75%|███████▌  | 6/8 [00:07<00:01,  1.46it/s]E4 distance sweep (ordering): 100%|██████████| 8/8 [00:07<00:00,  2.52it/s]E4 distance sweep (ordering): 100%|██████████| 8/8 [00:07<00:00,  1.03it/s]
+Saved 8 trials to ../plots/smoke/modulators_trials_e4_distance.pt
+
+============================================================
+EXPERIENCE 11 -- MODULATORS (e5_alpha_ratio)
+============================================================
+E5 dose-ratio sweep (ordering):   0%|          | 0/4 [00:00<?, ?it/s]E5 dose-ratio sweep (ordering):  25%|██▌       | 1/4 [00:00<00:01,  2.06it/s]E5 dose-ratio sweep (ordering):  50%|█████     | 2/4 [00:00<00:00,  2.17it/s]E5 dose-ratio sweep (ordering):  75%|███████▌  | 3/4 [00:01<00:00,  2.24it/s]E5 dose-ratio sweep (ordering): 100%|██████████| 4/4 [00:01<00:00,  2.07it/s]E5 dose-ratio sweep (ordering): 100%|██████████| 4/4 [00:01<00:00,  2.11it/s]
+Saved 4 trials to ../plots/smoke/modulators_trials_e5_alpha_ratio.pt
+
+============================================================
+EXPERIENCE 11 -- MODULATORS (e6_similarity)
+============================================================
+E6 similarity sweep (ordering):   0%|          | 0/6 [00:00<?, ?it/s]E6 similarity sweep (ordering):  17%|█▋        | 1/6 [00:00<00:02,  2.29it/s]E6 similarity sweep (ordering):  33%|███▎      | 2/6 [00:00<00:01,  2.34it/s]E6 similarity sweep (ordering):  50%|█████     | 3/6 [00:01<00:01,  2.33it/s]E6 similarity sweep (ordering):  67%|██████▋   | 4/6 [00:01<00:00,  2.37it/s]E6 similarity sweep (ordering):  83%|████████▎ | 5/6 [00:01<00:00,  2.77it/s]E6 similarity sweep (ordering): 100%|██████████| 6/6 [00:02<00:00,  2.82it/s]E6 similarity sweep (ordering): 100%|██████████| 6/6 [00:02<00:00,  2.61it/s]
+Saved 6 trials to ../plots/smoke/modulators_trials_e6_similarity.pt
+=== SMOKE TEST DONE ===
