@@ -136,6 +136,25 @@ def get_localization_messages(first_sentence, second_sentence, label_order):
     ]
 
 
+def localization_char_spans(prompt, labels, sentences):
+    """Character bounds of each printed sentence in the prompt, label excluded.
+
+    Experiment 0 calibrates s(l, v) on exactly the tokens Experiment 1 perturbs, so
+    the manifest it ingests has to locate them with this rule rather than a copy of
+    it. Bounds are in physical order: index 0 is the first printed sentence.
+    """
+    spans = []
+    for label, sentence in zip(labels, sentences):
+        marker = f"{label}) {sentence}"
+        start_char = prompt.find(marker)
+        if start_char == -1:
+            raise ValueError(f"sentence marker not found in prompt: {marker!r}")
+        # The label is context, not part of the perturbed sentence.
+        start_char += len(f"{label}) ")
+        spans.append((start_char, start_char + len(sentence)))
+    return spans
+
+
 def build_localization_prompt(tokenizer, first_sentence, second_sentence, label_order):
     """Return the prompt, the token range of each sentence, its label, and the encoding.
 
@@ -169,16 +188,9 @@ def build_localization_prompt(tokenizer, first_sentence, second_sentence, label_
     encoding = {k: v for k, v in encoding_with_offsets.items() if k != "offset_mapping"}
 
     labels = ["A", "B"] if label_order == "AB" else ["B", "A"]
+    spans = localization_char_spans(prompt, labels, (first_sentence, second_sentence))
     ranges = []
-    for label, sentence in zip(labels, (first_sentence, second_sentence)):
-        marker = f"{label}) {sentence}"
-        start_char = prompt.find(marker)
-        if start_char == -1:
-            raise ValueError(f"sentence marker not found in prompt: {marker!r}")
-        # The label is context, not part of the perturbed sentence.
-        start_char += len(f"{label}) ")
-        end_char = start_char + len(sentence)
-
+    for label, (start_char, end_char) in zip(labels, spans):
         token_start = token_end = None
         for index in range(len(offsets)):
             tok_start = offsets[index][0].item()

@@ -9,6 +9,22 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
+# Which tokens of a declared target span are admissible.
+#
+# `all_sentence_tokens` keeps the tokens strictly inside the span and refuses a token
+# that straddles its boundary. That is the right rule when the span is already token
+# aligned, as it is when a sentence is rendered on its own.
+#
+# `all_overlapping_sentence_tokens` keeps every token that overlaps the span. It is
+# the rule the behavioural context needs: inside the 2AFC prompt the first token of a
+# sentence also carries the space of its "A) " label and the last one carries the
+# newline that follows, so a token-aligned span does not exist. Experiment 1 perturbs
+# those two tokens (`build_localization_prompt` takes every overlapping token), and
+# section 3.7 of the protocol says the intervention targets every token of the
+# sentence, so the calibration has to sample them too or it estimates s(l, v) on a
+# strict subset of what the experiment perturbs.
+POSITION_POLICIES = {"all_sentence_tokens", "all_overlapping_sentence_tokens"}
+
 
 def repo_path(value: str) -> Path:
     path = Path(value)
@@ -184,8 +200,10 @@ class Experiment0Config:
             raise ValueError("presentation.template must contain {sentence} exactly once")
         if self.presentation_mode == "external_manifest" and self.context_manifest is None:
             raise ValueError("external_manifest presentation requires presentation.manifest")
-        if self.position_policy != "all_sentence_tokens":
-            raise ValueError("only the explicit all_sentence_tokens policy is implemented")
+        if self.position_policy not in POSITION_POLICIES:
+            raise ValueError(
+                "position_policy must be one of {}".format(sorted(POSITION_POLICIES))
+            )
         if self.point_weighting != "equal_token":
             raise ValueError("only point_weighting=equal_token is implemented")
         if self.bootstrap_unit != "sentence":

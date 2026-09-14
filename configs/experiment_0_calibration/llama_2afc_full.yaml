@@ -1,0 +1,94 @@
+# Experiment 0 — natural directional-scale calibration, behavioural 2AFC context.
+#
+# Replaces the isolated-sentence context of development_full.yaml, which put the
+# first token of every sentence at position 0 — the attention-sink slot Llama fills
+# with a massive activation, and a position Experiment 1 never perturbs. s(l, v) was
+# therefore estimated on a distribution absent from the experiment, and every
+# z-matched result inherited the defect. See
+# docs/livrables/calibration-contexte-probleme-et-correctif.md.
+#
+# Everything else is held fixed against development_full.yaml — same corpus, same
+# layers, same concepts, same direction seeds — so the only quantity that changes
+# between the two calibrations is the presentation context.
+#
+# Still development, for reasons unrelated to the context: the model revisions are
+# mutable and the concept development/hold-out split is unassigned. Both are
+# scientific decisions owed before freezing.
+protocol:
+  version: "2026-09-14"
+  status: development
+
+model:
+  name: meta-llama/Llama-3.1-8B-Instruct
+  # Replace `main` with immutable Hugging Face commit hashes before freezing.
+  revision: main
+  tokenizer_revision: main
+
+# Section 4.3: outputs of all 32 Transformer decoder blocks.
+layers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+activation_site: decoder_block_output
+
+presentation:
+  # The exact Experiment 1 prompt: 50 length-matched pairs of the 100 corpus
+  # sentences, each rendered in both physical orders and both label orders, so every
+  # sentence appears four times and twice in each slot. 200 contexts, 2464 admissible
+  # positions, balanced over slot and label. Regenerate with
+  #   python code/experiments/build_2afc_calibration_manifest.py
+  # The targets carry the sentence bounds inside the prompt, label excluded, and no
+  # target is ever at position 0. The policy keeps every token that OVERLAPS those
+  # bounds, which is the set Experiment 1 perturbs: inside the prompt the first token
+  # of a sentence also carries the space of its "A) " label and the last one the
+  # newline that follows, so a token-aligned span does not exist here.
+  context_id: localization_2afc_prompt
+  mode: external_manifest
+  manifest: data/experiment_0_calibration/contexts_2afc_llama.jsonl
+  position_policy: all_overlapping_sentence_tokens
+
+directions:
+  concept_vector_type: avg
+  # HF hidden_states[0] is the embedding output; decoder block l is l + 1.
+  hidden_state_offset: 1
+  concepts:
+    # The protocol requires a development/hold-out split, but does not yet say
+    # which concepts belong to which side. Do not fabricate that scientific
+    # choice: a frozen configuration is rejected while any split is unassigned.
+    - {name: Dust, dataset: simple_data, split: unassigned}
+    - {name: Satellites, dataset: simple_data, split: unassigned}
+    - {name: Trumpets, dataset: simple_data, split: unassigned}
+    - {name: Origami, dataset: simple_data, split: unassigned}
+    - {name: Illusions, dataset: simple_data, split: unassigned}
+    - {name: fibonacci_numbers, dataset: complex_data, split: unassigned}
+    - {name: recursion, dataset: complex_data, split: unassigned}
+    - {name: betrayal, dataset: complex_data, split: unassigned}
+    - {name: appreciation, dataset: complex_data, split: unassigned}
+    - {name: shutdown, dataset: complex_data, split: unassigned}
+  fixed_random:
+    count_per_layer: 10
+    # Matches data/saved_vectors/llama/random_s{sample}_{block}_avg.pt.
+    base_seed: 2026091001
+    layer_stride: 100000
+  renewed_noise:
+    # One independent direction for each (block, admissible token). Increase
+    # this only when the later trial plan requires repeated noise realizations.
+    repetitions_per_position: 1
+    # A separate interval owns all token-specific noise seeds.
+    base_seed: 1000000000
+
+statistics:
+  # Point estimates pool admissible tokens; uncertainty resamples whole
+  # sentences and retains every token belonging to each sampled sentence.
+  point_weighting: equal_token
+  bootstrap_unit: sentence
+  bootstrap_resamples_sd: 1000
+  bootstrap_resamples_mad: 200
+  bootstrap_seed: 2026091003
+  ci_level: 0.95
+
+execution:
+  batch_size: 16
+  direction_chunk_size: 128
+
+paths:
+  concept_vectors: data/saved_vectors/llama
+  plan_dir: data/experiment_0_calibration/plans/llama_2afc_full
+  output_dir: results/experiment_0_calibration_2afc
