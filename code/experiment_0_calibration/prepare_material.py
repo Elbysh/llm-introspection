@@ -84,6 +84,7 @@ def build_context_and_observation_rows(
     else:
         specifications = read_jsonl(config.context_manifest)
 
+    keeps_boundary_tokens = config.position_policy == "all_overlapping_sentence_tokens"
     context_ids = [row["context_id"] for row in specifications]
     if len(context_ids) != len(set(context_ids)):
         raise ValueError("presentation context IDs must be unique")
@@ -122,11 +123,11 @@ def build_context_and_observation_rows(
                     continue
                 overlaps = start < char_end and end > char_start
                 contained = start >= char_start and end <= char_end
-                if overlaps and not contained:
+                if overlaps and not contained and not keeps_boundary_tokens:
                     raise ValueError(
                         "ambiguous token boundary for {} in {}".format(sentence_id, context_id)
                     )
-                if not contained:
+                if not (contained or (overlaps and keeps_boundary_tokens)):
                     continue
                 observation_id = "{}__target_{:02d}__token_{:04d}".format(
                     context_id, target_index, sentence_token_index
@@ -160,6 +161,10 @@ def build_context_and_observation_rows(
                     "sentence_char_end": char_end,
                     "admissible_token_positions": admissible_positions,
                 }
+            )
+        if keeps_boundary_tokens and len(context_positions) != len(set(context_positions)):
+            raise ValueError(
+                "a boundary token belongs to two targets in {}".format(context_id)
             )
         contexts.append(
             {
