@@ -1,0 +1,416 @@
+=== Stage 1/4: fixed-random direction bank ===
+Fixed-random bank already present, skipping
+=== Stage 2/4: concept vectors ===
+All Experiment 0 concept vectors already exist
+=== Stage 3/4: material plan ===
+{
+  "config_sha256": "20ce1ea5fcca57d325888769d1466763fb24adf56ffd488694fdd5d5dc54773b",
+  "direction_counts_by_decoder_block": {
+    "0": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "1": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "10": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "11": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "12": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "13": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "14": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "15": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "16": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "17": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "18": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "19": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "2": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "20": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "21": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "22": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "23": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "24": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "25": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "26": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "27": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "28": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "29": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "3": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "30": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "31": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "32": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "33": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "34": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "35": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "36": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "37": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "38": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "39": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "4": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "40": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "41": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "42": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "43": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "44": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "45": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "46": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "47": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "48": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "49": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "5": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "50": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "51": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "52": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "53": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "54": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "55": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "56": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "57": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "58": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "59": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "6": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "60": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "61": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "62": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "63": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "7": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "8": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "9": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    }
+  },
+  "direction_counts_by_family": {
+    "concept": 640,
+    "fixed_random": 640,
+    "renewed_noise": 39424,
+    "scrambled_concept": 640
+  },
+  "experiment_id": "experiment_0_natural_directional_scale",
+  "model_name": "Qwen/Qwen3.8-27B",
+  "model_revision": "main",
+  "n_contexts": 100,
+  "n_directions": 41344,
+  "n_observations": 616,
+  "n_sentences": 100,
+  "point_weighting": "equal_token",
+  "position_policy": "all_sentence_tokens",
+  "presentation_context": "isolated_sentence_development",
+  "protocol_status": "development",
+  "protocol_version": "2026-09-10",
+  "tokenizer_class": "Qwen2Tokenizer",
+  "tokenizer_revision": "main",
+  "torch_version": "2.14.0+cu130"
+}
+=== Stage 4/4: calibration ===

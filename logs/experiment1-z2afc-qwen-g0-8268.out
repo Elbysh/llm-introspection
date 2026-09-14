@@ -1,0 +1,54 @@
+========================================================================
+EXPERIMENT 1: 2AFC LOCALIZATION, ALPHA- AND Z-MATCHED PSYCHOMETRICS
+========================================================================
+Model:       Qwen/Qwen3.8-27B
+Calibration: /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment_0_calibration_qwen38_27b_2afc (config=configs/experiment_0_calibration/qwen38_27b_2afc.yaml, estimator=sd)
+Layers:      [3, 6, 8]
+Families:    ['concept', 'random', 'noise', 'dropout']
+Matchings:   ['z']
+Alpha doses: [0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0]
+z doses:     [0.0078, 0.0156, 0.0312, 0.0625, 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.0, 1024.0]
+Output:      /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-qwen-g0
+Pairs:       5 (largest token-length gap 0)
+Forward passes: 23760 perturbed + 20 sham
+Directions:  21 rebuilt and matched to their calibrated norms
+Model loaded.
+Answer token ids: A=357 ('ĠA'), B=417 ('ĠB')
+Prompt tail: 'end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nThe answer is'
+Perturbed spans: [' The sun sets behind the mountains.', ' The river flows to the sea.']
+Running 20 shams...
+
+Saved 23780 trials to /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-qwen-g0/trials.csv
+Saved summary to /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-qwen-g0/summary.json
+
+Thresholds (blank when 75% is not bracketed in the tested range):
+ layer    family  matching    metric  acc@peak  threshold75              bracket
+     3   concept         z       raw       96%                            [2, 4]
+     3   concept         z  adjusted       85%                            [2, 4]
+     3   dropout         z       raw       88%                         [64, 128]
+     3   dropout         z  adjusted       88%          365           [128, 256]
+     3     noise         z       raw       98%          196            [64, 128]
+     3     noise         z  adjusted       92%        935.8            [64, 128]
+     3    random         z       raw       99%        148.7            [64, 128]
+     3    random         z  adjusted       93%        331.4            [64, 128]
+     6   concept         z       raw       98%                           [8, 16]
+     6   concept         z  adjusted       92%                           [8, 16]
+     6   dropout         z       raw       86%        330.4           [128, 256]
+     6   dropout         z  adjusted       72%                                  
+     6     noise         z       raw       95%                        [128, 256]
+     6     noise         z  adjusted       82%                         [64, 128]
+     6    random         z       raw       94%        263.8           [128, 256]
+     6    random         z  adjusted       83%        704.9           [128, 256]
+     8   concept         z       raw       98%                          [16, 32]
+     8   concept         z  adjusted       89%                          [32, 64]
+     8   dropout         z       raw       95%        328.7           [256, 512]
+     8   dropout         z  adjusted       79%        641.5           [256, 512]
+     8     noise         z       raw       89%        635.8           [128, 256]
+     8     noise         z  adjusted       82%                         [64, 128]
+     8    random         z       raw       89%         1007            [64, 128]
+     8    random         z  adjusted       85%                         [64, 128]
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-qwen-g0/curves_layer3.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-qwen-g0/curves_layer6.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-qwen-g0/curves_layer8.png
+
+EXPERIMENT COMPLETE

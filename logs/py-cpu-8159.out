@@ -1,0 +1,49 @@
+model_type detected: llama
+Computing baseline mean from 4 words over 3 layers...
+
+Computed 2 steering vectors per layer for 3 layers (each with last and avg variants)
+Computing baseline mean from 4 words...
+
+Computed 2 steering vectors (each with last and avg variants)
+Computing baseline mean from 4 words...
+
+Computed 2 steering vectors (each with last and avg variants)
+Computing baseline mean from 4 words...
+
+Computed 2 steering vectors (each with last and avg variants)
+simple_data: bitwise identical across layers [0, 1, 2]
+
+Processing fibonacci_numbers: 2 pos, 2 neg over 3 layers
+
+Processing recursion: 2 pos, 2 neg over 3 layers
+
+Computed 2 steering vectors per layer for 3 layers (each with last and avg variants)
+data keys: dict_keys(['fibonacci_numbers', 'recursion'])
+concept_name: fibonacci_numbers
+
+Processing fibonacci_numbers: 2 pos, 2 neg
+concept_name: recursion
+
+Processing recursion: 2 pos, 2 neg
+
+Computed 2 steering vectors (each with last and avg variants)
+data keys: dict_keys(['fibonacci_numbers', 'recursion'])
+concept_name: fibonacci_numbers
+
+Processing fibonacci_numbers: 2 pos, 2 neg
+concept_name: recursion
+
+Processing recursion: 2 pos, 2 neg
+
+Computed 2 steering vectors (each with last and avg variants)
+data keys: dict_keys(['fibonacci_numbers', 'recursion'])
+concept_name: fibonacci_numbers
+
+Processing fibonacci_numbers: 2 pos, 2 neg
+concept_name: recursion
+
+Processing recursion: 2 pos, 2 neg
+
+Computed 2 steering vectors (each with last and avg variants)
+complex_data: bitwise identical across layers [0, 1, 2]
+EQUIVALENCE OK

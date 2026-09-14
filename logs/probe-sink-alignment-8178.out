@@ -1,0 +1,41 @@
+
+blk  ||h_pos0||  ||h_ailleurs||   rapport
+  1       546.8            1.70     321.0
+  5       546.8            5.03     108.7
+  9       547.0            7.69      71.1
+ 13       550.4            9.65      57.0
+
+blk          direction  |cos| with h_pos0  isotropic expectation
+  1       concept:Dust             0.9820                 0.0156
+  1 concept:Satellites             0.6316                 0.0156
+  1  concept:recursion             0.9939                 0.0156
+  1   concept:shutdown             0.9827                 0.0156
+  1           random:0             0.0265                 0.0156
+  1           random:1             0.0111                 0.0156
+  1           random:2             0.0176                 0.0156
+
+  5       concept:Dust             0.9277                 0.0156
+  5 concept:Satellites             0.3402                 0.0156
+  5  concept:recursion             0.9584                 0.0156
+  5   concept:shutdown             0.8939                 0.0156
+  5           random:0             0.0105                 0.0156
+  5           random:1             0.0096                 0.0156
+  5           random:2             0.0054                 0.0156
+
+  9       concept:Dust             0.8113                 0.0156
+  9 concept:Satellites             0.2551                 0.0156
+  9  concept:recursion             0.8960                 0.0156
+  9   concept:shutdown             0.7780                 0.0156
+  9           random:0             0.0008                 0.0156
+  9           random:1             0.0346                 0.0156
+  9           random:2             0.0086                 0.0156
+
+ 13       concept:Dust             0.7437                 0.0156
+ 13 concept:Satellites             0.2054                 0.0156
+ 13  concept:recursion             0.8557                 0.0156
+ 13   concept:shutdown             0.6986                 0.0156
+ 13           random:0             0.0071                 0.0156
+ 13           random:1             0.0113                 0.0156
+ 13           random:2             0.0081                 0.0156
+
+wrote /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/context_probe/sink_alignment.json

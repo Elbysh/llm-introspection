@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/raid/home/students/gegout_tho/sujet_15/llm-introspection/code/experiment_0_calibration/run_experiment_0.py", line 194, in <module>
+    main()
+    ~~~~^^
+  File "/raid/home/students/gegout_tho/sujet_15/llm-introspection/code/experiment_0_calibration/run_experiment_0.py", line 59, in main
+    validate_prepared_plan(
+    ~~~~~~~~~~~~~~~~~~~~~~^
+        config,
+        ^^^^^^^
+    ...<4 lines>...
+        directions,
+        ^^^^^^^^^^^
+    )
+    ^
+  File "/raid/home/students/gegout_tho/sujet_15/llm-introspection/code/experiment_0_calibration/step_07_persist_and_freeze.py", line 106, in validate_prepared_plan
+    raise ValueError(
+    ...<3 lines>...
+    )
+ValueError: direction counts at block 0 are {'concept': 10, 'scrambled_concept': 10, 'fixed_random': 10, 'renewed_noise': 616}, expected {'concept': 10, 'fixed_random': 10, 'renewed_noise': 616}

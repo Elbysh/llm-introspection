@@ -1,0 +1,72 @@
+Disabled optional PyTorch Triton-native kernels
+Steps 1-2 — natural contexts: 16/200
+Steps 1-2 — natural contexts: 32/200
+Steps 1-2 — natural contexts: 48/200
+Steps 1-2 — natural contexts: 64/200
+Steps 1-2 — natural contexts: 80/200
+Steps 1-2 — natural contexts: 96/200
+Steps 1-2 — natural contexts: 112/200
+Steps 1-2 — natural contexts: 128/200
+Steps 1-2 — natural contexts: 144/200
+Steps 1-2 — natural contexts: 160/200
+Steps 1-2 — natural contexts: 176/200
+Steps 1-2 — natural contexts: 192/200
+Steps 1-2 — natural contexts: 200/200
+Steps 3, 4 and 6 — decoder block 0: 2484 directions
+Steps 3, 4 and 6 — decoder block 1: 2484 directions
+Steps 3, 4 and 6 — decoder block 2: 2484 directions
+Steps 3, 4 and 6 — decoder block 3: 2484 directions
+Steps 3, 4 and 6 — decoder block 4: 2484 directions
+Steps 3, 4 and 6 — decoder block 5: 2484 directions
+Steps 3, 4 and 6 — decoder block 6: 2484 directions
+Steps 3, 4 and 6 — decoder block 7: 2484 directions
+Steps 3, 4 and 6 — decoder block 8: 2484 directions
+Steps 3, 4 and 6 — decoder block 9: 2484 directions
+Steps 3, 4 and 6 — decoder block 10: 2484 directions
+Steps 3, 4 and 6 — decoder block 11: 2484 directions
+Steps 3, 4 and 6 — decoder block 12: 2484 directions
+Steps 3, 4 and 6 — decoder block 13: 2484 directions
+Steps 3, 4 and 6 — decoder block 14: 2484 directions
+Steps 3, 4 and 6 — decoder block 15: 2484 directions
+Steps 3, 4 and 6 — decoder block 16: 2484 directions
+Steps 3, 4 and 6 — decoder block 17: 2484 directions
+Steps 3, 4 and 6 — decoder block 18: 2484 directions
+Steps 3, 4 and 6 — decoder block 19: 2484 directions
+Steps 3, 4 and 6 — decoder block 20: 2484 directions
+Steps 3, 4 and 6 — decoder block 21: 2484 directions
+Steps 3, 4 and 6 — decoder block 22: 2484 directions
+Steps 3, 4 and 6 — decoder block 23: 2484 directions
+Steps 3, 4 and 6 — decoder block 24: 2484 directions
+Steps 3, 4 and 6 — decoder block 25: 2484 directions
+Steps 3, 4 and 6 — decoder block 26: 2484 directions
+Steps 3, 4 and 6 — decoder block 27: 2484 directions
+Steps 3, 4 and 6 — decoder block 28: 2484 directions
+Steps 3, 4 and 6 — decoder block 29: 2484 directions
+Steps 3, 4 and 6 — decoder block 30: 2484 directions
+Steps 3, 4 and 6 — decoder block 31: 2484 directions
+{
+  "config_sha256": "f256c8c74b1e16a859adb4b6be343e919db25e35b7690406c45ca6ea7a287dfc",
+  "contexts_sha256": "c85412034d0bb843f6f3a237e77d04a32f62b86d8d01681dc24be56634da2d3e",
+  "directions_sha256": "88b00c67b3fd9a7c38abf8507e3e07bc7671e57e8fec95d8fac716f8b1830f53",
+  "dose_conversion_included": false,
+  "experiment_id": "experiment_0_natural_directional_scale",
+  "git_commit": "f97ae4ac00fbdb0a945a38ac6965719e22ccd7b9",
+  "model_dtype": "bfloat16",
+  "model_name": "meta-llama/Llama-3.1-8B-Instruct",
+  "n_contexts": 200,
+  "n_directions": 79488,
+  "n_observations": 2464,
+  "n_records": 79488,
+  "observations_sha256": "619cad6b7a8f98cbabdb5b4d494fc63077d3a7fb0c8e4e6f94b519921aecc80c",
+  "plan_manifest_sha256": "f55eccc62af15996b20ef1fe28d1ae2c84db43465db20c348f7ff44f317b898d",
+  "projection_dtype": "float32",
+  "projections_file": "projections.npz",
+  "protocol_status": "development",
+  "protocol_version": "2026-09-14",
+  "requested_model_revision": "main",
+  "requested_tokenizer_revision": "main",
+  "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+  "resolved_tokenizer_revision": null,
+  "statistics_file": "directional_scales.json",
+  "torch_version": "2.14.0+cu130"
+}
