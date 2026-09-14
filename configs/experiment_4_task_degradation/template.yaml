@@ -1,0 +1,33 @@
+# Experiment 4, section 8 of cadrage-experiments-new.md.
+# Fill the scientific selections below; no hidden pilot doses or sample sizes.
+protocol:
+  version: "2026-09-14"
+  status: development
+
+model:
+  name: meta-llama/Llama-3.1-8B-Instruct
+  revision: main
+  tokenizer_revision: main
+
+# Each selection names a complex concept and equally many indices in the two
+# lists in complex_data.json. See the README for the exact example schema.
+examples: []
+
+# Explicit intervention cells. Each includes its layer, dose and calibrated
+# direction (or renewed-noise rule). Dropout is not accepted.
+conditions: []
+
+diagnostics:
+  # Supply example IDs before preparation. Both X/Y mappings enter the subset.
+  # [] explicitly disables JS; null prevents an accidental unconfigured run.
+  js_example_ids: null
+
+execution:
+  dtype: bfloat16
+
+paths:
+  complex_data: data/dataset/complex_data.json
+  directional_scales: results/experiment_0_calibration/directional_scales.json
+  calibration_manifest: results/experiment_0_calibration/run_manifest.json
+  plan_dir: data/experiment_4_task_degradation/plans/TO_SET
+  output_dir: results/experiment_4_task_degradation/TO_SET
