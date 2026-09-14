@@ -1,0 +1,15 @@
+answer tokens: A=357 ['ĠA'] B=417 ['ĠB']
+
+--- rendered prompt (repr of tail) ---
+'ce was directly targeted?\nMake your best forced choice.\nAnswer with exactly one letter: A or B.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nThe answer is'
+sentence token ranges: [(31, 42), (45, 57)] labels=['A', 'B']
+  A: ' The lighthouse keeper polished the brass lamp every evening.'
+  B: ' A cold wind pushed the fishing boats back toward the harbour.'
+
+loading model...
+loaded in 27s
+model.model.layers: 64 blocks, class Qwen3_5DecoderLayer
+GPU allocated: 53.8 GB of 85.1 GB
+
+sham contrast (logit A - logit B): +0.125
+sham top token: ['ĠA'] is_choice=True

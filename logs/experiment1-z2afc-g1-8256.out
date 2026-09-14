@@ -1,0 +1,99 @@
+========================================================================
+EXPERIMENT 1: 2AFC LOCALIZATION, ALPHA- AND Z-MATCHED PSYCHOMETRICS
+========================================================================
+Model:       meta-llama/Llama-3.1-8B-Instruct
+Calibration: /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment_0_calibration_2afc (config=configs/experiment_0_calibration/llama_2afc_full.yaml, estimator=sd)
+Layers:      [8, 9, 10, 11, 12, 13, 14, 15]
+Families:    ['concept', 'random', 'noise', 'dropout']
+Matchings:   ['z']
+Alpha doses: [0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0]
+z doses:     [0.0625, 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.0, 1024.0, 2048.0, 4096.0, 8192.0]
+Output:      /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-g1
+Pairs:       5 (largest token-length gap 0)
+Forward passes: 63360 perturbed + 20 sham
+Directions:  56 rebuilt and matched to their calibrated norms
+Model loaded.
+Answer token ids: A=362 ('ĠA'), B=426 ('ĠB')
+Prompt tail: '<|start_header_id|>assistant<|end_header_id|>\n\nThe answer is'
+Perturbed spans: [' The sun sets behind the mountains.\n', ' The river flows to the sea.\n\n']
+Running 20 shams...
+
+Saved 63380 trials to /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-g1/trials.csv
+Saved summary to /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-g1/summary.json
+
+Thresholds (blank when 75% is not bracketed in the tested range):
+ layer    family  matching    metric  acc@peak  threshold75              bracket
+     8   concept         z       raw       57%                                  
+     8   concept         z  adjusted       78%         1607           [256, 512]
+     8   dropout         z       raw       68%                                  
+     8   dropout         z  adjusted       74%                                  
+     8     noise         z       raw       66%                                  
+     8     noise         z  adjusted       71%                                  
+     8    random         z       raw       67%                                  
+     8    random         z  adjusted       72%                                  
+     9   concept         z       raw       58%                                  
+     9   concept         z  adjusted       85%                          [16, 32]
+     9   dropout         z       raw       68%                                  
+     9   dropout         z  adjusted       82%                         [64, 128]
+     9     noise         z       raw       68%                                  
+     9     noise         z  adjusted       85%                          [32, 64]
+     9    random         z       raw       71%                                  
+     9    random         z  adjusted       82%                          [32, 64]
+    10   concept         z       raw       59%                                  
+    10   concept         z  adjusted       83%          173            [64, 128]
+    10   dropout         z       raw       74%                                  
+    10   dropout         z  adjusted       73%                                  
+    10     noise         z       raw       74%                                  
+    10     noise         z  adjusted       76%                         [64, 128]
+    10    random         z       raw       75%         4617  [2.05e+03, 4.1e+03]
+    10    random         z  adjusted       70%                                  
+    11   concept         z       raw       55%                                  
+    11   concept         z  adjusted       84%                          [16, 32]
+    11   dropout         z       raw       70%                                  
+    11   dropout         z  adjusted       76%               [4.1e+03, 8.19e+03]
+    11     noise         z       raw       74%                                  
+    11     noise         z  adjusted       71%                                  
+    11    random         z       raw       60%                                  
+    11    random         z  adjusted       69%                                  
+    12   concept         z       raw       57%                                  
+    12   concept         z  adjusted       79%                          [32, 64]
+    12   dropout         z       raw       62%                                  
+    12   dropout         z  adjusted       64%                                  
+    12     noise         z       raw       62%                                  
+    12     noise         z  adjusted       68%                                  
+    12    random         z       raw       62%                                  
+    12    random         z  adjusted       74%                                  
+    13   concept         z       raw       58%                                  
+    13   concept         z  adjusted       80%                           [8, 16]
+    13   dropout         z       raw       58%                                  
+    13   dropout         z  adjusted       62%                                  
+    13     noise         z       raw       56%                                  
+    13     noise         z  adjusted       69%                                  
+    13    random         z       raw       53%                                  
+    13    random         z  adjusted       70%                                  
+    14   concept         z       raw       50%                                  
+    14   concept         z  adjusted       53%                                  
+    14   dropout         z       raw       51%                                  
+    14   dropout         z  adjusted       55%                                  
+    14     noise         z       raw       50%                                  
+    14     noise         z  adjusted       52%                                  
+    14    random         z       raw       50%                                  
+    14    random         z  adjusted       52%                                  
+    15   concept         z       raw       50%                                  
+    15   concept         z  adjusted       56%                                  
+    15   dropout         z       raw       51%                                  
+    15   dropout         z  adjusted       54%                                  
+    15     noise         z       raw       50%                                  
+    15     noise         z  adjusted       54%                                  
+    15    random         z       raw       50%                                  
+    15    random         z  adjusted       55%                                  
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-g1/curves_layer8.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-g1/curves_layer9.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-g1/curves_layer10.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-g1/curves_layer11.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-g1/curves_layer12.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-g1/curves_layer13.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-g1/curves_layer14.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/z2afc-g1/curves_layer15.png
+
+EXPERIMENT COMPLETE
