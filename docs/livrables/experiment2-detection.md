@@ -1,6 +1,6 @@
 # Experiment 2: detecting an activation intervention
 
-This experiment asks whether Llama-3.1-8B-Instruct reports an intervention when one is applied to its internal activations. It measures **intervention detection**, not comprehension or semantic accuracy. The separate capability experiment and its accuracy-based filters are excluded from this analysis.
+This experiment asks whether Llama-3.1-8B-Instruct reports an intervention when one is applied to its internal activations. It measures **intervention detection**, not comprehension or semantic accuracy.
 
 ## Task and controls
 
@@ -75,6 +75,6 @@ python code/analysis/export_experiment2.py results/experiment_2_presence \
 python code/analysis/plot_experiment2.py /tmp/experiment2-snapshot
 ```
 
-Raw trials and calibration files are not bundled. Their SHA-256 hashes identify the inputs; the compact snapshot is sufficient to redraw published figures but not to rerun the crossed bootstrap from raw scores. `controls_bootstrap_draws.csv.gz` contains the clean-control draws; detection intervals are stored in `snapshot.json.gz`, not their original individual bootstrap draws.
+Raw trials and calibration files are not bundled. Provenance retains the original input hashes and adds `detection_only_input_sha256` for the local files after deletion of capability-task fields and files. Detection trials and cell values are unchanged. These hashes identify the inputs; the compact snapshot is sufficient to redraw published figures but not to rerun the crossed bootstrap from raw scores. `controls_bootstrap_draws.csv.gz` contains the clean-control draws; detection intervals are stored in `snapshot.json.gz`, not their original individual bootstrap draws.
 
 For a new detection-only inference run, use `jobs/experiment2.sbatch` or `python code/experiments/experiment2_presence.py --help`. The runner uses the existing Experiment 0 calibration artifacts and saved vectors, writes a new `experiment2-presence-v3` manifest, and requires model access plus suitable compute. It cannot resume the historical combined manifest. The shared perturbation runtime contains hooks and calibration mechanics; the detection runner imports no capability-task code.
