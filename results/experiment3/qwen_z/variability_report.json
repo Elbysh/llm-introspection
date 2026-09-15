@@ -120,6 +120,44 @@
   ],
   "variance_components": {
     "concept": {
+      "by_layer": {
+        "10": {
+          "max_direction": "Satellites",
+          "mean_s": 0.7317708333333334,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.36970558465988
+        },
+        "12": {
+          "max_direction": "Satellites",
+          "mean_s": 0.3263020833333334,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.20724433260523856
+        },
+        "16": {
+          "max_direction": "Dust",
+          "mean_s": 0.31302083333333336,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.16167995542463237
+        },
+        "3": {
+          "max_direction": "Dust",
+          "mean_s": 0.5153645833333333,
+          "min_direction": "recursion",
+          "sd_between_directions": 0.14444621810476216
+        },
+        "6": {
+          "max_direction": "Satellites",
+          "mean_s": 0.7666666666666666,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.3569670739692223
+        },
+        "8": {
+          "max_direction": "recursion",
+          "mean_s": 0.6893229166666667,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.21385288128097768
+        }
+      },
       "decomposition": {
         "components": {
           "direction": 0.027783811592761366,
@@ -184,6 +222,44 @@
       }
     },
     "random": {
+      "by_layer": {
+        "10": {
+          "max_direction": "0002",
+          "mean_s": 0.07743055555555556,
+          "min_direction": "0000",
+          "sd_between_directions": 0.049017399357930196
+        },
+        "12": {
+          "max_direction": "0000",
+          "mean_s": 0.10729166666666666,
+          "min_direction": "0002",
+          "sd_between_directions": 0.042746426101423304
+        },
+        "16": {
+          "max_direction": "0000",
+          "mean_s": 0.04513888888888889,
+          "min_direction": "0002",
+          "sd_between_directions": 0.050564664548733304
+        },
+        "3": {
+          "max_direction": "0002",
+          "mean_s": 0.14930555555555555,
+          "min_direction": "0001",
+          "sd_between_directions": 0.09955594404841114
+        },
+        "6": {
+          "max_direction": "0002",
+          "mean_s": 0.03854166666666667,
+          "min_direction": "0000",
+          "sd_between_directions": 0.03312106894913468
+        },
+        "8": {
+          "max_direction": "0000",
+          "mean_s": 0.08159722222222222,
+          "min_direction": "0001",
+          "sd_between_directions": 0.05214926382598888
+        }
+      },
       "decomposition": {
         "components": {
           "direction": 0.00029265394590192046,
