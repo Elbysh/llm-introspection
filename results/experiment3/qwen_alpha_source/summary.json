@@ -1,0 +1,17 @@
+{
+  "calibration_dir": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment_0_calibration_qwen38_27b",
+  "concepts": [
+    "Dust",
+    "Satellites",
+    "recursion",
+    "shutdown"
+  ],
+  "matchings": [
+    "alpha"
+  ],
+  "model": "Qwen/Qwen3.8-27B",
+  "n_trials": 38720,
+  "notes": [
+    "The alpha-matched rows of results/experiment1/qwen38_all_layers, extracted by experiment3_variability.py --export_run_dir. The other matching arm of those runs is deliberately absent."
+  ]
+}
