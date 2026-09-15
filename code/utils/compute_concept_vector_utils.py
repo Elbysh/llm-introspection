@@ -15,13 +15,29 @@ def get_model_type(tokenizer):
     else:
         return "llama"
 
-def format_prompt(model_type, user_message, dataset_name=None):
-    """Format prompt based on model type"""
+def format_prompt(model_type, user_message, dataset_name=None, tokenizer=None):
+    """Format prompt based on model type.
+
+    The Llama branch keeps the literal rendering the committed
+    data/saved_vectors/llama vectors were built with. The Qwen branch defers to the
+    tokenizer's own chat template instead: Qwen3.5 prepends a reasoning-effort system
+    message and opens a <think> block unless thinking is disabled, and a hand-written
+    ChatML string would silently disagree with the behavioural prompt of Experiment 1.
+    """
     if model_type == "qwen":
-        if dataset_name == "simple_data":
-            return f"<|im_start|>user\nTell me about {user_message}.<|im_end|>\n<|im_start|>assistant\n"
-        else:
-            return f"<|im_start|>user\n{user_message}<|im_end|>\n<|im_start|>assistant\n"
+        if tokenizer is None:
+            raise ValueError("the Qwen prompt format requires the tokenizer")
+        content = (
+            f"Tell me about {user_message}."
+            if dataset_name == "simple_data"
+            else user_message
+        )
+        return tokenizer.apply_chat_template(
+            [{"role": "user", "content": content}],
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=False,
+        )
     else:  # llama
         if dataset_name == "simple_data":
             return f"<|start_header_id|>user<|end_header_id|>Tell me about {user_message}.<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
@@ -54,7 +70,7 @@ def compute_vector_single_prompt(model, tokenizer, dataset_name, steering_prompt
         prompt_average_vector: average activation across all prompt tokens
     """
     model_type = get_model_type(tokenizer)
-    prompt = format_prompt(model_type, steering_prompt, dataset_name)
+    prompt = format_prompt(model_type, steering_prompt, dataset_name, tokenizer=tokenizer)
     
     inputs = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to(model.device)
     prompt_len = len(tokenizer.encode(prompt, add_special_tokens=False))
@@ -70,6 +86,118 @@ def compute_vector_single_prompt(model, tokenizer, dataset_name, steering_prompt
         del outputs 
     
     return prompt_last_vector, prompt_average_vector
+
+def compute_vectors_all_layers(model, tokenizer, dataset_name, steering_prompt, layer_indices):
+    """compute_vector_single_prompt for several hidden-state indices at once.
+
+    One forward pass already produces every hidden state, so asking for N layers one
+    at a time repeats the same pass N times. That is affordable for a 32-block 8B
+    model and is not for a 64-block 27B one, where it is the difference between a few
+    minutes and most of an hour.
+
+    Returns:
+        dict: {layer_idx: (prompt_last_vector, prompt_average_vector)}
+    """
+    model_type = get_model_type(tokenizer)
+    prompt = format_prompt(model_type, steering_prompt, dataset_name, tokenizer=tokenizer)
+
+    inputs = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to(model.device)
+    prompt_len = len(tokenizer.encode(prompt, add_special_tokens=False))
+
+    vectors = {}
+    with torch.no_grad():
+        outputs = model(**inputs, output_hidden_states=True)
+        for layer_idx in layer_indices:
+            hidden = outputs.hidden_states[layer_idx]
+            vectors[layer_idx] = (
+                hidden[:, prompt_len - 1, :].detach().cpu(),
+                hidden[:, :prompt_len, :].mean(dim=1).detach().cpu(),
+            )
+        del outputs
+
+    return vectors
+
+
+def _mean_by_layer(collected, layer_indices):
+    """Stack each layer's per-prompt vectors and average them, as the single-layer path does."""
+    means = {}
+    for layer_idx in layer_indices:
+        rows_last, rows_avg = zip(*collected[layer_idx])
+        means[layer_idx] = (
+            torch.stack(rows_last, dim=0).mean(dim=0).squeeze(),
+            torch.stack(rows_avg, dim=0).mean(dim=0).squeeze(),
+        )
+    return means
+
+
+def compute_concept_vectors_all_layers(model, tokenizer, dataset_name, layer_indices):
+    """compute_concept_vector for several hidden-state indices in a single sweep.
+
+    Same arithmetic as compute_concept_vector, same stack-then-mean accumulation
+    order, but each prompt is run through the model once instead of once per layer.
+
+    Returns:
+        dict: {layer_idx: {concept_name: [prompt_last_vector, prompt_average_vector]}}
+    """
+    layer_indices = list(layer_indices)
+    data = get_data(dataset_name)
+    by_layer = {layer_idx: {} for layer_idx in layer_indices}
+
+    def collect(prompts, desc):
+        collected = {layer_idx: [] for layer_idx in layer_indices}
+        for prompt in tqdm(prompts, desc=desc):
+            vectors = compute_vectors_all_layers(
+                model, tokenizer, dataset_name, prompt, layer_indices
+            )
+            for layer_idx in layer_indices:
+                collected[layer_idx].append(vectors[layer_idx])
+        return collected
+
+    if dataset_name == "simple_data":
+        concept_words = data["concept_vector_words"]
+        baseline_words = data["baseline_words"][:50]
+
+        print(f"Computing baseline mean from {len(baseline_words)} words "
+              f"over {len(layer_indices)} layers...")
+        baseline_mean = _mean_by_layer(
+            collect(baseline_words, "Baseline vectors"), layer_indices
+        )
+
+        concept_vectors = {
+            word: compute_vectors_all_layers(
+                model, tokenizer, dataset_name, word, layer_indices
+            )
+            for word in tqdm(concept_words, desc="Concept vectors")
+        }
+        for word, vectors in concept_vectors.items():
+            for layer_idx in layer_indices:
+                vec_last, vec_avg = (row.squeeze() for row in vectors[layer_idx])
+                base_last, base_avg = baseline_mean[layer_idx]
+                by_layer[layer_idx][word] = [vec_last - base_last, vec_avg - base_avg]
+
+    elif dataset_name == "complex_data":
+        for concept_name in data.keys():
+            pos_sentences, neg_sentences = data[concept_name][0], data[concept_name][1]
+            print(f"\nProcessing {concept_name}: {len(pos_sentences)} pos, "
+                  f"{len(neg_sentences)} neg over {len(layer_indices)} layers")
+            pos_mean = _mean_by_layer(
+                collect(pos_sentences, f"{concept_name} (positive)"), layer_indices
+            )
+            neg_mean = _mean_by_layer(
+                collect(neg_sentences, f"{concept_name} (negative)"), layer_indices
+            )
+            for layer_idx in layer_indices:
+                by_layer[layer_idx][concept_name] = [
+                    pos_mean[layer_idx][0] - neg_mean[layer_idx][0],
+                    pos_mean[layer_idx][1] - neg_mean[layer_idx][1],
+                ]
+    else:
+        raise ValueError(f"unknown dataset {dataset_name!r}")
+
+    print(f"\nComputed {len(by_layer[layer_indices[0]])} steering vectors per layer "
+          f"for {len(layer_indices)} layers (each with last and avg variants)")
+    return by_layer
+
 
 def compute_concept_vector(model, tokenizer, dataset_name, layer_idx):
     """

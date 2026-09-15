@@ -84,6 +84,7 @@ def build_context_and_observation_rows(
     else:
         specifications = read_jsonl(config.context_manifest)
 
+    keeps_boundary_tokens = config.position_policy == "all_overlapping_sentence_tokens"
     context_ids = [row["context_id"] for row in specifications]
     if len(context_ids) != len(set(context_ids)):
         raise ValueError("presentation context IDs must be unique")
@@ -122,11 +123,11 @@ def build_context_and_observation_rows(
                     continue
                 overlaps = start < char_end and end > char_start
                 contained = start >= char_start and end <= char_end
-                if overlaps and not contained:
+                if overlaps and not contained and not keeps_boundary_tokens:
                     raise ValueError(
                         "ambiguous token boundary for {} in {}".format(sentence_id, context_id)
                     )
-                if not contained:
+                if not (contained or (overlaps and keeps_boundary_tokens)):
                     continue
                 observation_id = "{}__target_{:02d}__token_{:04d}".format(
                     context_id, target_index, sentence_token_index
@@ -160,6 +161,10 @@ def build_context_and_observation_rows(
                     "sentence_char_end": char_end,
                     "admissible_token_positions": admissible_positions,
                 }
+            )
+        if keeps_boundary_tokens and len(context_positions) != len(set(context_positions)):
+            raise ValueError(
+                "a boundary token belongs to two targets in {}".format(context_id)
             )
         contexts.append(
             {
@@ -233,6 +238,42 @@ def build_direction_rows(
                     "noise_repetition": None,
                 }
             )
+        if config.scrambled_concept_enabled:
+            # Doc 3.3 content control. A coordinate permutation of the concept vector
+            # holds its norm and its coordinate distribution exactly while destroying
+            # any alignment with a feature direction, so a difference between the two
+            # at matched alpha cannot be a difference of magnitude. Experiment 1 varies
+            # amplitude and never content at fixed amplitude; this is what does.
+            for concept_index, concept in enumerate(config.concepts):
+                source = config.vector_dir / "{}_{}_{}.pt".format(
+                    concept.name, hidden_state_index, config.vector_type
+                )
+                if not source.exists():
+                    raise FileNotFoundError("missing concept vector: {}".format(source))
+                seed = (
+                    config.scrambled_concept_base_seed
+                    + layer * config.fixed_random_layer_stride
+                    + concept_index
+                )
+                rows.append(
+                    {
+                        "direction_id": "scrambled_concept__block_{:02d}__{}".format(
+                            layer, concept.name
+                        ),
+                        "direction_family": "scrambled_concept",
+                        "decoder_block_index": layer,
+                        "hidden_state_index": hidden_state_index,
+                        "concept": concept.name,
+                        "concept_dataset": concept.dataset,
+                        "concept_split": concept.split,
+                        "concept_vector_type": config.vector_type,
+                        "source_path": str(source.relative_to(REPO_ROOT)),
+                        "source_sha256": file_sha256(source),
+                        "seed": seed,
+                        "target_observation_id": None,
+                        "noise_repetition": None,
+                    }
+                )
         for index in range(config.fixed_random_count_per_layer):
             # Match the persisted random_s{index}_{block}_avg.pt bank exactly.
             # Global uniqueness against renewed noise is checked below before
@@ -328,6 +369,16 @@ def materialize_direction(
         payload = torch.load(REPO_ROOT / row["source_path"], map_location="cpu", weights_only=False)
         vector = payload["vector"]
         normalized, original_norm = unit(vector)
+    elif row["direction_family"] == "scrambled_concept":
+        payload = torch.load(
+            REPO_ROOT / row["source_path"], map_location="cpu", weights_only=False
+        )
+        vector = payload["vector"].detach().to(device="cpu", dtype=torch.float32).reshape(-1)
+        generator = torch.Generator(device="cpu").manual_seed(int(row["seed"]))
+        permutation = torch.randperm(vector.numel(), generator=generator)
+        # A permutation is norm-preserving, so original_norm here equals the concept's
+        # and the pair is matched in raw amplitude by construction, not by adjustment.
+        normalized, original_norm = unit(vector[permutation])
     elif row["direction_family"] == "fixed_random":
         payload = torch.load(
             REPO_ROOT / row["source_path"], map_location="cpu", weights_only=False

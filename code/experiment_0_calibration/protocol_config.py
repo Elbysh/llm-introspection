@@ -9,6 +9,22 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
+# Which tokens of a declared target span are admissible.
+#
+# `all_sentence_tokens` keeps the tokens strictly inside the span and refuses a token
+# that straddles its boundary. That is the right rule when the span is already token
+# aligned, as it is when a sentence is rendered on its own.
+#
+# `all_overlapping_sentence_tokens` keeps every token that overlaps the span. It is
+# the rule the behavioural context needs: inside the 2AFC prompt the first token of a
+# sentence also carries the space of its "A) " label and the last one carries the
+# newline that follows, so a token-aligned span does not exist. Experiment 1 perturbs
+# those two tokens (`build_localization_prompt` takes every overlapping token), and
+# section 3.7 of the protocol says the intervention targets every token of the
+# sentence, so the calibration has to sample them too or it estimates s(l, v) on a
+# strict subset of what the experiment perturbs.
+POSITION_POLICIES = {"all_sentence_tokens", "all_overlapping_sentence_tokens"}
+
 
 def repo_path(value: str) -> Path:
     path = Path(value)
@@ -29,6 +45,7 @@ class Experiment0Config:
     model_name: str
     model_revision: str
     tokenizer_revision: str
+    num_decoder_blocks: Optional[int]
     layers: List[int]
     activation_site: str
     concepts: List[ConceptSpec]
@@ -39,6 +56,8 @@ class Experiment0Config:
     fixed_random_layer_stride: int
     noise_repetitions_per_position: int
     renewed_noise_base_seed: int
+    scrambled_concept_enabled: bool
+    scrambled_concept_base_seed: int
     presentation_mode: str
     context_id: str
     context_template: str
@@ -71,6 +90,13 @@ class Experiment0Config:
             model_name=str(model["name"]),
             model_revision=str(model["revision"]),
             tokenizer_revision=str(model["tokenizer_revision"]),
+            # Optional, and checked against `layers` so that a config written for one
+            # model cannot silently calibrate a different block count on another.
+            num_decoder_blocks=(
+                int(model["num_decoder_blocks"])
+                if model.get("num_decoder_blocks") is not None
+                else None
+            ),
             layers=[int(layer) for layer in raw["layers"]],
             activation_site=str(raw["activation_site"]),
             concepts=[ConceptSpec(**entry) for entry in directions["concepts"]],
@@ -90,6 +116,15 @@ class Experiment0Config:
             ),
             renewed_noise_base_seed=int(
                 directions["renewed_noise"]["base_seed"]
+            ),
+            # Optional content control (doc 3.3): a coordinate permutation of each
+            # concept vector. Absent from a config means absent from the plan, so
+            # existing calibrations are unaffected.
+            scrambled_concept_enabled=bool(
+                directions.get("scrambled_concept", {}).get("enabled", False)
+            ),
+            scrambled_concept_base_seed=int(
+                directions.get("scrambled_concept", {}).get("base_seed", 0)
             ),
             presentation_mode=str(presentation["mode"]),
             context_id=str(presentation["context_id"]),
@@ -118,8 +153,17 @@ class Experiment0Config:
     def validate(self) -> None:
         if self.protocol_status not in {"development", "frozen"}:
             raise ValueError("protocol.status must be development or frozen")
-        if self.layers != list(range(32)):
-            raise ValueError("Experiment 0 must calibrate decoder blocks 0 through 31")
+        if not self.layers or self.layers != list(range(len(self.layers))):
+            raise ValueError(
+                "Experiment 0 must calibrate every decoder block, listed as the "
+                "contiguous range 0 through N-1"
+            )
+        if self.num_decoder_blocks is not None and len(self.layers) != self.num_decoder_blocks:
+            raise ValueError(
+                "model.num_decoder_blocks is {} but {} layers are listed".format(
+                    self.num_decoder_blocks, len(self.layers)
+                )
+            )
         if self.activation_site != "decoder_block_output":
             raise ValueError("Experiment 0 requires activation_site=decoder_block_output")
         if len({concept.name for concept in self.concepts}) != len(self.concepts):
@@ -139,6 +183,10 @@ class Experiment0Config:
             raise ValueError("direction counts must be positive")
         if min(self.fixed_random_base_seed, self.renewed_noise_base_seed) < 0:
             raise ValueError("direction base seeds must be non-negative")
+        if self.scrambled_concept_enabled and self.scrambled_concept_base_seed <= 0:
+            raise ValueError(
+                "scrambled_concept requires a positive recorded base_seed"
+            )
         if self.fixed_random_layer_stride < self.fixed_random_count_per_layer:
             raise ValueError(
                 "fixed-random layer_stride must cover every per-layer sample"
@@ -152,8 +200,10 @@ class Experiment0Config:
             raise ValueError("presentation.template must contain {sentence} exactly once")
         if self.presentation_mode == "external_manifest" and self.context_manifest is None:
             raise ValueError("external_manifest presentation requires presentation.manifest")
-        if self.position_policy != "all_sentence_tokens":
-            raise ValueError("only the explicit all_sentence_tokens policy is implemented")
+        if self.position_policy not in POSITION_POLICIES:
+            raise ValueError(
+                "position_policy must be one of {}".format(sorted(POSITION_POLICIES))
+            )
         if self.point_weighting != "equal_token":
             raise ValueError("only point_weighting=equal_token is implemented")
         if self.bootstrap_unit != "sentence":
