@@ -1,0 +1,1182 @@
+{
+  "calibration_config": "configs/calibration/full.yaml",
+  "calibration_output_dir": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/results/calibration/full",
+  "concepts": [
+    "Dust"
+  ],
+  "contamination": [
+    {
+      "direction_id": "concept__l3__Dust",
+      "dose": 64.0,
+      "family": "concept",
+      "label_order": "AB",
+      "layer": 3,
+      "matching": "alpha",
+      "order": 0,
+      "pair_id": 0,
+      "ratios": {
+        "16": 0.5435679009939184,
+        "3": 0.0
+      }
+    },
+    {
+      "direction_id": "concept__l3__Dust",
+      "dose": 2.0,
+      "family": "concept",
+      "label_order": "AB",
+      "layer": 3,
+      "matching": "z",
+      "order": 0,
+      "pair_id": 0,
+      "ratios": {
+        "16": 0.5631519214588101,
+        "3": 0.0
+      }
+    },
+    {
+      "direction_id": "random__l3__0000",
+      "dose": 64.0,
+      "family": "random",
+      "label_order": "AB",
+      "layer": 3,
+      "matching": "alpha",
+      "order": 0,
+      "pair_id": 0,
+      "ratios": {
+        "16": 0.4429055164414454,
+        "3": 0.0
+      }
+    },
+    {
+      "direction_id": "random__l3__0000",
+      "dose": 2.0,
+      "family": "random",
+      "label_order": "AB",
+      "layer": 3,
+      "matching": "z",
+      "order": 0,
+      "pair_id": 0,
+      "ratios": {
+        "16": 0.1995256624317525,
+        "3": 0.0
+      }
+    }
+  ],
+  "curves": [
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "beta0": -11.629730084493087,
+      "beta1": -4.194198592466249,
+      "bracketing_doses": null,
+      "doses": [
+        1.0,
+        8.0,
+        64.0
+      ],
+      "family": "concept",
+      "fit_converged": false,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_localization_contrast": 0.25,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "beta0": -11.909480436724454,
+      "beta1": 0.3712731312959674,
+      "bracketing_doses": null,
+      "doses": [
+        0.02,
+        0.2,
+        2.0
+      ],
+      "family": "concept",
+      "fit_converged": true,
+      "layer": 3,
+      "matching": "z",
+      "mean_localization_contrast": 0.296875,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.625,
+        0.625
+      ],
+      "beta0": -11.674834892209722,
+      "beta1": -8.18051990313444,
+      "bracketing_doses": null,
+      "doses": [
+        1.0,
+        8.0,
+        64.0
+      ],
+      "family": "dropout",
+      "fit_converged": false,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_localization_contrast": 0.6979166666666666,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.625
+      ],
+      "beta0": -4.1958239008099545,
+      "beta1": 4.468331833420751,
+      "bracketing_doses": null,
+      "doses": [
+        0.02,
+        0.2,
+        2.0
+      ],
+      "family": "dropout",
+      "fit_converged": true,
+      "layer": 3,
+      "matching": "z",
+      "mean_localization_contrast": 0.3125,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.625,
+        0.75
+      ],
+      "beta0": -11.811484525680957,
+      "beta1": -7.1606267290022405,
+      "bracketing_doses": [
+        8.0,
+        64.0
+      ],
+      "doses": [
+        1.0,
+        8.0,
+        64.0
+      ],
+      "family": "noise",
+      "fit_converged": false,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_localization_contrast": 0.6666666666666666,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "beta0": -11.909480436724454,
+      "beta1": 0.3712731312959674,
+      "bracketing_doses": null,
+      "doses": [
+        0.02,
+        0.2,
+        2.0
+      ],
+      "family": "noise",
+      "fit_converged": true,
+      "layer": 3,
+      "matching": "z",
+      "mean_localization_contrast": 0.21875,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "beta0": -11.629730084493087,
+      "beta1": -4.194198592466249,
+      "bracketing_doses": null,
+      "doses": [
+        1.0,
+        8.0,
+        64.0
+      ],
+      "family": "random",
+      "fit_converged": false,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_localization_contrast": 0.265625,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "beta0": -11.909480436724454,
+      "beta1": 0.3712731312959674,
+      "bracketing_doses": null,
+      "doses": [
+        0.02,
+        0.2,
+        2.0
+      ],
+      "family": "random",
+      "fit_converged": true,
+      "layer": 3,
+      "matching": "z",
+      "mean_localization_contrast": 0.005208333333333333,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "beta0": -11.629730084493087,
+      "beta1": -4.194198592466249,
+      "bracketing_doses": null,
+      "doses": [
+        1.0,
+        8.0,
+        64.0
+      ],
+      "family": "concept",
+      "fit_converged": false,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_localization_contrast": -0.033854166666666664,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "beta0": -11.909480436724454,
+      "beta1": 0.3712731312959674,
+      "bracketing_doses": null,
+      "doses": [
+        0.02,
+        0.2,
+        2.0
+      ],
+      "family": "concept",
+      "fit_converged": true,
+      "layer": 16,
+      "matching": "z",
+      "mean_localization_contrast": -0.033854166666666664,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "beta0": -11.629730084493087,
+      "beta1": -4.194198592466249,
+      "bracketing_doses": null,
+      "doses": [
+        1.0,
+        8.0,
+        64.0
+      ],
+      "family": "dropout",
+      "fit_converged": false,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_localization_contrast": 0.041666666666666664,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "beta0": -11.909480436724454,
+      "beta1": 0.3712731312959674,
+      "bracketing_doses": null,
+      "doses": [
+        0.02,
+        0.2,
+        2.0
+      ],
+      "family": "dropout",
+      "fit_converged": true,
+      "layer": 16,
+      "matching": "z",
+      "mean_localization_contrast": -0.005208333333333333,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "beta0": -11.629730084493087,
+      "beta1": -4.194198592466249,
+      "bracketing_doses": null,
+      "doses": [
+        1.0,
+        8.0,
+        64.0
+      ],
+      "family": "noise",
+      "fit_converged": false,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_localization_contrast": 0.010416666666666666,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "beta0": -11.909480436724454,
+      "beta1": 0.3712731312959674,
+      "bracketing_doses": null,
+      "doses": [
+        0.02,
+        0.2,
+        2.0
+      ],
+      "family": "noise",
+      "fit_converged": true,
+      "layer": 16,
+      "matching": "z",
+      "mean_localization_contrast": -0.010416666666666666,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "beta0": -11.629730084493087,
+      "beta1": -4.194198592466249,
+      "bracketing_doses": null,
+      "doses": [
+        1.0,
+        8.0,
+        64.0
+      ],
+      "family": "random",
+      "fit_converged": false,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_localization_contrast": -0.015625,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy_raw": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "beta0": -11.909480436724454,
+      "beta1": 0.3712731312959674,
+      "bracketing_doses": null,
+      "doses": [
+        0.02,
+        0.2,
+        2.0
+      ],
+      "family": "random",
+      "fit_converged": true,
+      "layer": 16,
+      "matching": "z",
+      "mean_localization_contrast": -0.005208333333333333,
+      "n_trials": [
+        8,
+        8,
+        8
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    }
+  ],
+  "dose_grid": {
+    "alpha": [
+      1.0,
+      8.0,
+      64.0
+    ],
+    "z": [
+      0.02,
+      0.2,
+      2.0
+    ]
+  },
+  "dropout_norm_source": "trial",
+  "estimator": "sd",
+  "families": [
+    "concept",
+    "random",
+    "noise",
+    "dropout"
+  ],
+  "label_orders": [
+    "AB"
+  ],
+  "layers": [
+    3,
+    16
+  ],
+  "matchings": [
+    "alpha",
+    "z"
+  ],
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "n_trials": 388,
+  "pairs": [
+    {
+      "pair_id": 0,
+      "sentence_x": "She reads a book quietly.",
+      "sentence_y": "He walks along the beach.",
+      "token_length_gap": 0
+    },
+    {
+      "pair_id": 1,
+      "sentence_x": "A bird flies over the lake.",
+      "sentence_y": "The child plays in the park.",
+      "token_length_gap": 0
+    }
+  ],
+  "per_dose": [
+    {
+      "accuracy_adjusted": 0.625,
+      "accuracy_raw": 0.5,
+      "dose": 1.0,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 2.046875,
+      "mean_realized_amplitude": 0.9993033409118652,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.5,
+      "accuracy_raw": 0.5,
+      "dose": 8.0,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 0.75,
+      "mean_realized_amplitude": 7.993393063545227,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.5,
+      "accuracy_raw": 0.5,
+      "dose": 64.0,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 0.359375,
+      "mean_realized_amplitude": 63.97574472427368,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.75,
+      "accuracy_raw": 0.5,
+      "dose": 0.02,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "z",
+      "mean_contrast": 1.78125,
+      "mean_realized_amplitude": 3.911595791578293,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.5,
+      "accuracy_raw": 0.5,
+      "dose": 0.2,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "z",
+      "mean_contrast": 0.75,
+      "mean_realized_amplitude": 39.06028175354004,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.5,
+      "accuracy_raw": 0.5,
+      "dose": 2.0,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "z",
+      "mean_contrast": 0.796875,
+      "mean_realized_amplitude": 390.3225517272949,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.5,
+      "accuracy_raw": 0.5,
+      "dose": 1.0,
+      "family": "dropout",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 2.09375,
+      "mean_realized_amplitude": 0.9605966806411743,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.75,
+      "accuracy_raw": 0.625,
+      "dose": 8.0,
+      "family": "dropout",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 1.21875,
+      "mean_realized_amplitude": 7.943965971469879,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.625,
+      "accuracy_raw": 0.625,
+      "dose": 64.0,
+      "family": "dropout",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 1.0,
+      "mean_realized_amplitude": 53.17104768753052,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.125,
+      "accuracy_raw": 0.5,
+      "dose": 0.02,
+      "family": "dropout",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "z",
+      "mean_contrast": 2.109375,
+      "mean_realized_amplitude": 0.037543784361332655,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.125,
+      "accuracy_raw": 0.5,
+      "dose": 0.2,
+      "family": "dropout",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "z",
+      "mean_contrast": 2.125,
+      "mean_realized_amplitude": 0.44900985434651375,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.625,
+      "accuracy_raw": 0.625,
+      "dose": 2.0,
+      "family": "dropout",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "z",
+      "mean_contrast": 1.296875,
+      "mean_realized_amplitude": 4.75778067111969,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.375,
+      "accuracy_raw": 0.5,
+      "dose": 1.0,
+      "family": "noise",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 2.09375,
+      "mean_realized_amplitude": 1.000011883676052,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.75,
+      "accuracy_raw": 0.625,
+      "dose": 8.0,
+      "family": "noise",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 1.234375,
+      "mean_realized_amplitude": 8.000052571296692,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.625,
+      "accuracy_raw": 0.75,
+      "dose": 64.0,
+      "family": "noise",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 1.171875,
+      "mean_realized_amplitude": 64.00062608718872,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.25,
+      "accuracy_raw": 0.5,
+      "dose": 0.02,
+      "family": "noise",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "z",
+      "mean_contrast": 2.09375,
+      "mean_realized_amplitude": 0.05140520678833127,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.5,
+      "accuracy_raw": 0.5,
+      "dose": 0.2,
+      "family": "noise",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "z",
+      "mean_contrast": 2.109375,
+      "mean_realized_amplitude": 0.4440016821026802,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.75,
+      "accuracy_raw": 0.5,
+      "dose": 2.0,
+      "family": "noise",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "z",
+      "mean_contrast": 1.734375,
+      "mean_realized_amplitude": 3.5364673733711243,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.125,
+      "accuracy_raw": 0.5,
+      "dose": 1.0,
+      "family": "random",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 2.0625,
+      "mean_realized_amplitude": 1.0000109151005745,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.5,
+      "accuracy_raw": 0.5,
+      "dose": 8.0,
+      "family": "random",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 1.34375,
+      "mean_realized_amplitude": 7.999612092971802,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.5,
+      "accuracy_raw": 0.5,
+      "dose": 64.0,
+      "family": "random",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 1.234375,
+      "mean_realized_amplitude": 63.99684810638428,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.375,
+      "accuracy_raw": 0.5,
+      "dose": 0.02,
+      "family": "random",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "z",
+      "mean_contrast": 2.125,
+      "mean_realized_amplitude": 0.042342033702880144,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.0,
+      "accuracy_raw": 0.5,
+      "dose": 0.2,
+      "family": "random",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "z",
+      "mean_contrast": 2.09375,
+      "mean_realized_amplitude": 0.4206698313355446,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.625,
+      "accuracy_raw": 0.5,
+      "dose": 2.0,
+      "family": "random",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "z",
+      "mean_contrast": 1.859375,
+      "mean_realized_amplitude": 4.20658940076828,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.25,
+      "accuracy_raw": 0.5,
+      "dose": 1.0,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_contrast": 2.109375,
+      "mean_realized_amplitude": 1.0029690712690353,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.0,
+      "accuracy_raw": 0.5,
+      "dose": 8.0,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_contrast": 2.140625,
+      "mean_realized_amplitude": 8.005676865577698,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.5,
+      "accuracy_raw": 0.5,
+      "dose": 64.0,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_contrast": 0.6640625,
+      "mean_realized_amplitude": 64.04526805877686,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.125,
+      "accuracy_raw": 0.5,
+      "dose": 0.02,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "z",
+      "mean_contrast": 2.109375,
+      "mean_realized_amplitude": 2.0121598839759827,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.5,
+      "accuracy_raw": 0.5,
+      "dose": 0.2,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "z",
+      "mean_contrast": 1.75,
+      "mean_realized_amplitude": 20.145783185958862,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.375,
+      "accuracy_raw": 0.5,
+      "dose": 2.0,
+      "family": "concept",
+      "invalid_rate": 1.0,
+      "layer": 16,
+      "matching": "z",
+      "mean_contrast": 2.2421875,
+      "mean_realized_amplitude": 201.3743133544922,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.0,
+      "accuracy_raw": 0.5,
+      "dose": 1.0,
+      "family": "dropout",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_contrast": 2.09375,
+      "mean_realized_amplitude": 0.9284694567322731,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.375,
+      "accuracy_raw": 0.5,
+      "dose": 8.0,
+      "family": "dropout",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_contrast": 2.015625,
+      "mean_realized_amplitude": 7.9961623549461365,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.375,
+      "accuracy_raw": 0.5,
+      "dose": 64.0,
+      "family": "dropout",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_contrast": 1.609375,
+      "mean_realized_amplitude": 60.46121692657471,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.0,
+      "accuracy_raw": 0.5,
+      "dose": 0.02,
+      "family": "dropout",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "z",
+      "mean_contrast": 2.125,
+      "mean_realized_amplitude": 0.0,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.125,
+      "accuracy_raw": 0.5,
+      "dose": 0.2,
+      "family": "dropout",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "z",
+      "mean_contrast": 2.09375,
+      "mean_realized_amplitude": 0.10429366584867239,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.25,
+      "accuracy_raw": 0.5,
+      "dose": 2.0,
+      "family": "dropout",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "z",
+      "mean_contrast": 2.078125,
+      "mean_realized_amplitude": 2.078328177332878,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.25,
+      "accuracy_raw": 0.5,
+      "dose": 1.0,
+      "family": "noise",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_contrast": 2.078125,
+      "mean_realized_amplitude": 1.000161737203598,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.25,
+      "accuracy_raw": 0.5,
+      "dose": 8.0,
+      "family": "noise",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_contrast": 2.0625,
+      "mean_realized_amplitude": 7.999956846237183,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.5,
+      "accuracy_raw": 0.5,
+      "dose": 64.0,
+      "family": "noise",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_contrast": 1.296875,
+      "mean_realized_amplitude": 63.99803447723389,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.375,
+      "accuracy_raw": 0.5,
+      "dose": 0.02,
+      "family": "noise",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "z",
+      "mean_contrast": 2.078125,
+      "mean_realized_amplitude": 0.04235393740236759,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.125,
+      "accuracy_raw": 0.5,
+      "dose": 0.2,
+      "family": "noise",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "z",
+      "mean_contrast": 2.125,
+      "mean_realized_amplitude": 0.4578935019671917,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.125,
+      "accuracy_raw": 0.5,
+      "dose": 2.0,
+      "family": "noise",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "z",
+      "mean_contrast": 2.078125,
+      "mean_realized_amplitude": 4.268718242645264,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.125,
+      "accuracy_raw": 0.5,
+      "dose": 1.0,
+      "family": "random",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_contrast": 2.0625,
+      "mean_realized_amplitude": 1.0001471638679504,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.375,
+      "accuracy_raw": 0.5,
+      "dose": 8.0,
+      "family": "random",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_contrast": 1.96875,
+      "mean_realized_amplitude": 7.999740779399872,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.5,
+      "accuracy_raw": 0.5,
+      "dose": 64.0,
+      "family": "random",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "alpha",
+      "mean_contrast": 1.453125,
+      "mean_realized_amplitude": 63.99593734741211,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.25,
+      "accuracy_raw": 0.5,
+      "dose": 0.02,
+      "family": "random",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "z",
+      "mean_contrast": 2.078125,
+      "mean_realized_amplitude": 0.004611602344084531,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.125,
+      "accuracy_raw": 0.5,
+      "dose": 0.2,
+      "family": "random",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "z",
+      "mean_contrast": 2.078125,
+      "mean_realized_amplitude": 0.06332395318895578,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    },
+    {
+      "accuracy_adjusted": 0.125,
+      "accuracy_raw": 0.5,
+      "dose": 2.0,
+      "family": "random",
+      "invalid_rate": 0.0,
+      "layer": 16,
+      "matching": "z",
+      "mean_contrast": 2.078125,
+      "mean_realized_amplitude": 0.6222550049424171,
+      "n_trials": 8,
+      "non_finite_rate": 0.0
+    }
+  ],
+  "seed": 20260908,
+  "sham": {
+    "invalid_rate": 0.0,
+    "mean_contrast": 2.125,
+    "n_trials": 4,
+    "share_prefers_a": 1.0
+  }
+}

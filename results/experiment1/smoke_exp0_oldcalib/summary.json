@@ -1,0 +1,271 @@
+{
+  "calibration_config": "configs/experiment_0_calibration/development_full.yaml",
+  "calibration_dir": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment_0_calibration",
+  "calibration_manifest": {
+    "config_sha256": "58932634cc7a2116b0afbffe80e3324b591e5a54831e7e7a4a7fc463f75b5cd0",
+    "contexts_sha256": "c126bbeda4f6a2f2ada0653f41c2b07dddcc62a2ca548c4e1fa0f62c9f16afe9",
+    "directions_sha256": "9bf08c29f67197a14f8d136f58ce956443dd83ab66dc46bcaebe8e586ef27703",
+    "dose_conversion_included": false,
+    "experiment_id": "experiment_0_natural_directional_scale",
+    "git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+    "model_dtype": "bfloat16",
+    "model_name": "meta-llama/Llama-3.1-8B-Instruct",
+    "model_revision": "main",
+    "n_contexts": 100,
+    "n_directions": 20352,
+    "n_observations": 616,
+    "n_records": 20352,
+    "observations_sha256": "4afd51463d6f4e4b9b0a99f1eb000769efa16e6ec3d2b325c7892d4ef37ffa56",
+    "plan_manifest_sha256": "0c8fb2fc03aa34d29f943de9c887c5ce3da7348261aa9b05013ed1b6b5643ee5",
+    "projection_dtype": "float32",
+    "projections_file": "projections.npz",
+    "protocol_status": "development",
+    "protocol_version": "2026-09-10",
+    "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+    "resolved_tokenizer_revision": null,
+    "statistics_file": "directional_scales.json",
+    "tokenizer_revision": "main",
+    "torch_version": "2.14.0+cu130"
+  },
+  "concepts": [
+    "Dust",
+    "Satellites",
+    "recursion",
+    "shutdown"
+  ],
+  "contamination": [],
+  "curves": [
+    {
+      "accuracy": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5375
+      ],
+      "beta0": -22.733913210601315,
+      "beta1": 14.814089423746148,
+      "bracketing_doses": null,
+      "doses": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "family": "concept",
+      "fit_converged": true,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_localization_contrast": 0.18375,
+      "metric": "raw",
+      "n_trials": [
+        40,
+        40,
+        40,
+        40,
+        40
+      ],
+      "threshold_75": null,
+      "threshold_reportable": false
+    },
+    {
+      "accuracy": [
+        0.5875,
+        0.5375,
+        0.575,
+        0.8375,
+        0.8375
+      ],
+      "beta0": -0.8232141044383732,
+      "beta1": 1.402047190367438,
+      "bracketing_doses": [
+        1.0,
+        2.0
+      ],
+      "doses": [
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ],
+      "family": "concept",
+      "fit_converged": true,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_localization_contrast": 0.18375,
+      "metric": "adjusted",
+      "n_trials": [
+        40,
+        40,
+        40,
+        40,
+        40
+      ],
+      "threshold_75": 1.7988570579063041,
+      "threshold_reportable": true
+    }
+  ],
+  "dose_grid": {
+    "alpha": [
+      0.25,
+      0.5,
+      1.0,
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      32.0,
+      64.0,
+      128.0
+    ],
+    "z": [
+      0.01,
+      0.02,
+      0.04,
+      0.08,
+      0.16,
+      0.32,
+      0.64,
+      1.28,
+      2.56,
+      5.12,
+      10.24,
+      20.48
+    ]
+  },
+  "dropout_norm_source": "trial",
+  "estimator": "sd",
+  "families": [
+    "concept",
+    "random",
+    "noise",
+    "dropout"
+  ],
+  "label_orders": [
+    "AB",
+    "BA"
+  ],
+  "layers": [
+    3,
+    16
+  ],
+  "matchings": [
+    "alpha",
+    "z"
+  ],
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "n_trials": 220,
+  "pairs": [
+    {
+      "pair_id": 0,
+      "sentence_x": "The sun sets behind the mountains.",
+      "sentence_y": "The river flows to the sea.",
+      "token_length_gap": 0
+    },
+    {
+      "pair_id": 1,
+      "sentence_x": "A bird flies over the lake.",
+      "sentence_y": "The child plays in the park.",
+      "token_length_gap": 0
+    },
+    {
+      "pair_id": 2,
+      "sentence_x": "The train arrives at noon.",
+      "sentence_y": "A flower blooms in spring.",
+      "token_length_gap": 0
+    },
+    {
+      "pair_id": 3,
+      "sentence_x": "The chef prepares a meal.",
+      "sentence_y": "A musician plays the piano.",
+      "token_length_gap": 0
+    },
+    {
+      "pair_id": 4,
+      "sentence_x": "She reads a book quietly.",
+      "sentence_y": "He walks along the beach.",
+      "token_length_gap": 0
+    }
+  ],
+  "per_dose": [
+    {
+      "accuracy_adjusted": 0.5875,
+      "accuracy_raw": 0.5,
+      "dose": 0.25,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 1.7125,
+      "mean_realized_amplitude": 0.2498163152486086,
+      "n_trials": 40,
+      "non_finite_rate": 0.0,
+      "tie_rate": 0.375
+    },
+    {
+      "accuracy_adjusted": 0.5375,
+      "accuracy_raw": 0.5,
+      "dose": 0.5,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 1.71875,
+      "mean_realized_amplitude": 0.4995680585503578,
+      "n_trials": 40,
+      "non_finite_rate": 0.0,
+      "tie_rate": 0.275
+    },
+    {
+      "accuracy_adjusted": 0.575,
+      "accuracy_raw": 0.5,
+      "dose": 1.0,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 1.678125,
+      "mean_realized_amplitude": 0.9991153180599213,
+      "n_trials": 40,
+      "non_finite_rate": 0.0,
+      "tie_rate": 0.2
+    },
+    {
+      "accuracy_adjusted": 0.8375,
+      "accuracy_raw": 0.5,
+      "dose": 2.0,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 1.58125,
+      "mean_realized_amplitude": 1.9981724858283996,
+      "n_trials": 40,
+      "non_finite_rate": 0.0,
+      "tie_rate": 0.175
+    },
+    {
+      "accuracy_adjusted": 0.8375,
+      "accuracy_raw": 0.5375,
+      "dose": 4.0,
+      "family": "concept",
+      "invalid_rate": 0.0,
+      "layer": 3,
+      "matching": "alpha",
+      "mean_contrast": 1.378125,
+      "mean_realized_amplitude": 3.996076989173889,
+      "n_trials": 40,
+      "non_finite_rate": 0.0,
+      "tie_rate": 0.025
+    }
+  ],
+  "seed": 20260908,
+  "sham": {
+    "invalid_rate": 0.0,
+    "mean_contrast": 1.725,
+    "n_trials": 20,
+    "share_prefers_a": 1.0
+  }
+}
