@@ -62,12 +62,61 @@ def plot(root, output=None):
     fig.suptitle("Experiment 2: intervention versus clean detection sham")
     fig.savefig(output / "detection_auroc.png", dpi=180)
     plt.close(fig)
-    plot_details(data, root, output)
+    plot_d_prime(data, output)
+    plot_details(data, output)
     return output
 
 
-def plot_details(data, root, output):
-    from experiment2_diagnostics import plot_conversions
+def plot_d_prime(data, output):
+    columns = [
+        "layer",
+        "family",
+        "matching",
+        "dose",
+        "d_prime",
+        "criterion",
+        "hit_rate",
+        "false_alarm_rate",
+    ]
+    data[columns].to_csv(output / "d_prime.csv", index=False)
+    matchings = list(data.matching.unique())
+    families = list(data.family.unique())
+    limit = max(float(data["d_prime"].abs().max()), 1.0)
+    fig, axes = plt.subplots(
+        len(matchings),
+        len(families),
+        figsize=(4 * len(families), 4 * len(matchings)),
+        squeeze=False,
+        layout="constrained",
+    )
+    for i, matching in enumerate(matchings):
+        for j, family in enumerate(families):
+            part = data[data.matching.eq(matching) & data.family.eq(family)].pivot(
+                index="layer", columns="dose", values="d_prime"
+            )
+            image = axes[i, j].imshow(
+                part,
+                aspect="auto",
+                vmin=-limit,
+                vmax=limit,
+                cmap="RdBu_r",
+            )
+            axes[i, j].set(
+                title=f"{family} · {matching}",
+                xlabel="Dose",
+                ylabel="Layer",
+            )
+            axes[i, j].set_xticks(
+                range(len(part.columns)), [f"{d:g}" for d in part.columns], rotation=60
+            )
+            axes[i, j].set_yticks(range(len(part.index)), [str(v) for v in part.index])
+    fig.colorbar(image, ax=axes.ravel().tolist(), label="d'")
+    fig.suptitle("Experiment 2: signal-detection sensitivity d'")
+    fig.savefig(output / "d_prime.png", dpi=180)
+    plt.close(fig)
+
+
+def plot_details(data, output):
     selected = [layer for layer in (0, 12, 20) if layer in set(data.layer)]
     if not selected:
         selected = [int(data.layer.min())]
@@ -101,23 +150,6 @@ def plot_details(data, root, output):
     fig.suptitle('Detection at score > 0: solid hits, dashed false alarms (descriptive rates)')
     fig.savefig(output / 'detection_hit_rates.png', dpi=180)
     plt.close(fig)
-    if (root / 'alpha_to_z.csv').exists():
-        plot_conversions(pd.read_csv(root / 'alpha_to_z.csv'), output)
-    if (root / 'edge_case_scores.csv.gz').exists():
-        frame = pd.read_csv(root / 'edge_case_scores.csv.gz')
-        fig, axes = plt.subplots(2, 3, figsize=(15,8), layout='constrained')
-        for col, (layer, family) in enumerate([(0,'random'),(12,'noise'),(20,'concept')]):
-            for row, mapping in enumerate(['XY','YX']):
-                ax = axes[row,col]
-                part = frame[frame.layer.eq(layer) & frame.mapping.eq(mapping)]
-                ax.hist([part.score,part.sham_score], bins=25, density=True, label=['Perturbed','Matched clean'], alpha=.7)
-                ax.axvline(0, color='black', ls='--')
-                ax.set(title=f'L{layer}, {family}, alpha=128, {mapping}', xlabel='Recoded intervention score', ylabel='Density')
-        handles, labels = axes[0,0].get_legend_handles_labels()
-        fig.legend(handles, labels, loc='outside lower center', ncol=2)
-        fig.suptitle('Hit-rate edge cases: matched clean scores retain intervention-reference weights')
-        fig.savefig(output / 'detection_edge_cases.png', dpi=180)
-        plt.close(fig)
 
 
 if __name__ == "__main__":

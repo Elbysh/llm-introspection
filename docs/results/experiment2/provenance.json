@@ -4377,6 +4377,5 @@
     }
   ],
   "bootstrap_note": "Stored crossed-bootstrap intervals are copied unchanged. Clean-control intervals are recomputed with 2000 pair-cluster draws, seed 20260914.",
-  "conversion_note": "z = alpha / sd or mad_corrected. Saved rows are direction min/median/max. Noise uses full calibration bank; dropout uses median fixed-random scale. Not confidence intervals.",
   "local_cleanup": "Capability-task files and fields were deleted after export. input_sha256 identifies original pre-cleanup inputs; detection_only_input_sha256 identifies retained detection-only inputs. Detection trials and cell values are unchanged; original protocol IDs are historical provenance."
 }

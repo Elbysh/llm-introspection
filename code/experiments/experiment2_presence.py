@@ -73,12 +73,6 @@ EXPERIMENT1_Z_DOSES = (
 )
 
 
-# -----------------------------------------------------------------------------
-# Shared Experiment 1 mechanics, kept local so Experiment 2 does not import the
-# legacy Experiment 1 calibration package removed by the Experiment 0 refactor.
-# -----------------------------------------------------------------------------
-
-
 def build_sentence_pairs(tokenizer, sentences, num_pairs, seed):
     """Pair close token lengths exactly as in Experiment 1."""
     lengths = [
@@ -106,12 +100,6 @@ def build_sentence_pairs(tokenizer, sentences, num_pairs, seed):
         }
         for pair_index, (gap, index_a, index_b) in enumerate(selected)
     ]
-
-
-# -----------------------------------------------------------------------------
-# Experiment 0 calibration adapter
-# -----------------------------------------------------------------------------
-
 
 # -----------------------------------------------------------------------------
 # Prompt and scoring
