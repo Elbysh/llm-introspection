@@ -99,9 +99,10 @@ def parse_score(value):
     return float(value)
 
 
-def load_trials(run_dirs, matching):
+def load_trials(run_dirs, matching, exclude_layers=()):
     """Perturbed rows of one matching arm, plus the model, from every run directory."""
     rows, models, seen_matchings = [], set(), set()
+    excluded = set(exclude_layers)
     for run_dir in run_dirs:
         path = run_dir / "trials.csv"
         if not path.exists():
@@ -121,6 +122,8 @@ def load_trials(run_dirs, matching):
                 if row["matching"] != matching:
                     continue
                 row["layer"] = int(row["layer"])
+                if row["layer"] in excluded:
+                    continue
                 row["dose"] = float(row["dose"])
                 row["contrast"] = float(row["contrast"])
                 for field in ("correct_raw", "correct_adjusted"):
@@ -613,6 +616,10 @@ def main():
                         help="doc 7.3 fixes three, around the global threshold")
     parser.add_argument("--themes", nargs="+", default=["light"],
                         choices=sorted(THEMES))
+    parser.add_argument("--exclude_layers", nargs="+", type=int, default=[],
+                        help="blocks to leave out, for pooling runs whose layer coverage "
+                             "differs; the decomposition needs a complete design, so a "
+                             "block one contributing run never swept has to go")
     parser.add_argument("--export_run_dir", type=Path, default=None,
                         help="write the rows this run read as a run directory of their "
                              "own, so a source sweep that is not itself tracked still "
@@ -620,9 +627,11 @@ def main():
     args = parser.parse_args()
 
     run_dirs = [path if path.is_absolute() else REPO_ROOT / path for path in args.run_dir]
-    rows, model = load_trials(run_dirs, args.matching)
+    rows, model = load_trials(run_dirs, args.matching, args.exclude_layers)
     print(f"{len(rows)} {args.matching}-matched trials from "
-          f"{len(run_dirs)} run(s), model {model}", flush=True)
+          f"{len(run_dirs)} run(s), model {model}"
+          + (f", excluding block(s) {sorted(args.exclude_layers)}"
+             if args.exclude_layers else ""), flush=True)
 
     selection = select_doses(rows, count=args.num_doses)
     print(f"doses {selection['doses']} around anchor {selection['anchor']:.4g} "
@@ -648,6 +657,7 @@ def main():
         "runs": [relative_to_repo(path) for path in run_dirs],
         "n_trials": len(rows),
         "n_curves": len(curves),
+        "excluded_layers": sorted(args.exclude_layers),
         "n_thresholds_reportable_adjusted": reportable,
         "dose_selection": selection,
         "variance_components": components,
