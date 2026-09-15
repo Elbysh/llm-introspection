@@ -12,12 +12,12 @@
 # (25%/75% of 64), --similarity_reference_layer 16 (50% of 32) becomes 32.
 
 #SBATCH --job-name=modulators-qwen
-#SBATCH --partition=gpua100
-#SBATCH --gres=gpu:2
+#SBATCH --partition=prod80
+#SBATCH --gres=gpu:nvidia_a100-sxm4-80gb:2
 #SBATCH --time=20:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=128G
+#SBATCH --mem=120G
 #SBATCH --output=logs/modulators-qwen-%j.out
 #SBATCH --error=logs/modulators-qwen-%j.err
 
@@ -26,7 +26,7 @@ set -euo pipefail
 
 source ".venv/bin/activate"
 
-export HF_HOME=/gpfs/workdir/dainl/hf_cache
+export HF_HOME=/raid/home/projects/llm-injection-2026/hf_cache
 export HF_HUB_OFFLINE=1
 
 

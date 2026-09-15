@@ -10,12 +10,12 @@
 # cluster's actual gpua100 per-node VRAM and see real Qwen throughput.
 
 #SBATCH --job-name=calibration-qwen
-#SBATCH --partition=gpua100
-#SBATCH --gres=gpu:2
+#SBATCH --partition=prod80
+#SBATCH --gres=gpu:nvidia_a100-sxm4-80gb:2
 #SBATCH --time=08:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=128G
+#SBATCH --mem=120G
 #SBATCH --output=logs/calibration-qwen-%j.out
 #SBATCH --error=logs/calibration-qwen-%j.err
 
@@ -24,7 +24,7 @@ set -euo pipefail
 
 source ".venv/bin/activate"
 
-export HF_HOME=/gpfs/workdir/dainl/hf_cache
+export HF_HOME=/raid/home/projects/llm-injection-2026/hf_cache
 export HF_HUB_OFFLINE=1
 
 
