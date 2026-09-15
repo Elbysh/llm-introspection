@@ -102,6 +102,9 @@ def validate_prepared_plan(
             "renewed_noise": len(observations)
             * config.noise_repetitions_per_position,
         }
+        if config.scrambled_concept_enabled:
+            # One permutation per concept, so the two families are paired one to one.
+            expected["scrambled_concept"] = len(config.concepts)
         if dict(counts) != expected:
             raise ValueError(
                 "direction counts at block {} are {}, expected {}".format(

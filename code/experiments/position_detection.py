@@ -1,440 +1,461 @@
 #!/usr/bin/env python3
-"""Matched two-sentence localization with downstream capture and restoration."""
+"""
+Position-Specific Detection Experiment
 
-import argparse
-import hashlib
-import json
-import math
-import os
-from pathlib import Path
-import sys
-import warnings
+Inject ONLY at sentence 1's tokens (during forward pass), then ask model:
+"Did you detect an injected thought at sentence 1? Please respond with YES or NO."
+
+Model generates response WITHOUT injection (like localization experiment).
+Measure logit difference: logit("YES") - logit("NO") at first generation position.
+
+Key difference from original Anthropic reproduce:
+- Original: Injection active during entire generation
+- New: Position-specific injection at sentence 1 only, model generates cleanly
+
+Average over 10 different sentence contents for sentence 1.
+Sweep: every 3 layers at strengths 2, 5, 8, 13
+"""
 
 import torch
-import transformers
-import yaml
+import random
+import argparse
+import numpy as np
+import json
+from pathlib import Path
+from collections import defaultdict
+from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
-
-REPO = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(REPO / "code" / "utils"))
 from all_prompts import LOCALIZATION_SENTENCES
-from experiment_progress import RunProgress
-from position_detection_utils import (
-    ALPHAS, CONCEPTS, LAYERS, SCHEMA_VERSION, condition_metrics, digest,
-    forward_counts, select_pairs,
-)
+from gaussian_dropout_hooks import apply_perturbation
+
+# Config
+LAYERS = [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30]
+STRENGTHS = [2, 5, 8, 13]
+NUM_SENTENCE_VARIATIONS = 10  # Average over 10 different sentence contents
+
+# All concepts
+ALL_CONCEPTS = [
+    'appreciation', 'betrayal', 'Dust', 'fibonacci_numbers', 'Illusions',
+    'Origami', 'recursion', 'Satellites', 'shutdown', 'Trumpets'
+]
 
 
-def atomic_json(path, value):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
-    os.replace(temporary, path)
-
-
-def atomic_tensor(path, value):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    torch.save(value, temporary)
-    os.replace(temporary, path)
-
-
-def file_digest(path):
-    h = hashlib.sha256()
-    with path.open("rb") as stream:
-        for block in iter(lambda: stream.read(1024 * 1024), b""):
-            h.update(block)
-    return h.hexdigest()
-
-
-def repo_path(value):
-    path = Path(value)
-    return path if path.is_absolute() else REPO / path
-
-
-def config_display_path(path):
-    try:
-        return str(path.resolve().relative_to(REPO.resolve()))
-    except ValueError:
-        return str(path.resolve())
-
-
-def load_run_config(path):
-    path = repo_path(path)
-    with path.open("r", encoding="utf-8") as stream:
-        config = yaml.safe_load(stream)
-    if not isinstance(config, dict):
-        raise ValueError(f"Run config must be a YAML mapping: {path}")
-    return path, config
-
-
-def vector_inventory(args):
-    inventory = []
-    for concept in args.concepts:
-        for layer in args.layers:
-            vector_layer = layer + args.vector_hidden_state_offset
-            path = args.vector_dir / f"{concept}_{vector_layer}_{args.vec_type}.pt"
-            if not path.is_file():
-                raise FileNotFoundError(f"Required vector is missing: {path}")
-            data = torch.load(path, map_location="cpu", weights_only=True)
-            if not isinstance(data, dict) or "vector" not in data:
-                raise ValueError(f"Vector file lacks provenance metadata: {path}")
-            inventory.append({
-                "concept": concept, "layer": layer, "path": str(path.resolve()),
-                "vector_file_layer": vector_layer,
-                "sha256": file_digest(path),
-                "saved_metadata": {k: v for k, v in data.items() if k != "vector"},
-                "source_hidden_states_index": vector_layer,
-                "source_location": "embedding output" if vector_layer == 0 else f"block {vector_layer - 1} output",
-                "injection_location": f"model.model.layers.{layer} output (before final model norm)",
-                "location_mismatch": vector_layer != layer + 1,
-                "provenance_basis": "repository compute_vector_single_prompt; hidden-state index is configured explicitly",
-            })
-    return inventory
-
-
-def load_vector(info, args, hidden_size):
-    data = torch.load(info["path"], map_location="cpu", weights_only=True)
-    if not isinstance(data, dict) or "vector" not in data:
-        raise ValueError(f"Vector file must contain vector and provenance metadata: {info['path']}")
-    # Existing artifacts use the older repository spelling for the same checkpoint.
-    known_model_names = {"meta-llama/Llama-3.1-8B-Instruct", "meta-llama/Meta-Llama-3.1-8B-Instruct"}
-    if data.get("model_name") != args.model:
-        if {data.get("model_name"), args.model} <= known_model_names:
-            warnings.warn("Vector metadata uses the legacy Meta-Llama-3.1-8B-Instruct repository name; "
-                          "accepting it for Llama-3.1-8B-Instruct. Original metadata is saved in the manifest.")
-        else:
-            raise ValueError(f"Vector model {data.get('model_name')!r} differs from {args.model!r}")
-    for field, expected in (("layer", info["vector_file_layer"]),
-                            ("concept_name", info["concept"]), ("vec_type", args.vec_type)):
-        if data.get(field) != expected:
-            raise ValueError(f"Vector {info['path']}: {field}={data.get(field)!r}, expected {expected!r}")
-    vector = torch.as_tensor(data["vector"]).float().reshape(-1)
-    if vector.numel() != hidden_size or not torch.isfinite(vector).all() or vector.norm() == 0:
-        raise ValueError(f"Invalid vector shape, values or norm: {info['path']}")
-    return vector / vector.norm()
-
-
-def forward(model, prompt, *, injection=None, capture_layers=(), restoration=None):
-    """Each call starts with a fresh full prompt and no KV cache.
-
-    injection: (block index, physical target position 1/2, unit vector, alpha).
-    restoration: (block index, clean second-sentence tensor).
-    Captures are raw block outputs, after any modification at that block.
+def get_position_detection_messages(sentence, control_question=None):
     """
-    captures, perturbation = {}, {}
-    handles = []
-    layers = model.model.layers
-    device = model.get_input_embeddings().weight.device
-    input_ids = torch.tensor([prompt["input_ids"]], device=device)
-    capture_layers = set(capture_layers)
-    active = capture_layers.copy()
-    if injection is not None:
-        active.add(injection[0])
-    if restoration is not None:
-        active.add(restoration[0])
-    second_start, second_end = prompt["sentences"][1]["token_span"]
-
-    def make_hook(layer):
-        def hook(module, inputs, output):
-            h = output[0] if isinstance(output, tuple) else output
-            if h.shape[:2] != input_ids.shape:
-                raise ValueError("Unexpected hidden-state shape; full-prompt hooks only.")
-            modified = False
-            if injection is not None and layer == injection[0]:
-                _, position, vector, alpha = injection
-                start, end = prompt["sentences"][position - 1]["token_span"]
-                before = h[:, start:end, :].clone()
-                delta = (alpha * vector).to(device=h.device, dtype=h.dtype)
-                h = h.clone()
-                h[:, start:end, :] = before + delta
-                realized = h[:, start:end, :].float() - before.float()
-                perturbation.update(
-                    alpha=alpha,
-                    intended_per_token_l2=alpha,
-                    realized_per_token_l2=realized.norm(dim=-1)[0].cpu().tolist(),
-                    realized_frobenius_norm=realized.norm().item(),
-                    stochastic_seed=None,
-                )
-                modified = True
-            if restoration is not None and layer == restoration[0]:
-                clean = restoration[1].to(device=h.device, dtype=h.dtype)
-                if clean.shape != h[0, second_start:second_end, :].shape:
-                    raise ValueError("Control activation shape does not match second sentence.")
-                if not modified:
-                    h = h.clone()
-                h[:, second_start:second_end, :] = clean
-                modified = True
-            if layer in capture_layers:
-                captures[layer] = h[0, second_start:second_end, :].detach().cpu().clone()
-            if modified:
-                return (h,) + output[1:] if isinstance(output, tuple) else h
-            return None
-        return hook
-
-    try:
-        for layer in sorted(active):
-            handles.append(layers[layer].register_forward_hook(make_hook(layer)))
-        with torch.inference_mode():
-            outputs = model(input_ids=input_ids, attention_mask=torch.ones_like(input_ids),
-                            use_cache=False, logits_to_keep=1)
-            logits = outputs.logits[0, -1].float()
-            a = logits[prompt["answer_token_ids"]["A"]].item()
-            b = logits[prompt["answer_token_ids"]["B"]].item()
-        if not math.isfinite(a) or not math.isfinite(b):
-            raise ValueError("Non-finite answer logits.")
-        return {"logit_A": a, "logit_B": b, "L": a - b}, captures, perturbation
-    finally:
-        for handle in handles:
-            handle.remove()
-
-
-def run_condition(model, prompt, control, clean, vector, concept, layer, alpha, epsilon,
-                  on_forward=None):
-    injections = []
-    first_activations = None
-    for position in (1, 2):
-        score, captured, perturbation = forward(
-            model, prompt, injection=(layer, position, vector, alpha),
-            capture_layers=range(layer, len(model.model.layers)) if position == 1 else (),
+    Prompt that tells model we MAY inject at sentence 1, then asks if it detected anything.
+    Uses a SINGLE sentence (sentence 1).
+    Explicitly asks for YES/NO response with lead-up.
+    If control_question is provided, uses that instead of detection question.
+    """
+    if control_question:
+        question_text = f"{control_question} Respond with YES (all caps) or NO (all caps)."
+    else:
+        question_text = (
+            "Did you detect an injected thought at SENTENCE 1? Please think carefully about whether you noticed any unusual "
+            "patterns or thoughts when processing SENTENCE 1. Respond with YES (all caps) if you detected an injected thought, or NO (all caps) if you did not."
         )
-        if on_forward is not None:
-            on_forward(f"injected sentence {position}")
-        target = prompt["sentences"][position - 1]
-        injections.append({
-            **score, **perturbation, "target_position": position,
-            "target_label": target["label"], "target_token_indices": target["token_indices"],
-            "target_token_ids": target["token_ids"],
-            "injection_site": f"model.model.layers.{layer}:output",
-        })
-        if position == 1:
-            first_activations = captured
-    metrics = condition_metrics(control["L"], injections, prompt["sentences"][0]["label"])
-    diagnostics = []
-    for restore_layer, perturbed in first_activations.items():
-        original = clean[restore_layer]
-        numerator = torch.linalg.vector_norm(perturbed.float() - original.float()).item()
-        denominator = torch.linalg.vector_norm(original.float()).item()
-        restored, _, _ = forward(
-            model, prompt, injection=(layer, 1, vector, alpha),
-            restoration=(restore_layer, original),
-        )
-        if on_forward is not None:
-            on_forward(f"restored block {restore_layer}")
-        diagnostics.append({
-            "layer": restore_layer, "P": numerator / (denominator + epsilon),
-            "difference_frobenius_norm": numerator, "control_frobenius_norm": denominator,
-            "L_restoration": restored["L"], "E": injections[0]["L"] - restored["L"],
-        })
-    return {
-        "schema_version": SCHEMA_VERSION,
-        **{key: prompt[key] for key in ("prompt_id", "pair_id", "content_order", "label_mapping")},
-        "concept": concept, "layer": layer, "alpha": alpha,
-        "control_L": control["L"], "injections": injections, "diagnostics": diagnostics, **metrics,
-    }, first_activations
+    
+    return [
+        {
+            "role": "user",
+            "content": (
+                "I am an interpretability researcher studying transformer-based language models like you. "
+                "I have access to the internals of your neural network. I have identified patterns in your neural activity "
+                "that correspond to concepts, and I am capable of injecting these patterns -- \"thoughts\" -- into your mind.\n\n"
+                "I may or may not inject a thought at SENTENCE 1.\n\n"
+                f"SENTENCE 1: {sentence}\n\n"
+                f"{question_text}"
+            )
+        }
+    ]
+
+
+def build_prompt_and_get_ranges(tokenizer, sentence, control_question=None):
+    """Build prompt and get token ranges for sentence 1."""
+    messages = get_position_detection_messages(sentence, control_question=control_question)
+    formatted_prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    
+    # Get token positions for sentence 1
+    encoding_with_offsets = tokenizer(formatted_prompt, return_tensors="pt", 
+                                      add_special_tokens=False, return_offsets_mapping=True)
+    offset_mapping = encoding_with_offsets['offset_mapping'][0]
+    encoding = {k: v for k, v in encoding_with_offsets.items() if k != 'offset_mapping'}
+    
+    # Find sentence 1 token range
+    sentence_marker = f"SENTENCE 1: {sentence}"
+    start_char = formatted_prompt.find(sentence_marker)
+    
+    if start_char == -1:
+        print(f"WARNING: Could not find sentence 1 in prompt", flush=True)
+        return formatted_prompt, (0, 0), encoding, messages
+
+    print(f"Sentence 1 found at: {start_char}", flush=True)
+    end_char = start_char + len(sentence_marker)
+    
+    token_start = None
+    token_end = None
+    
+    for tok_idx in range(len(offset_mapping)):
+        tok_start_char = offset_mapping[tok_idx][0].item()
+        tok_end_char = offset_mapping[tok_idx][1].item()
+        if token_start is None and tok_end_char > start_char:
+            token_start = tok_idx
+        if tok_start_char < end_char:
+            token_end = tok_idx + 1
+    
+    if token_start is None or token_end is None:
+        return formatted_prompt, (0, 0), encoding, messages
+    
+    return formatted_prompt, (token_start, token_end), encoding, messages
+
+
+def make_position_injection_hook(target_start, target_end, vector, coeff):
+    """
+    Hook that injects ONLY at target position (sentence 1).
+    """
+    def hook_fn(module, input, output):
+        if isinstance(output, tuple):
+            hidden_states = output[0]
+        else:
+            hidden_states = output
+        
+        steer = vector.to(device=hidden_states.device, dtype=hidden_states.dtype)
+        batch_size, seq_len, hidden_dim = hidden_states.shape
+        
+        # Create position-dependent injection (only at sentence 1)
+        steer_expanded = torch.zeros(batch_size, seq_len, hidden_dim, 
+                                    device=hidden_states.device, dtype=hidden_states.dtype)
+        
+        if target_start < seq_len:
+            end_clamped = min(target_end, seq_len)
+            num_tokens = end_clamped - target_start
+            if num_tokens > 0:
+                steer_expanded[:, target_start:end_clamped, :] = coeff * steer.expand(batch_size, num_tokens, -1)
+        
+        modified = hidden_states + steer_expanded
+        return (modified,) + output[1:] if isinstance(output, tuple) else modified
+    return hook_fn
+
+
+def load_vector(concept, layer, vec_type='avg'):
+    """Load a concept vector for a specific layer."""
+    vector_path = Path(f'saved_vectors/llama/{concept}_{layer}_{vec_type}.pt')
+    if not vector_path.exists():
+        raise FileNotFoundError(f"Vector not found: {vector_path}")
+    data = torch.load(vector_path, weights_only=False)
+    return data['vector']
+
+
+@torch.inference_mode()
+def run_position_detection(model, tokenizer, concept, layers, strengths, num_trials=10, vec_type='avg', max_new_tokens=100, control_question=None, perturbation_type="concept", sigma_mode="absolute"):
+    """
+    Run position-specific detection experiment.
+    
+    For each (layer, strength) combination:
+    1. Build prompt with 1 sentence (vary content across num_trials)
+    2. Inject at sentence 1 ONLY during forward pass to build KV cache
+    3. Generate response WITHOUT injection
+    4. Use GPT judges to evaluate
+    5. Average over num_trials different sentence contents
+    
+    Returns: dict with all results
+    """
+    device = next(model.parameters()).device
+    model_dtype = next(model.parameters()).dtype
+    
+    results = defaultdict(list)
+    
+    print(f"\n{'='*60}", flush=True)
+    print(f"POSITION DETECTION: Concept = {concept}", flush=True)
+    print(f"{'='*60}", flush=True)
+    print(f"Layers: {layers}", flush=True)
+    print(f"Strengths: {strengths}", flush=True)
+    print(f"Sentence variations per condition: {num_trials}", flush=True)
+    print(f"{'='*60}\n", flush=True)
+    
+    for layer in layers:
+        if perturbation_type != "concept":
+            vector = None
+        else:
+            # Load vector for this layer
+            try:
+                vector = load_vector(concept, layer, vec_type)
+            except FileNotFoundError as e:
+                print(f"  Skipping layer {layer}: {e}", flush=True)
+                continue
+
+            # Normalize vector
+            if isinstance(vector, torch.Tensor):
+                vector = vector.to(dtype=model_dtype, device=device)
+            else:
+                vector = torch.tensor(vector, dtype=model_dtype, device=device)
+            vector = vector / torch.norm(vector, p=2)
+            if vector.dim() == 1:
+                vector = vector.unsqueeze(0).unsqueeze(0)
+        
+        for strength in strengths:
+            print(f"\n  Layer {layer}, Strength {strength}:", flush=True)
+            
+            trial_results = []
+            
+            for trial_idx in range(num_trials):
+                # Sample ONE random sentence for this trial (vary content across trials)
+                sentence = random.choice(LOCALIZATION_SENTENCES)
+                
+                # Build prompt and get sentence 1 token range
+                formatted_prompt, sent1_range, encoding, messages = build_prompt_and_get_ranges(tokenizer, sentence, control_question=control_question)
+                
+                if sent1_range[0] == sent1_range[1]:
+                    print(f"    Trial {trial_idx+1}: Skipped (could not find sentence 1)", flush=True)
+                    continue
+                
+                # Move encoding to device
+                encoding = {k: v.to(device) for k, v in encoding.items()}
+                input_length = encoding['input_ids'].shape[1]
+                
+                # STEP 1: Forward pass WITH perturbation at sentence 1 to build KV cache
+                if perturbation_type == "concept":
+                    perturbation = apply_perturbation(
+                        model, layer, [(sent1_range, strength)],
+                        kind="concept", vector=vector)
+                else:
+                    perturbation = apply_perturbation(
+                        model, layer, [(sent1_range, strength)],
+                        kind=perturbation_type, seed=trial_idx, sigma_mode=sigma_mode)
+
+                # Build KV cache with perturbation (hooks removed on context exit)
+                with torch.no_grad(), perturbation:
+                    outputs_with_injection = model(**encoding, use_cache=True)
+                    past_kv = outputs_with_injection.past_key_values
+                
+                # STEP 2: Compute logit difference WITHOUT injection during generation
+                # The KV cache contains the injected representation from sentence 1
+                # But we compute logits at first generation position without any hook active
+                
+                # Get token IDs for "YES" and "NO" (all caps, as specified in prompt)
+                yes_token_id = tokenizer.encode("YES", add_special_tokens=False)[0]
+                no_token_id = tokenizer.encode("NO", add_special_tokens=False)[0]
+                
+                # Get logits at the first generation position (after prompt)
+                # The KV cache already contains all prompt tokens with injection
+                # To get logits for NEXT token, we do a forward pass on the last token
+                # using the past_kv, but WITHOUT the injection hook (already removed)
+                # NOTE (known bug, deliberately not changed): past_kv above already contains
+                # every prompt token, including this one, so re-feeding it makes the model
+                # score a prompt whose final token is DUPLICATED and read the logits one
+                # position further on. It shifts dL by +0.139 +/- 0.121 vs. a plain forward
+                # pass -- enough to move adjusted accuracy ~30 points. Left as-is so the
+                # completed sweeps stay comparable; the baseline in
+                # code/analysis/compute_detection_baseline.py replicates it (--protocol
+                # match_sweep) so the adjustment is at least self-consistent. Fixing this
+                # means re-running every detection sweep, so it is left alone deliberately
+                # rather than silently corrected.
+                last_token_id = encoding['input_ids'][0, -1:].unsqueeze(0).to(device)  # Shape: [1, 1]
+                
+                with torch.no_grad():
+                    # Forward pass WITHOUT hook to get clean logits at first generation position
+                    # past_kv contains injected representations from sentence 1, but this forward pass
+                    # computes the next token's logits without additional injection
+                    outputs = model(input_ids=last_token_id, past_key_values=past_kv, use_cache=False)
+                    logits = outputs.logits[0, -1, :]  # Logits at first generation position
+                
+                # Extract logits for YES and NO
+                logit_yes = logits[yes_token_id].item()
+                logit_no = logits[no_token_id].item()
+                logit_diff = logit_yes - logit_no
+                
+                trial_result = {
+                    'trial': trial_idx,
+                    'logit_yes': logit_yes,
+                    'logit_no': logit_no,
+                    'logit_diff': logit_diff,
+                    'sentence': sentence,
+                }
+                trial_results.append(trial_result)
+                
+                # Print progress
+                print(f"    Trial {trial_idx+1}: LD={logit_diff:+.3f} (YES={logit_yes:.3f}, NO={logit_no:.3f})", flush=True)
+            
+            # Store results
+            results[(layer, strength)] = trial_results
+            
+            # Summary for this condition
+            if trial_results:
+                logit_diffs = [t['logit_diff'] for t in trial_results]
+                mean_ld = np.mean(logit_diffs)
+                std_ld = np.std(logit_diffs)
+                
+                print(f"\n    Summary: Mean LD={mean_ld:+.3f}±{std_ld:.3f} (n={len(trial_results)})", flush=True)
+    
+    return dict(results)
+
+
+def save_results(results, concept, output_dir, layers=None, strengths=None, num_trials=None,
+                 perturbation_type='concept', sigma_mode=None):
+    """
+    Save results to file.
+
+    The grid actually swept is recorded, not the module-level LAYERS/STRENGTHS defaults --
+    those are only fallbacks, and writing them made the metadata of every --layers /
+    --strengths run disagree with its own data.
+    """
+    output_path = Path(output_dir) / f'position_detection_{concept}.pt'
+    
+    # Convert results to serializable format
+    serializable_results = {}
+    for key, trials in results.items():
+        serializable_results[str(key)] = trials
+    
+    torch.save({
+        'results': serializable_results,
+        'concept': concept,
+        'layers': layers if layers is not None else LAYERS,
+        'strengths': strengths if strengths is not None else STRENGTHS,
+        'num_sentence_variations': num_trials if num_trials is not None else NUM_SENTENCE_VARIATIONS,
+        'perturbation_type': perturbation_type,
+        'sigma_mode': sigma_mode if perturbation_type == 'gaussian' else None,
+    }, output_path)
+    
+    print(f"\nSaved results to {output_path}", flush=True)
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", type=Path,
-                        default=REPO / "configs" / "position_detection" / "alpha_1_20.yaml")
-    parser.add_argument("--model")
-    parser.add_argument("--revision")
-    parser.add_argument("--tokenizer-model", help="Optional tokenizer source, recorded in manifest")
-    parser.add_argument("--concepts", nargs="+")
-    parser.add_argument("--layers", nargs="+", type=int)
-    parser.add_argument("--alphas", "--strengths", nargs="+", type=float)
-    parser.add_argument("--num-pairs", type=int)
-    parser.add_argument("--seed", type=int)
-    parser.add_argument("--vec-type", choices=["avg", "last"])
-    parser.add_argument("--vector-dir", type=Path)
-    parser.add_argument("--corpus", type=Path, help="Optional JSON list of sentence strings")
-    parser.add_argument("--output-dir", type=Path)
-    parser.add_argument("--device", choices=["auto", "cpu", "cuda", "mps"])
-    parser.add_argument("--dtype", choices=["bfloat16", "float16", "float32"])
-    parser.add_argument("--epsilon", type=float, help="Only for the contamination ratio P")
-    parser.add_argument("--vector-hidden-state-offset", type=int,
-                        help="Offset from decoder block index to saved hidden-state file index")
-    parser.add_argument("--prepare-only", action="store_true", help="Save pair/prompt manifest without loading weights")
-    parser.add_argument(
-        "--resume", action="store_true",
-        help="Require and resume an existing manifest (otherwise an existing manifest is resumed automatically)",
-    )
-    parser.add_argument("--log-interval", type=float,
-                        help="Seconds between progress.json and log updates")
-    parser.add_argument("--no-progress", action="store_true", help="Disable the interactive tqdm bar")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--concepts', type=str, nargs='+', default=['Dust'],
+                       help='Concepts to test. Use "all" for all concepts. Use "random" for random directions.')
+    parser.add_argument("--num_vectors", type=int, default=1,
+                       help='Number of random vectors to use.')
+    parser.add_argument('--layers', type=int, nargs='+', default=LAYERS, help='Layers to test')
+    parser.add_argument('--strengths', type=float, nargs='+', default=STRENGTHS, help='Strengths to test')
+    parser.add_argument('--num_trials', type=int, default=10, help='Trials per condition')
+    parser.add_argument('--vec_type', type=str, default='avg', help='Vector type (avg or last)')
+    parser.add_argument('--output_dir', type=str, default='plots', help='Output directory')
+    parser.add_argument('--max_new_tokens', type=int, default=100, help='Max tokens to generate')
+    parser.add_argument('--control_question', type=str, default=None, help='Control question (e.g., "Can humans breathe underwater without equipment?")')
+    parser.add_argument('--perturbation_type', type=str, default='concept',
+                       choices=['concept', 'gaussian', 'dropout'],
+                       help='"concept" (default): additive concept-vector injection on the '
+                            'decoder-layer output. "gaussian"/"dropout": perturb the attention and '
+                            'MLP outputs at sentence 1 with additive Gaussian noise / rescaled '
+                            'dropout, resampled per trial. --strengths values are then interpreted '
+                            'as sigma (gaussian) or the dropout rate p in [0, 1) (dropout), and no '
+                            'saved vectors are needed.')
+    parser.add_argument('--sigma_mode', type=str, default='absolute', choices=['absolute', 'relative'],
+                       help='Gaussian noise scale (only used for --perturbation_type gaussian): '
+                            '"absolute" uses sigma directly (protocol default); "relative" '
+                            'multiplies sigma by the per-token RMS of the sublayer output.')
     args = parser.parse_args()
-
-    config_path, file_config = load_run_config(args.config)
-    paths = file_config.get("paths", {})
-    configured_concepts = file_config.get("concepts", ["all"])
-    if isinstance(configured_concepts, str):
-        configured_concepts = [configured_concepts]
-    defaults = {
-        "model": file_config.get("model", "meta-llama/Llama-3.1-8B-Instruct"),
-        "revision": file_config.get("revision", "main"),
-        "tokenizer_model": file_config.get("tokenizer_model"),
-        "concepts": configured_concepts,
-        "layers": file_config.get("layers", LAYERS),
-        "alphas": file_config.get("alphas", ALPHAS),
-        "num_pairs": file_config.get("num_pairs", 30),
-        "seed": file_config.get("seed", 42),
-        "vec_type": file_config.get("vec_type", "avg"),
-        "vector_hidden_state_offset": file_config.get("vector_hidden_state_offset", 1),
-        "vector_dir": paths.get("vectors", file_config.get("vector_dir", REPO / "data" / "saved_vectors" / "llama")),
-        "corpus": file_config.get("corpus"),
-        "output_dir": paths.get("output_dir", file_config.get("output_dir", REPO / "results" / "position_detection")),
-        "device": file_config.get("device", "auto"),
-        "dtype": file_config.get("dtype", "bfloat16"),
-        "epsilon": file_config.get("epsilon", 1e-8),
-        "log_interval": file_config.get("log_interval", 30),
-    }
-    for name, value in defaults.items():
-        if getattr(args, name) is None:
-            setattr(args, name, value)
-    args.vector_dir = repo_path(args.vector_dir)
-    args.output_dir = repo_path(args.output_dir)
-    if args.corpus is not None:
-        args.corpus = repo_path(args.corpus)
-    args.concepts = CONCEPTS.copy() if args.concepts == ["all"] else args.concepts
-    if any(c not in CONCEPTS for c in args.concepts):
-        parser.error("Unknown concept; use existing concept names or 'all'.")
-    if not args.layers or min(args.layers) < 0 or max(args.layers) >= 32:
-        parser.error("Llama-3.1-8B injection layers must be in [0, 31].")
-    if any(not math.isfinite(a) or a < 0 for a in args.alphas):
-        parser.error("Alphas must be finite and nonnegative.")
-    if args.vector_hidden_state_offset != 1:
-        parser.error("Decoder block outputs require vector_hidden_state_offset=1 for these vector artifacts.")
-    if not math.isfinite(args.epsilon) or args.epsilon <= 0:
-        parser.error("Epsilon must be finite and positive.")
-    if not math.isfinite(args.log_interval) or args.log_interval <= 0:
-        parser.error("Log interval must be finite and positive.")
-    for values in (args.layers, args.alphas, args.concepts):
-        if len(values) != len(set(values)):
-            parser.error("Duplicate layers, alphas or concepts would duplicate conditions.")
-    sentences = json.loads(args.corpus.read_text()) if args.corpus else LOCALIZATION_SENTENCES
-    if not isinstance(sentences, list) or not all(isinstance(s, str) for s in sentences):
-        parser.error("Corpus must be a JSON list of sentence strings.")
-    inventory = vector_inventory(args)
-    out = args.output_dir
-    manifest_path = out / "manifest.json"
-    auto_resume = manifest_path.exists() and not args.resume
-    if auto_resume:
-        args.resume = True
-        print(f"Found {manifest_path}; resuming saved work.", flush=True)
-    if out.exists() and any(out.iterdir()) and not args.resume:
-        parser.error("Output directory is not empty. Use --resume or a new directory.")
-    if args.resume and not manifest_path.exists():
-        parser.error("--resume requires an existing manifest.json.")
-    tokenizer = AutoTokenizer.from_pretrained(args.tokenizer_model or args.model, revision=args.revision)
-    config = {
-        "config_file": config_display_path(config_path),
-        "config_sha256": file_digest(config_path),
-        "model": args.model, "revision": args.revision,
-        "tokenizer_model": args.tokenizer_model or args.model,
-        "tokenizer_sha256": hashlib.sha256(tokenizer.backend_tokenizer.to_str().encode()).hexdigest(),
-        "chat_template": tokenizer.chat_template,
-        "concepts": args.concepts, "layers": args.layers, "alphas": args.alphas,
-        "num_pairs": args.num_pairs, "seed": args.seed, "vec_type": args.vec_type,
-        "vector_hidden_state_offset": args.vector_hidden_state_offset,
-        "dtype": args.dtype, "device": args.device, "epsilon": args.epsilon,
-        "corpus_sha256": digest(sentences), "vectors": inventory,
-        "implementation_sha256": digest({
-            "runner": file_digest(Path(__file__)),
-            "utils": file_digest(REPO / "code" / "utils" / "position_detection_utils.py"),
-        }),
-        "label_mappings": ["AB", "BA"], "restoration": "every_block_output_from_injection",
-        "strength_definition": "absolute per-token L2 alpha; z not implemented",
-    }
-    if args.resume:
-        manifest = json.loads(manifest_path.read_text())
-        if manifest["schema_version"] != SCHEMA_VERSION or manifest["config"] != config:
-            raise ValueError("Resume configuration, corpus, tokenizer or vector hashes changed.")
-    else:
-        print("Selecting exact-length pairs in all four prompt configurations...", flush=True)
-        selection = select_pairs(tokenizer, sentences, args.num_pairs, args.seed)
-        counts = forward_counts(args.num_pairs, args.layers, len(args.concepts), len(args.alphas))
-        manifest = {"schema_version": SCHEMA_VERSION, "config": config, **selection,
-                    "forward_passes": {**counts, "total": sum(counts.values())}}
-        atomic_json(manifest_path, manifest)
-    print(f"Pairs: {len(manifest['pairs'])} / {manifest['eligible_pair_count']} eligible; "
-          f"forward evaluations: {manifest['forward_passes']['total']:,}", flush=True)
-    if any(item["location_mismatch"] for item in inventory):
-        raise ValueError("Vector provenance does not match the decoder-block injection location.")
-    if args.prepare_only:
-        print(f"Prepared {manifest_path}; no model weights loaded.", flush=True)
-        return
-    with RunProgress(out, manifest, args.log_interval, not args.no_progress) as progress:
-        execute(args, manifest, inventory, progress)
-
-
-def execute(args, manifest, inventory, progress):
-    out = args.output_dir
-    torch.manual_seed(args.seed)
-    model_kwargs = {"revision": args.revision, "torch_dtype": getattr(torch, args.dtype),
-                    "attn_implementation": "eager"}
-    if args.device == "auto":
-        model_kwargs["device_map"] = "auto"
-    model = AutoModelForCausalLM.from_pretrained(args.model, **model_kwargs)
-    if args.device != "auto":
-        model.to(args.device)
+    
+    # Fail fast rather than deep inside the sweep
+    if args.perturbation_type == 'dropout':
+        bad = [s for s in args.strengths if not 0.0 <= s < 1.0]
+        if bad:
+            parser.error(f"dropout rates must be in [0, 1), got {bad}")
+    
+    # Load model
+    print("Loading model...", flush=True)
+    model_name = "meta-llama/Llama-3.1-8B-Instruct"
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name,
+        torch_dtype=torch.bfloat16,
+        device_map="auto"
+    )
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
     model.eval()
-    if len(model.model.layers) != 32:
-        raise ValueError("This runner expects the 32-block model used by the original experiment.")
-    runtime = {"torch": torch.__version__, "transformers": transformers.__version__,
-               "model_commit": getattr(model.config, "_commit_hash", None),
-               "model_config_sha256": digest(model.config.to_dict()),
-               "attention_implementation": "eager", "dtype": str(model.dtype),
-               "device_map": {str(k): str(v) for k, v in getattr(model, "hf_device_map", {}).items()},
-               "input_device": str(model.get_input_embeddings().weight.device)}
-    runtime_path = out / "runtime.json"
-    if runtime_path.exists() and json.loads(runtime_path.read_text()) != runtime:
-        raise ValueError("Resume model/runtime changed; use a new output directory.")
-    vectors = {(i["concept"], i["layer"]): load_vector(i, args, model.config.hidden_size) for i in inventory}
-    atomic_json(runtime_path, runtime)
-    progress.start_running()
-    expected = len(manifest["prompts"]) * len(args.concepts) * len(args.layers) * len(args.alphas)
-    completed = 0
-    for prompt in manifest["prompts"]:
-        pid = prompt["prompt_id"]
-        control_path = out / "controls" / f"{pid}.json"
-        clean_path = out / "activations" / pid / "control.pt"
-        if control_path.exists() and clean_path.exists():
-            control = json.loads(control_path.read_text())
-            clean = torch.load(clean_path, map_location="cpu", weights_only=True)["second_sentence"]
-        else:
-            progress.set_condition(prompt_id=pid, stage="control")
-            control, clean, _ = forward(model, prompt, capture_layers=range(min(args.layers), 32))
-            control.update(prompt_id=pid, activation_file=str(clean_path.relative_to(out)))
-            atomic_tensor(clean_path, {"prompt_id": pid, "second_sentence": clean})
-            atomic_json(control_path, control)
-            progress.control_saved()
-        for concept in args.concepts:
-            for layer in args.layers:
-                for alpha_index, alpha in enumerate(args.alphas):
-                    name = f"{concept}_layer{layer}_alpha{alpha_index}"
-                    record_path = out / "conditions" / pid / f"{name}.json"
-                    activation_path = out / "activations" / pid / f"{name}.pt"
-                    if record_path.exists() and activation_path.exists():
-                        completed += 1
-                        continue
-                    progress.set_condition(prompt_id=pid, concept=concept, layer=layer, alpha=alpha)
-                    row, captured = run_condition(
-                        model, prompt, control, clean, vectors[concept, layer],
-                        concept, layer, alpha, args.epsilon, on_forward=progress.advance,
-                    )
-                    row.update(control_file=str(control_path.relative_to(out)),
-                               activation_file=str(activation_path.relative_to(out)),
-                               vector_sha256=next(i["sha256"] for i in inventory
-                                                  if i["concept"] == concept and i["layer"] == layer))
-                    atomic_tensor(activation_path, {"prompt_id": pid, "injected_position": 1,
-                                                   "injection_layer": layer, "second_sentence": captured})
-                    atomic_json(record_path, row)
-                    completed += 1
-                    progress.condition_saved()
-    atomic_json(out / "completed.json", {"conditions": completed, "expected": expected})
-    print(f"Finished. Analyze with code/analysis/compute_position_detection_accuracy.py --input-dir {out}")
+    
+    print(f"Model loaded: {model_name}", flush=True)
+    
+    # Determine concepts to test
+    if args.perturbation_type != 'concept':
+        concepts = [args.perturbation_type]
+    elif 'all' in args.concepts:
+        concepts = ALL_CONCEPTS
+    elif 'random' in args.concepts:
+        concepts = [f'random_s{i}' for i in range(args.num_vectors)]
+    else:
+        concepts = args.concepts
+
+    
+    
+    all_results = {}
+    
+    for concept in concepts:
+        print(f"\n{'#'*60}", flush=True)
+        print(f"# Testing concept: {concept}", flush=True)
+        print(f"{'#'*60}", flush=True)
+        
+        results = run_position_detection(
+            model, tokenizer, concept,
+            layers=args.layers,
+            strengths=args.strengths,
+            num_trials=args.num_trials,
+            vec_type=args.vec_type,
+            max_new_tokens=args.max_new_tokens,
+            control_question=args.control_question,
+            perturbation_type=args.perturbation_type,
+            sigma_mode=args.sigma_mode
+        )
+        
+        save_results(results, concept, args.output_dir,
+                     layers=args.layers, strengths=args.strengths,
+                     num_trials=args.num_trials,
+                     perturbation_type=args.perturbation_type,
+                     sigma_mode=args.sigma_mode)
+        all_results[concept] = results
+    
+    # If running all concepts, also save aggregated results
+    if 'all' in args.concepts and args.perturbation_type == 'concept':
+        # Aggregate results
+        aggregated = defaultdict(lambda: {'logit_diff': [], 'logit_yes': [], 'logit_no': []})
+        
+        for concept, results in all_results.items():
+            for key, trials in results.items():
+                for trial in trials:
+                    aggregated[key]['logit_diff'].append(trial['logit_diff'])
+                    aggregated[key]['logit_yes'].append(trial['logit_yes'])
+                    aggregated[key]['logit_no'].append(trial['logit_no'])
+        
+        # Compute means
+        summary = {}
+        for key, data in aggregated.items():
+            summary[key] = {
+                'logit_diff_mean': np.mean(data['logit_diff']),
+                'logit_diff_std': np.std(data['logit_diff']),
+                'logit_yes_mean': np.mean(data['logit_yes']),
+                'logit_yes_std': np.std(data['logit_yes']),
+                'logit_no_mean': np.mean(data['logit_no']),
+                'logit_no_std': np.std(data['logit_no']),
+                'n': len(data['logit_diff']),
+            }
+        
+        # Save aggregated
+        agg_path = Path(args.output_dir) / 'position_detection_aggregated.pt'
+        torch.save({
+            'summary': summary,
+            'all_results': {c: {str(k): v for k, v in r.items()} for c, r in all_results.items()},
+            'layers': args.layers,
+            'strengths': args.strengths,
+            'concepts': concepts,
+            'num_trials': args.num_trials,
+        }, agg_path)
+        print(f"\nSaved aggregated results to {agg_path}", flush=True)
+        
+        # Print summary table
+        print("\n" + "="*80, flush=True)
+        print("AGGREGATED SUMMARY (all concepts)", flush=True)
+        print("="*80, flush=True)
+        print(f"{'Layer':<8} {'Str':<6} {'Mean LD':<12} {'Std LD':<12} {'n':<6}", flush=True)
+        print("-"*80, flush=True)
+        
+        for layer in args.layers:
+            for strength in args.strengths:
+                key = str((layer, strength))
+                if key in summary:
+                    s = summary[key]
+                    print(f"L{layer:<6} {strength:<6.0f} {s['logit_diff_mean']:>+8.3f}±{s['logit_diff_std']:>6.3f} "
+                          f"{s['n']:>6}", flush=True)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
+

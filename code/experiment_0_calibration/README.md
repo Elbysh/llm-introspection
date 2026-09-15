@@ -56,8 +56,11 @@ experiment_0_calibration/
 ├── step_07_persist_and_freeze.py
 │   └── étape 7 : validation, traçabilité et écriture sans écrasement
 │
-└── run_experiment_0.py
-    └── orchestrateur : appelle les étapes, sans réimplémenter leur logique
+├── run_experiment_0.py
+│   └── orchestrateur : appelle les étapes, sans réimplémenter leur logique
+│
+└── direction_bank.py
+    └── lecture des artefacts par les expériences en aval
 ```
 
 Les étapes 1 et 2 partagent un fichier parce que les activations doivent être
@@ -236,6 +239,48 @@ conceptuelle correspondant à la sortie du bloc `l` se trouve donc dans
 
 `prepare_concept_vectors.py` crée le hidden state 32 s’il manque, sans modifier
 les utilitaires historiques du dépôt.
+
+Les fichiers `*_32_*.pt` ne sont pas versionnés : `data/saved_vectors/llama` ne
+contient que les hidden states 0 à 31. Toute expérience utilisant les directions
+conceptuelles du bloc 31 doit donc d’abord relancer
+`prepare_concept_vectors.py` sur un nœud GPU.
+
+## Consommation des résultats par les expériences en aval
+
+`direction_bank.py` est la seule porte d’entrée vers les artefacts. Il rend
+ensemble la direction et le `s(l, v)` estimé sur elle, puisqu’une dose
+`z = alpha / s(l, v)` n’a de sens que pour ce couple exact :
+
+```python
+from experiment_0_calibration.direction_bank import DirectionBank
+
+bank = DirectionBank.load(
+    "configs/experiment_0_calibration/development_full.yaml",
+    calibration_dir="results/experiment_0_calibration",   # défaut
+    estimator="sd",                                       # ou "mad"
+)
+alpha = z * bank.scale(bank.direction_ids("concept", 16, concept="Dust")[0])
+```
+
+Aucune direction n’est stockée sous forme de tenseur. Les directions
+conceptuelles sont relues depuis leur `.pt`, les directions `fixed_random` et
+`renewed_noise` sont régénérées à partir de la graine enregistrée, puis
+comparées à `original_direction_norm`. Une graine qui ne reproduit plus, un
+fichier conceptuel absent ou des artefacts issus d’une autre version de la
+configuration font échouer le chargement au lieu de passer inaperçus.
+
+Le vocabulaire des familles diffère entre le protocole et les expériences
+comportementales ; les deux sont acceptés :
+
+| Expérience 0 | Familles d’intervention (section 3) |
+| --- | --- |
+| `concept` | `concept` |
+| `fixed_random` | `random` |
+| `renewed_noise` | `noise` |
+
+`token_norm(l)` n’existe pas : l’expérience 0 projette sur des directions et
+n’enregistre pas la norme d’activation. Le dropout mesure donc `h_bar` sur les
+tokens ciblés de l’essai lui-même (`--dropout_norm_source trial`).
 
 ## Configuration actuelle : développement, pas calibration figée
 
