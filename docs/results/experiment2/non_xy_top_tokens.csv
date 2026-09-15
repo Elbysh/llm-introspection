@@ -1,0 +1,37 @@
+task,top_token_id,top_token_text_json,n
+presence,16174,""" dust""",1376
+presence,4815,""" \n\n""",1352
+presence,578,""" The""",699
+presence,128009,"""<|eot_id|>""",612
+presence,33093,""" Dust""",467
+presence,720,""" \n""",387
+presence,220,""" """,309
+presence,362,""" A""",284
+presence,7315,""" zero""",197
+presence,426,""" B""",186
+presence,449,""" with""",156
+presence,320,""" (""",109
+presence,279,""" the""",69
+presence,311,""" to""",59
+presence,4400,""" nothing""",46
+presence,2360,""" No""",42
+presence,459,""" an""",35
+presence,1556,""" An""",30
+presence,1283,""" He""",12
+presence,308,""" n""",11
+presence,264,""" a""",9
+presence,3005,""" She""",7
+presence,358,""" I""",5
+presence,71678,""" Intervention""",5
+presence,7566,""" Yes""",4
+presence,15148,""" Was""",4
+presence,574,""" was""",3
+presence,55579,""" intervene""",3
+presence,452,""" N""",2
+presence,477,""" or""",2
+presence,791,"""The""",2
+presence,7000,""" none""",2
+presence,21623,""" intervention""",2
+presence,400,""" $""",1
+presence,1472,""" You""",1
+presence,1901,""" Z""",1
