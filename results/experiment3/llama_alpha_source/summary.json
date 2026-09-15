@@ -1,0 +1,17 @@
+{
+  "calibration_dir": "/raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment_0_calibration",
+  "concepts": [
+    "Dust",
+    "Satellites",
+    "recursion",
+    "shutdown"
+  ],
+  "matchings": [
+    "alpha"
+  ],
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "n_trials": 139200,
+  "notes": [
+    "The alpha-matched rows of results/experiment1/full32_all, extracted by experiment3_variability.py --export_run_dir. The other matching arm of those runs is deliberately absent."
+  ]
+}
