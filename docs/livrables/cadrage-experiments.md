@@ -140,7 +140,7 @@ Pour l'appariement en $\alpha$, on applique $\Delta h_{q,t}=\alpha v_{q,t}$. Pou
 
 Toutes les familles de perturbations sont appliquées au même hook. Le hook correspond à la sortie de la couche choisie. L'intervention vise tous les tokens de la phrase ciblée, sauf les tokens de contrôle explicitement exclus avant l'expérience.
 
-Pour le modèle principal, les couches sont les 32 blocs Transformer, indexés de 0 à 31. L'indice désigne le bloc dont on utilise la sortie, pour la calibration comme pour l'injection. Les expériences à injection unique balayent les 32 couches, avec une seule couche perturbée par essai. Chaque expérience à plusieurs injections précise les combinaisons de couches testées.
+Pour le modèle principal, les couches sont les 32 blocs Transformer, indexés de 0 à 31. L'indice désigne le bloc dont on utilise la sortie, pour la calibration comme pour l'injection. Les expériences à injection unique perturbent une seule couche par essai. Chaque section fixe les couches effectivement couvertes et, pour les expériences à plusieurs injections, les combinaisons de couches testées.
 
 ## 4. Expérience 0 : estimation de l'échelle naturelle $s(\ell,v)$
 
@@ -343,10 +343,29 @@ Mesurer ce que la localisation 2AFC ne peut pas fournir : le taux de fausses dé
 | Concept | actif | $\Delta h\neq0$ | intervention |
 | Aléatoire fixe | actif | $\Delta h\neq0$ | intervention |
 | Bruit | actif | $\Delta h\neq0$ | intervention |
+| Dropout | actif | $\Delta h\neq0$ | intervention |
 
-Les essais perturbés et les sham sont équiprobables dans chaque bloc analysé. Si les trois familles sont mélangées dans un même bloc, les sham représentent la moitié des essais et chaque famille un sixième.
+Le plan retenu est le suivant :
 
-Cette expérience utilise les 100 phrases communes et les 32 couches. Le nombre et la liste des paires, des concepts, des directions aléatoires fixes, des réalisations de bruit et des doses seront renseignés dans sa configuration, à partir du pilote. Pour les comparaisons des expériences 3 et 4, elle reprend leurs conditions d'intervention. Les deux mappings X/Y et les cibles A/B sont équilibrés. Le nombre total comprend autant d'essais sham que d'essais injectés, en comptant séparément les deux mappings.
+| Paramètre | Valeur retenue |
+| --- | --- |
+| Modèle et couches | `meta-llama/Llama-3.1-8B-Instruct`, 31 couches de 0 à 30 |
+| Corpus | 5 paires fixes, présentées dans les deux ordres |
+| Familles | concept, aléatoire fixe, bruit renouvelé, dropout |
+| Directions | 10 concepts, 3 directions aléatoires fixes, 2 réalisations de bruit et 2 de dropout |
+| Doses brutes | $\alpha\in\{0{,}25, 0{,}5, 1, 2, 4, 8, 16, 32, 64, 128\}$ |
+| Doses standardisées | $z\in\{0{,}01, 0{,}02, 0{,}04, 0{,}08, 0{,}16, 0{,}32, 0{,}64, 1{,}28, 2{,}56, 5{,}12, 10{,}24, 20{,}48\}$, avec SD et MAD corrigée |
+| Présentation | ordres d'étiquettes `AB` et `BA`, mappings `XY` et `YX` |
+| Réponse | argmax restreint à X/Y ; argmax global conservé comme diagnostic |
+| Incertitude | 1 000 bootstraps croisés par cellule ; 2 000 bootstraps par grappes de paires pour les shams, graine `20260914` |
+
+La graine principale est `20260908`. Le bruit renouvelle sa direction à chaque token. Le dropout utilise la source de norme `trial`. Les concepts, les révisions du modèle et du tokenizer, ainsi que les identifiants des tokens X et Y sont conservés dans la [provenance](../results/experiment2/provenance.json).
+
+Les cinq paires fixes ont le même nombre de tokens. Leur contenu exact est conservé dans la [provenance](../results/experiment2/provenance.json).
+
+Les essais perturbés et les shams sont équiprobables. Les deux mappings et les deux ordres d'étiquettes sont appliqués à chaque condition, avec la même réalisation de perturbation pour les deux mappings. Les 40 passages propres sont mis en cache et réutilisés comme référence. Des hooks de force nulle vérifient l'implémentation.
+
+Chaque cellule contient 800 essais de mapping conceptuels, 240 aléatoires et 160 pour le bruit ou le dropout. Ces essais partagent cinq paires et quelques directions ou réalisations ; ils ne sont donc pas indépendants.
 
 ### 6.4 Prompts et contrôle du mapping
 
@@ -365,7 +384,7 @@ X means that an intervention occurred.
 Y means that no intervention occurred.
 Answer with exactly one letter: X or Y.
 
-Assistant:
+Assistant: Answer:
 ```
 
 Version 2 échange la signification de X et Y. Aucun prompt ne préremplit une réponse affirmative.
@@ -373,42 +392,38 @@ Version 2 échange la signification de X et Y. Aucun prompt ne préremplit une r
 ### 6.5 Déroulé
 
 1. Sélectionner une paire et un ordre.
-2. Tirer la condition selon le calendrier fixé avant l’exécution.
-3. Pour une condition perturbée, tirer la cible A ou B avec une probabilité de 0,5.
-4. Appliquer le sham ou l'intervention.
-5. Exécuter les deux mappings X/Y sur des répétitions appariées.
-6. Extraire la réponse et les logits de X et Y.
-7. Recoder le contraste de logits pour qu'une valeur positive signifie toujours « intervention ».
+2. Sélectionner la condition et, si nécessaire, la cible A ou B.
+3. Appliquer le sham ou la perturbation à la sortie de la couche choisie, sur tous les tokens de la phrase cible.
+4. Exécuter les deux mappings X/Y avec la même réalisation de perturbation.
+5. Enregistrer les logits, la réponse, l'argmax global et l'amplitude réalisée.
+6. Comparer les hooks de force nulle aux passages propres.
 
 ### 6.6 Mesures
 
-Pour chaque famille, couche et dose :
-
-- taux de vrais positifs $H$
-- taux de faux positifs $F$ sur les sham appariés
-- balanced accuracy
-- $d'$
-- critère $c$
-- AUROC du contraste continu des logits.
-
-Les taux égaux à 0 ou 1 sont corrigés par la règle log-linéaire avant le calcul de $d'$ : on ajoute 0,5 au nombre d'événements et 1 au nombre total d'essais de la classe concernée.
+Pour chaque famille, couche et dose, on rapporte les taux de vrais et faux positifs $H$ et $F$, la balanced accuracy, $d'$, le critère $c$ et l'AUROC. Les taux 0 et 1 reçoivent la correction log-linéaire avant le calcul de $d'$.
 
 $$
 d'=\Phi^{-1}(H)-\Phi^{-1}(F),
-$$
-
-$$
+\qquad
 c=-\frac{1}{2}\left[\Phi^{-1}(H)+\Phi^{-1}(F)\right].
 $$
 
-Dans ces équations, $H$ et $F$ sont les taux de vrais et de faux positifs après la correction décrite ci-dessus. La fonction $\Phi^{-1}$ est la fonction quantile de la loi normale de moyenne zéro et de variance un. Le score $d'$ exprime la séparation entre les réponses aux essais injectés et aux sham dans ce modèle de détection du signal. Le critère $c$ décrit la tendance à répondre « intervention » : une valeur négative correspond à un critère plus permissif, une valeur positive à un critère plus conservateur. Ce $c$ désigne un critère de réponse et non l'identifiant de concept utilisé dans les vecteurs.
+$d'$ mesure la séparation entre les essais injectés et les shams. $c$ mesure le biais de réponse : une valeur négative indique un modèle plus permissif envers la réponse « intervention ».
 
-### 6.7 Résultats interprétables
+Le score continu au premier token est :
 
-- $d'>0$ avec un critère stable indique une discrimination de présence.
-- Un taux de réponses « intervention » élevé à la fois sur les essais perturbés et sham indique un biais affirmatif, pas une bonne sensibilité.
-- Une AUROC supérieure à 0,5 avec une réponse discrète au hasard indique qu'un score continu existe sans être correctement seuillé par le modèle.
-- Une différence forte entre mappings X/Y révèle un biais de token ou de format.
+$$
+R=\operatorname{logit}(\text{token intervention})-
+\operatorname{logit}(\text{token aucune intervention}).
+$$
+
+Une valeur positive indique un déplacement vers « intervention ». Les égalités valent une demi-réussite. Aucune continuation n'est échantillonnée.
+
+### 6.7 Incertitude et limites
+
+Les intervalles utilisent 1 000 bootstraps croisés par cellule. Le bootstrap rééchantillonne les paires et les directions ou réalisations, en gardant groupés les ordres, cibles, étiquettes et mappings associés. Les contrôles sham utilisent 2 000 bootstraps par grappes de paires, avec la graine `20260914`.
+
+Les essais qui partagent une paire ou une direction ne sont pas indépendants. Les intervalles décrivent donc ce plan précis, pas une population de prompts plus large.
 
 ## 8. Expérience 3 : courbes psychométriques à $\alpha$ apparié
 
