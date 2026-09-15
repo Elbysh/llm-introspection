@@ -975,8 +975,8 @@ def build_parser():
         default=None,
         help="Defaults to Experiment 0's tokenizer revision, then the model revision.",
     )
-    parser.add_argument("--output_dir", default="results/experiment2")
-    parser.add_argument("--run_name", default="pilot")
+    parser.add_argument("--output_dir", default="results/experiment_2_presence")
+    parser.add_argument("--run_name", default="layers/pilot")
     parser.add_argument(
         "--no_progress", dest="progress", action="store_false", default=True
     )

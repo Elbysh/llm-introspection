@@ -20,9 +20,9 @@
 set -euo pipefail
 
 CONFIG=${1:-configs/experiment_0_calibration/development_full.yaml}
-# Keep the default run directly under results/experiment2.  A named run can
-# still be supplied as the second argument when a separate namespace is wanted.
-RUN_NAME=${2:-presence_v3}
+# Keep raw layer runs under results/experiment_2_presence/layers. A named run
+# can still be supplied as the second argument when a separate namespace is wanted.
+RUN_NAME=${2:-layers}
 CALIBRATION_RESULTS=${3:-results/experiment_0_calibration}
 RESUME_ARGS=()
 if [[ "${RESUME:-0}" == "1" ]]; then

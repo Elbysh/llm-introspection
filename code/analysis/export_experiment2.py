@@ -14,6 +14,11 @@ from experiment2_controls import generate_controls
 from experiment2_diagnostics import token_audit
 
 
+def layer_root(root):
+    candidate = root / 'layers'
+    return candidate if candidate.is_dir() else root
+
+
 def digest(path):
     h = hashlib.sha256()
     with path.open('rb') as stream:
@@ -25,7 +30,7 @@ def digest(path):
 def export(root, calibration, output):
     output.mkdir(parents=True, exist_ok=True)
     cells, provenance = [], []
-    for path in sorted(root.glob('layer_*/summary.json')):
+    for path in sorted(layer_root(root).glob('layer_*/summary.json')):
         source = json.loads(path.read_text())
         if source.get('experiment') != 2:
             raise ValueError(f'Expected Experiment 2: {path}')

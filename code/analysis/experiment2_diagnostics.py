@@ -8,9 +8,14 @@ from pathlib import Path
 import pandas as pd
 
 
+def layer_root(root):
+    candidate = root / 'layers'
+    return candidate if candidate.is_dir() else root
+
+
 def token_audit(root, output):
     counts, totals, cells, examples = [], [], [], []
-    for path in sorted(root.glob('layer_*/summary.json')):
+    for path in sorted(layer_root(root).glob('layer_*/summary.json')):
         layer = int(path.parent.name.split('_')[-1])
         columns = [
             'kind', 'family', 'matching', 'dose', 'mapping', 'top_token_id',
@@ -105,4 +110,4 @@ if __name__ == '__main__':
     parser.add_argument('input_dir', type=Path)
     parser.add_argument('--output-dir', type=Path)
     args = parser.parse_args()
-    generate_diagnostics(args.input_dir, args.output_dir or args.input_dir / 'analysis')
+    generate_diagnostics(args.input_dir, args.output_dir or args.input_dir)

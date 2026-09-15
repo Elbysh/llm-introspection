@@ -12,17 +12,24 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
+def layer_root(root):
+    candidate = root / "layers"
+    return candidate if candidate.is_dir() else root
+
+
 def plot(root, output=None):
-    output = output or root / "analysis"
+    output = output or root
     output.mkdir(parents=True, exist_ok=True)
-    paths = list(root.glob("layer_*/summary.json")) or [root / "summary.json"]
+    source = layer_root(root)
+    paths = list(source.glob("layer_*/summary.json")) or [source / "summary.json"]
+    snapshot = root / "snapshot.json.gz"
     records = []
-    for path in paths:
-        if (root / "snapshot.json.gz").exists():
-            with gzip.open(root / "snapshot.json.gz", "rt") as stream:
-                summary = json.load(stream)
-        else:
-            summary = json.loads(path.read_text())
+    if snapshot.exists():
+        with gzip.open(snapshot, "rt") as stream:
+            summaries = [json.load(stream)]
+    else:
+        summaries = [json.loads(path.read_text()) for path in paths]
+    for summary in summaries:
         if summary.get("experiment") != 2:
             raise ValueError("Expected detection Experiment 2 summaries")
         for cell in summary["cells"]:

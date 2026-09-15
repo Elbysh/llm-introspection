@@ -4,6 +4,11 @@ import numpy as np
 import pandas as pd
 
 
+def layer_root(root):
+    candidate = root / 'layers'
+    return candidate if candidate.is_dir() else root
+
+
 def unique_shams(frame, columns):
     """Reject inconsistent cached values before removing repeated references."""
     if frame.groupby('sham_trial_id')[columns].nunique(dropna=False).gt(1).any().any():
@@ -26,7 +31,7 @@ def generate_controls(root: Path, output: Path, iterations=2000, seed=20260914):
         raise ValueError('At least two bootstrap replicates are required')
     rng = np.random.default_rng(seed)
     results, all_draws = [], []
-    for directory in sorted(root.glob('layer_*'), key=lambda p: int(p.name.split('_')[-1])):
+    for directory in sorted(layer_root(root).glob('layer_*'), key=lambda p: int(p.name.split('_')[-1])):
         if not (directory / 'summary.json').exists():
             continue
         layer = int(directory.name.split('_')[-1])

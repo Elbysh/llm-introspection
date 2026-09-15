@@ -217,6 +217,14 @@ tempCodeRunnerFile.py
 results/
 runs/
 
+# Keep the compact Experiment 2 export under version control. Raw layer
+# outputs remain ignored in the nested layers directory.
+!results/
+!results/experiment_2_presence/
+results/experiment_2_presence/layers/
+results/experiment_2_presence/controls_bootstrap_draws.csv.gz
+results/experiment_2_presence/detection_cells.csv
+
 # Reproducible position-detection analysis caches and source tables
 plots/position_detection/source_data/
 plots/position_detection/analysis_summary.json

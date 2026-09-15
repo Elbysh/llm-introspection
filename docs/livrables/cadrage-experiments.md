@@ -538,9 +538,9 @@ Mesurer ce que la localisation 2AFC ne peut pas fournir : le taux de fausses dé
 | Réponse | argmax restreint à X/Y ; argmax global conservé comme diagnostic |
 | Incertitude | 1 000 bootstraps croisés par cellule ; 2 000 bootstraps par grappes de paires pour les shams, graine `20260914` |
 
-La graine principale est `20260908`. Le bruit renouvelle sa direction à chaque token. Le dropout utilise la source de norme `trial`. Les concepts, les révisions du modèle et du tokenizer, ainsi que les identifiants des tokens X et Y sont conservés dans la [provenance](../results/experiment2/provenance.json).
+La graine principale est `20260908`. Le bruit renouvelle sa direction à chaque token. Le dropout utilise la source de norme `trial`. Les concepts, les révisions du modèle et du tokenizer, ainsi que les identifiants des tokens X et Y sont conservés dans la [provenance](../../results/experiment_2_presence/provenance.json).
 
-Les cinq paires fixes ont le même nombre de tokens. Leur contenu exact est conservé dans la [provenance](../results/experiment2/provenance.json).
+Les cinq paires fixes ont le même nombre de tokens. Leur contenu exact est conservé dans la [provenance](../../results/experiment_2_presence/provenance.json).
 
 Les essais perturbés et les shams sont équiprobables. Les deux mappings et les deux ordres d'étiquettes sont appliqués à chaque condition, avec la même réalisation de perturbation pour les deux mappings. Les 40 passages propres sont mis en cache et réutilisés comme référence. Des hooks de force nulle vérifient l'implémentation.
 
