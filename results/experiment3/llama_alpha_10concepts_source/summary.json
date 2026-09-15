@@ -1,0 +1,23 @@
+{
+  "calibration_dir": null,
+  "concepts": [
+    "appreciation",
+    "betrayal",
+    "Dust",
+    "fibonacci_numbers",
+    "Illusions",
+    "Origami",
+    "recursion",
+    "Satellites",
+    "shutdown",
+    "Trumpets"
+  ],
+  "matchings": [
+    "alpha"
+  ],
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "n_trials": 20400,
+  "notes": [
+    "The alpha-matched rows of results/experiment1/main, extracted by experiment3_variability.py --export_run_dir. The other matching arm of those runs is deliberately absent."
+  ]
+}

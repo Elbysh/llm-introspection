@@ -85,6 +85,56 @@
   ],
   "variance_components": {
     "concept": {
+      "by_layer": {
+        "10": {
+          "max_direction": "Satellites",
+          "mean_s": 0.4770833333333334,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.21159085201730113
+        },
+        "12": {
+          "max_direction": "Satellites",
+          "mean_s": 0.20598958333333334,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.08671262386602932
+        },
+        "16": {
+          "max_direction": "recursion",
+          "mean_s": 0.14557291666666666,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.1256187665442622
+        },
+        "3": {
+          "max_direction": "recursion",
+          "mean_s": 1.0645833333333332,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.11122932079966853
+        },
+        "32": {
+          "max_direction": "recursion",
+          "mean_s": 0.05572916666666667,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.07559802089928605
+        },
+        "56": {
+          "max_direction": "recursion",
+          "mean_s": 0.00234375,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.00402313549522794
+        },
+        "6": {
+          "max_direction": "Satellites",
+          "mean_s": 0.7658854166666665,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.3110433353289317
+        },
+        "8": {
+          "max_direction": "recursion",
+          "mean_s": 0.5927083333333334,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.2417549527433222
+        }
+      },
       "decomposition": {
         "components": {
           "direction": 0.012007128397623697,
@@ -149,6 +199,56 @@
       }
     },
     "random": {
+      "by_layer": {
+        "10": {
+          "max_direction": "0001",
+          "mean_s": 0.15104166666666666,
+          "min_direction": "0000",
+          "sd_between_directions": 0.08605578980134533
+        },
+        "12": {
+          "max_direction": "0000",
+          "mean_s": 0.1871527777777778,
+          "min_direction": "0002",
+          "sd_between_directions": 0.13077930368811477
+        },
+        "16": {
+          "max_direction": "0002",
+          "mean_s": 0.12638888888888888,
+          "min_direction": "0000",
+          "sd_between_directions": 0.004209845712841014
+        },
+        "3": {
+          "max_direction": "0002",
+          "mean_s": 0.6388888888888888,
+          "min_direction": "0001",
+          "sd_between_directions": 0.3723070746982527
+        },
+        "32": {
+          "max_direction": "0000",
+          "mean_s": -0.07326388888888889,
+          "min_direction": "0002",
+          "sd_between_directions": 0.05078948473118485
+        },
+        "56": {
+          "max_direction": "0002",
+          "mean_s": 0.0020833333333333333,
+          "min_direction": "0000",
+          "sd_between_directions": 0.003125
+        },
+        "6": {
+          "max_direction": "0000",
+          "mean_s": 0.2965277777777778,
+          "min_direction": "0001",
+          "sd_between_directions": 0.07569364805901141
+        },
+        "8": {
+          "max_direction": "0000",
+          "mean_s": 0.24722222222222223,
+          "min_direction": "0002",
+          "sd_between_directions": 0.11291077270390365
+        }
+      },
       "decomposition": {
         "components": {
           "direction": 0.0007634932906539346,

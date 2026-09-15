@@ -84,6 +84,21 @@ def direction_label(direction_id):
     return direction_id.rsplit("__", 1)[-1]
 
 
+def parse_score(value):
+    """A 2AFC score as a float, from either generation of trials.csv.
+
+    The current engine writes 1.0, 0.0 or 0.5, the half marking a tie, alongside a
+    `tie_adjusted` flag. The pipeline behind results/experiment1/main predates both and
+    writes a bare boolean. Reading only the float form would silently reject that run,
+    which is the only sweep carrying more than four concepts.
+    """
+    if value is None or value == "":
+        return None
+    if value in ("True", "False"):
+        return 1.0 if value == "True" else 0.0
+    return float(value)
+
+
 def load_trials(run_dirs, matching):
     """Perturbed rows of one matching arm, plus the model, from every run directory."""
     rows, models, seen_matchings = [], set(), set()
@@ -109,7 +124,7 @@ def load_trials(run_dirs, matching):
                 row["dose"] = float(row["dose"])
                 row["contrast"] = float(row["contrast"])
                 for field in ("correct_raw", "correct_adjusted"):
-                    row[field] = float(row[field]) if row.get(field) else None
+                    row[field] = parse_score(row.get(field))
                 rows.append(row)
     if len(models) > 1:
         raise SystemExit(f"run directories disagree on the model: {sorted(models)}")
@@ -312,6 +327,22 @@ def variance_components(rows, doses):
 
         by_direction = {direction: float(np.nanmean(dense[index]))
                         for index, direction in enumerate(directions)}
+
+        # A mean over layers hides that most of the depth is inert: past the point where
+        # the perturbation stops biting, every direction reads ~0 and the between-direction
+        # spread collapses with it. Pooling those layers into one number divides the
+        # spread by however many dead layers the sweep happens to include, which is a
+        # property of the sweep, not of the concepts. The per-layer spread is reported so
+        # the variance between concepts can be read where the effect actually exists.
+        by_layer = {}
+        for index, layer in enumerate(layers):
+            column = dense[:, index, :].mean(axis=1)
+            by_layer[str(layer)] = {
+                "mean_s": float(column.mean()),
+                "sd_between_directions": float(np.std(column, ddof=1)),
+                "min_direction": directions[int(np.argmin(column))],
+                "max_direction": directions[int(np.argmax(column))],
+            }
         report[family] = {
             "n_directions": len(directions),
             "n_layers": len(layers),
@@ -327,6 +358,7 @@ def variance_components(rows, doses):
                           / min(abs(v) for v in by_direction.values()))
                     if min(abs(v) for v in by_direction.values()) > 0 else None),
             },
+            "by_layer": by_layer,
             "decomposition": decompose(dense, ("direction", "layer", "phrase")),
             "decomposition_direction_layer": decompose(
                 dense.mean(axis=2), ("direction", "layer")),
@@ -635,9 +667,11 @@ def main():
     for family, entry in sorted(components.items()):
         shares = entry["decomposition"]["shares"]
         spread = entry["spread_between_directions"]
+        peak = max(entry["by_layer"], key=lambda k: abs(entry["by_layer"][k]["mean_s"]))
         print(f"  {family}: {entry['n_directions']} directions x {entry['n_layers']} "
               f"layers x {entry['n_phrases']} phrases, sd between directions "
-              f"{spread['sd']:.4g}")
+              f"{spread['sd']:.4g} pooled, {entry['by_layer'][peak]['sd_between_directions']:.4g} "
+              f"at layer {peak} (mean S {entry['by_layer'][peak]['mean_s']:.3f})")
         if shares:
             print("    shares " + ", ".join(f"{k} {v:.3f}" for k, v in shares.items()))
     print(f"wrote {out_dir}", flush=True)
