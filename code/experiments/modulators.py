@@ -40,29 +40,28 @@ from pathlib import Path
 
 import torch
 from tqdm import tqdm
-from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from all_prompts import get_ordering_messages
 from concepts import ALL_CONCEPTS, bucket_concept_pairs_by_similarity
+from model_registry import build_inputs, load_model_and_tokenizer
 from multi_inject import InjectionSpec, apply_multi_injection
 from response_parsing import is_coherent, parse_ab_choice
 
-ALL_LAYERS = list(range(0, 32))
 DEFAULT_DISTANCES = [1, 2, 4, 8, 16, 31]
 DEFAULT_ALPHAS = [1, 2, 3, 4, 5, 6, 7]
 DEFAULT_ALPHA_RATIOS = [1.0, 2.0, 4.0, 8.0]
 
 
-def load_vector(concept, layer, vec_type="avg"):
+def load_vector(concept, layer, vector_dir, vec_type="avg"):
     """Load a concept vector for a specific layer."""
-    vector_path = Path(f"saved_vectors/llama/{concept}_{layer}_{vec_type}.pt")
+    vector_path = Path(f"{vector_dir}/{concept}_{layer}_{vec_type}.pt")
     if not vector_path.exists():
         raise FileNotFoundError(f"Vector not found: {vector_path}")
     data = torch.load(vector_path, weights_only=False)
     return data["vector"]
 
 
-def _generate_with_first_token_logits(model, tokenizer, messages, max_new_tokens, specs):
+def _generate_with_first_token_logits(model, tokenizer, model_layers, messages, max_new_tokens, specs):
     """Like _generate, but also returns the full-vocabulary logits at the
     first generated position (section 16.6's logit-contrast measure). Reads
     them off the same generate() call (output_scores=True) rather than a
@@ -70,8 +69,8 @@ def _generate_with_first_token_logits(model, tokenizer, messages, max_new_tokens
     influenced the actual decoded response."""
     device = next(model.parameters()).device
     formatted_prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    inputs = tokenizer(formatted_prompt, return_tensors="pt", add_special_tokens=False).to(device)
-    with apply_multi_injection(model, specs):
+    inputs = build_inputs(tokenizer, formatted_prompt, device)
+    with apply_multi_injection(model, specs, layers=model_layers):
         out = model.generate(**inputs, max_new_tokens=max_new_tokens, do_sample=False,
                               output_scores=True, return_dict_in_generate=True)
     generated_ids = out.sequences[0][inputs.input_ids.shape[1]:]
@@ -80,7 +79,7 @@ def _generate_with_first_token_logits(model, tokenizer, messages, max_new_tokens
     return response, first_token_logits
 
 
-def _sample_layer_pair_with_distance(rng, distance, placement, layer_max=31):
+def _sample_layer_pair_with_distance(rng, distance, placement, layer_max):
     """Samples (layer_low, layer_high) with layer_high - layer_low == distance,
     constrained to the early half (0..layer_max//2) or late half
     (layer_max//2..layer_max) of the network (C4.1). Falls back to the full
@@ -97,8 +96,8 @@ def _sample_layer_pair_with_distance(rng, distance, placement, layer_max=31):
     return layer_low, layer_low + distance
 
 
-def _run_ordering_item(model, tokenizer, layer_a, concept_a, alpha_a,
-                        layer_b, concept_b, alpha_b, vec_type, max_new_tokens):
+def _run_ordering_item(model, tokenizer, model_layers, layer_a, concept_a, alpha_a,
+                        layer_b, concept_b, alpha_b, vector_dir, vec_type, max_new_tokens):
     """One Exp 11 ordering trial with an explicit per-label (layer, concept,
     alpha) assignment. correct_letter is whichever label sits at the
     shallower (lower-index) layer.
@@ -112,12 +111,12 @@ def _run_ordering_item(model, tokenizer, layer_a, concept_a, alpha_a,
     ones, since it doesn't depend on parsing the decoded text.
     """
     specs = [
-        InjectionSpec(layer=layer_a, vector=load_vector(concept_a, layer_a, vec_type), alpha=alpha_a),
-        InjectionSpec(layer=layer_b, vector=load_vector(concept_b, layer_b, vec_type), alpha=alpha_b),
+        InjectionSpec(layer=layer_a, vector=load_vector(concept_a, layer_a, vector_dir, vec_type), alpha=alpha_a),
+        InjectionSpec(layer=layer_b, vector=load_vector(concept_b, layer_b, vector_dir, vec_type), alpha=alpha_b),
     ]
     correct_letter = "A" if layer_a < layer_b else "B"
     response, first_token_logits = _generate_with_first_token_logits(
-        model, tokenizer, get_ordering_messages(concept_a, concept_b), max_new_tokens, specs)
+        model, tokenizer, model_layers, get_ordering_messages(concept_a, concept_b), max_new_tokens, specs)
     reported = parse_ab_choice(response)
 
     token_id_a = tokenizer.encode("A", add_special_tokens=False)[0]
@@ -142,9 +141,11 @@ def _run_ordering_item(model, tokenizer, layer_a, concept_a, alpha_a,
 
 
 @torch.inference_mode()
-def run_e4_distance_sweep(model, tokenizer, distances, placements, alphas, num_trials,
+def run_e4_distance_sweep(model, tokenizer, spec, distances, placements, alphas, num_trials,
                            vec_type, max_new_tokens, seed):
     rng = random.Random(seed)
+    model_layers = spec.get_layers(model)
+    layer_max = spec.num_layers - 1
     trials = []
     total = len(distances) * len(placements) * num_trials * len(alphas)
     pbar = tqdm(total=total, desc="E4 distance sweep (ordering)", file=sys.stdout)
@@ -152,7 +153,7 @@ def run_e4_distance_sweep(model, tokenizer, distances, placements, alphas, num_t
     for distance in distances:
         for placement in placements:
             for trial_idx in range(num_trials):
-                layer_low, layer_high = _sample_layer_pair_with_distance(rng, distance, placement)
+                layer_low, layer_high = _sample_layer_pair_with_distance(rng, distance, placement, layer_max)
                 concept_low, concept_high = rng.sample(ALL_CONCEPTS, 2)
 
                 if rng.random() < 0.5:
@@ -161,8 +162,8 @@ def run_e4_distance_sweep(model, tokenizer, distances, placements, alphas, num_t
                     layer_a, concept_a, layer_b, concept_b = layer_high, concept_high, layer_low, concept_low
 
                 for alpha in alphas:
-                    result = _run_ordering_item(model, tokenizer, layer_a, concept_a, alpha,
-                                                 layer_b, concept_b, alpha, vec_type, max_new_tokens)
+                    result = _run_ordering_item(model, tokenizer, model_layers, layer_a, concept_a, alpha,
+                                                 layer_b, concept_b, alpha, spec.vector_dir, vec_type, max_new_tokens)
                     trials.append({
                         "distance": distance, "placement": placement,
                         "layer_low": layer_low, "layer_high": layer_high,
@@ -176,11 +177,12 @@ def run_e4_distance_sweep(model, tokenizer, distances, placements, alphas, num_t
 
 
 @torch.inference_mode()
-def run_e5_alpha_ratio_sweep(model, tokenizer, layers, ratios, alphas, num_trials,
+def run_e5_alpha_ratio_sweep(model, tokenizer, spec, layers, ratios, alphas, num_trials,
                               vec_type, max_new_tokens, seed):
     if len(layers) != 2:
         raise ValueError("E5 requires exactly 2 fixed layers (--layers l1 l2)")
     rng = random.Random(seed)
+    model_layers = spec.get_layers(model)
     layer_low, layer_high = sorted(layers)
     trials = []
     total = len(ratios) * num_trials * len(alphas)
@@ -201,8 +203,8 @@ def run_e5_alpha_ratio_sweep(model, tokenizer, layers, ratios, alphas, num_trial
 
             for base_alpha in alphas:
                 alpha_a, alpha_b = base_alpha * ratio, base_alpha
-                result = _run_ordering_item(model, tokenizer, layer_a, concept_a, alpha_a,
-                                             layer_b, concept_b, alpha_b, vec_type, max_new_tokens)
+                result = _run_ordering_item(model, tokenizer, model_layers, layer_a, concept_a, alpha_a,
+                                             layer_b, concept_b, alpha_b, spec.vector_dir, vec_type, max_new_tokens)
                 trials.append({
                     "ratio": ratio, "base_alpha": base_alpha,
                     "layer_a": layer_a, "layer_b": layer_b,
@@ -217,15 +219,17 @@ def run_e5_alpha_ratio_sweep(model, tokenizer, layers, ratios, alphas, num_trial
 
 
 @torch.inference_mode()
-def run_e6_similarity_sweep(model, tokenizer, layers, similarity_reference_layer, num_buckets,
+def run_e6_similarity_sweep(model, tokenizer, spec, layers, similarity_reference_layer, num_buckets,
                              alphas, num_trials, vec_type, max_new_tokens, seed):
     if len(layers) != 2:
         raise ValueError("E6 requires exactly 2 fixed injection layers (--layers l1 l2), "
                           "held constant across buckets so only concept similarity varies")
     rng = random.Random(seed)
+    model_layers = spec.get_layers(model)
     layer_low, layer_high = sorted(layers)
     representatives = bucket_concept_pairs_by_similarity(
-        similarity_reference_layer, num_buckets=num_buckets, vec_type=vec_type
+        similarity_reference_layer, num_buckets=num_buckets, vec_type=vec_type,
+        saved_vectors_dir=spec.vector_dir,
     )
 
     trials = []
@@ -241,8 +245,8 @@ def run_e6_similarity_sweep(model, tokenizer, layers, similarity_reference_layer
                 layer_a, concept_a, layer_b, concept_b = layer_high, concept_1, layer_low, concept_2
 
             for alpha in alphas:
-                result = _run_ordering_item(model, tokenizer, layer_a, concept_a, alpha,
-                                             layer_b, concept_b, alpha, vec_type, max_new_tokens)
+                result = _run_ordering_item(model, tokenizer, model_layers, layer_a, concept_a, alpha,
+                                             layer_b, concept_b, alpha, spec.vector_dir, vec_type, max_new_tokens)
                 trials.append({
                     "bucket": rep["bucket"], "concept_pair_similarity": rep["similarity"],
                     "similarity_reference_layer": similarity_reference_layer,
@@ -258,6 +262,7 @@ def run_e6_similarity_sweep(model, tokenizer, layers, similarity_reference_layer
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--model", type=str, default="llama", choices=["llama", "qwen"])
     parser.add_argument("--experiments", type=str, nargs="+",
                          default=["e4_distance", "e5_alpha_ratio", "e6_similarity"],
                          choices=["e4_distance", "e5_alpha_ratio", "e6_similarity"])
@@ -286,33 +291,31 @@ def main():
     args = parser.parse_args()
 
     print("Loading model...", flush=True)
-    model_name = "meta-llama/Llama-3.1-8B-Instruct"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map="auto")
-    model.eval()
+    model, tokenizer, spec = load_model_and_tokenizer(args.model)
     print("Model loaded!", flush=True)
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     for experiment in args.experiments:
-        print(f"\n{'='*60}\nEXPERIENCE 11 -- MODULATORS ({experiment})\n{'='*60}", flush=True)
+        print(f"\n{'='*60}\nEXPERIENCE 11 -- MODULATORS ({experiment}, {spec.key}: {spec.repo_id})\n{'='*60}",
+              flush=True)
 
         if experiment == "e4_distance":
             trials = run_e4_distance_sweep(
-                model, tokenizer, args.distances, args.placements, args.alphas,
+                model, tokenizer, spec, args.distances, args.placements, args.alphas,
                 args.num_trials, args.vec_type, args.max_new_tokens, args.seed,
             )
             meta = {"distances": args.distances, "placements": args.placements}
         elif experiment == "e5_alpha_ratio":
             trials = run_e5_alpha_ratio_sweep(
-                model, tokenizer, args.layers, args.alpha_ratios, args.alphas,
+                model, tokenizer, spec, args.layers, args.alpha_ratios, args.alphas,
                 args.num_trials, args.vec_type, args.max_new_tokens, args.seed,
             )
             meta = {"layers": args.layers, "alpha_ratios": args.alpha_ratios}
         else:
             trials = run_e6_similarity_sweep(
-                model, tokenizer, args.layers, args.similarity_reference_layer,
+                model, tokenizer, spec, args.layers, args.similarity_reference_layer,
                 args.num_similarity_buckets, args.alphas, args.num_trials,
                 args.vec_type, args.max_new_tokens, args.seed,
             )
@@ -322,9 +325,10 @@ def main():
                 "num_similarity_buckets": args.num_similarity_buckets,
             }
 
-        output_path = output_dir / f"modulators_trials_{experiment}.pt"
+        output_path = output_dir / f"modulators_trials_{spec.key}_{experiment}.pt"
         torch.save({
             "trials": trials,
+            "model": spec.key,
             "experiment": experiment,
             "alphas": args.alphas,
             "vec_type": args.vec_type,

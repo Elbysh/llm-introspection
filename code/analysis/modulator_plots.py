@@ -146,9 +146,11 @@ def plot_e6(path, output_path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--e4_input", type=Path, default=Path("plots/modulators_trials_e4_distance.pt"))
-    parser.add_argument("--e5_input", type=Path, default=Path("plots/modulators_trials_e5_alpha_ratio.pt"))
-    parser.add_argument("--e6_input", type=Path, default=Path("plots/modulators_trials_e6_similarity.pt"))
+    parser.add_argument("--e4_input", type=Path, default=Path("plots/modulators_trials_llama_e4_distance.pt"),
+                         help="modulators.py now tags output filenames with --model, e.g. "
+                              "modulators_trials_qwen_e4_distance.pt for a Qwen run")
+    parser.add_argument("--e5_input", type=Path, default=Path("plots/modulators_trials_llama_e5_alpha_ratio.pt"))
+    parser.add_argument("--e6_input", type=Path, default=Path("plots/modulators_trials_llama_e6_similarity.pt"))
     parser.add_argument("--output_dir", type=Path, default=Path("plots"))
     args = parser.parse_args()
 

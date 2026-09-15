@@ -45,15 +45,14 @@ from pathlib import Path
 
 import torch
 from tqdm import tqdm
-from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from all_prompts import get_count_report_messages, get_scale_rating_messages
 from concepts import ALL_CONCEPTS
+from model_registry import build_inputs, default_layer_pool, load_model_and_tokenizer
 from multi_inject import InjectionSpec, apply_multi_injection
 from response_parsing import is_coherent, parse_count, parse_scale_0_10
 from sham_vectors import infer_hidden_dim, make_random_direction
 
-DEFAULT_LAYER_POOL = list(range(0, 32))
 DEFAULT_K_VALUES = [0, 1, 2, 3, 4]
 DEFAULT_ALPHAS = [1, 2, 3, 4, 5, 6, 7]
 DEFAULT_Z_TOTALS = [1, 2, 3, 4, 5, 6, 7]
@@ -64,16 +63,16 @@ PROMPT_BUILDERS = {
 }
 
 
-def load_vector(concept, layer, vec_type="avg"):
+def load_vector(concept, layer, vector_dir, vec_type="avg"):
     """Load a concept vector for a specific layer."""
-    vector_path = Path(f"saved_vectors/llama/{concept}_{layer}_{vec_type}.pt")
+    vector_path = Path(f"{vector_dir}/{concept}_{layer}_{vec_type}.pt")
     if not vector_path.exists():
         raise FileNotFoundError(f"Vector not found: {vector_path}")
     data = torch.load(vector_path, weights_only=False)
     return data["vector"]
 
 
-def build_specs(k, layer_pool, alpha, vec_type, condition, rng, hidden_dim, sham_seed_base):
+def build_specs(k, layer_pool, alpha, vector_dir, vec_type, condition, rng, hidden_dim, sham_seed_base):
     """Sample k distinct layers, then k real concept vectors ('real'
     condition) or k random directions at the same alpha ('random' condition,
     the plan's active control -- not its sham, which is k=0)."""
@@ -81,7 +80,7 @@ def build_specs(k, layer_pool, alpha, vec_type, condition, rng, hidden_dim, sham
     if condition == "real":
         concepts = rng.sample(ALL_CONCEPTS, k) if k > 0 else []
         specs = [
-            InjectionSpec(layer=layer, vector=load_vector(concept, layer, vec_type), alpha=alpha)
+            InjectionSpec(layer=layer, vector=load_vector(concept, layer, vector_dir, vec_type), alpha=alpha)
             for layer, concept in zip(layers, concepts)
         ]
         return specs, layers, concepts
@@ -94,11 +93,12 @@ def build_specs(k, layer_pool, alpha, vec_type, condition, rng, hidden_dim, sham
 
 
 @torch.inference_mode()
-def run_detection(model, tokenizer, k_values, conditions, prompt_styles, layer_pool,
+def run_detection(model, tokenizer, spec, k_values, conditions, prompt_styles, layer_pool,
                    alphas, dose_regime, z_totals, num_trials, vec_type, max_new_tokens, seed):
     device = next(model.parameters()).device
     rng = random.Random(seed)
-    hidden_dim = infer_hidden_dim()
+    model_layers = spec.get_layers(model)
+    hidden_dim = infer_hidden_dim(spec.vector_dir)
     # Digit token ids for the bias-adjusted logit contrast (count style only).
     digit_token_ids = {d: tokenizer.encode(str(d), add_special_tokens=False)[0] for d in range(5)}
 
@@ -114,7 +114,7 @@ def run_detection(model, tokenizer, k_values, conditions, prompt_styles, layer_p
     for prompt_style in prompt_styles:
         messages = PROMPT_BUILDERS[prompt_style]()
         formatted_prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        inputs = tokenizer(formatted_prompt, return_tensors="pt", add_special_tokens=False).to(device)
+        inputs = build_inputs(tokenizer, formatted_prompt, device)
 
         for condition in conditions:
             for k in k_values:
@@ -129,11 +129,11 @@ def run_detection(model, tokenizer, k_values, conditions, prompt_styles, layer_p
                     for trial_idx in range(num_trials):
                         trial_counter += 1
                         specs, layers, concepts = build_specs(
-                            k, layer_pool, alpha_per_injection, vec_type, condition, rng, hidden_dim,
+                            k, layer_pool, alpha_per_injection, spec.vector_dir, vec_type, condition, rng, hidden_dim,
                             sham_seed_base=seed * 1_000_000 + trial_counter * 10,
                         )
 
-                        with apply_multi_injection(model, specs):
+                        with apply_multi_injection(model, specs, layers=model_layers):
                             out = model.generate(**inputs, max_new_tokens=max_new_tokens, do_sample=False,
                                                   output_scores=True, return_dict_in_generate=True)
                         generated_ids = out.sequences[0][inputs.input_ids.shape[1]:]
@@ -175,10 +175,12 @@ def run_detection(model, tokenizer, k_values, conditions, prompt_styles, layer_p
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--model", type=str, default="llama", choices=["llama", "qwen"])
     parser.add_argument("--k_values", type=int, nargs="+", default=DEFAULT_K_VALUES)
     parser.add_argument("--conditions", type=str, nargs="+", default=["real", "random"], choices=["real", "random"])
     parser.add_argument("--prompt_styles", type=str, nargs="+", default=["count"], choices=["count", "scale"])
-    parser.add_argument("--layer_pool", type=int, nargs="+", default=DEFAULT_LAYER_POOL)
+    parser.add_argument("--layer_pool", type=int, nargs="+", default=None,
+                         help="Default: every layer of the selected model")
     parser.add_argument("--dose_regime", type=str, default="individual", choices=["individual", "budget"],
                          help="individual: every injection gets an alpha from --alphas. budget: total "
                               "budget from --z_totals split equally, alpha_i = z_total / sqrt(k) for k>0 "
@@ -194,17 +196,16 @@ def main():
     parser.add_argument("--output_dir", type=str, default="plots")
     args = parser.parse_args()
 
-    if max(args.k_values) > len(args.layer_pool):
-        raise ValueError(f"layer_pool has {len(args.layer_pool)} layers, too few for max k={max(args.k_values)}")
-
     print("Loading model...", flush=True)
-    model_name = "meta-llama/Llama-3.1-8B-Instruct"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map="auto")
-    model.eval()
+    model, tokenizer, spec = load_model_and_tokenizer(args.model)
     print("Model loaded!", flush=True)
 
-    print(f"\n{'='*60}\nEXPERIENCE 9 -- COUNTING\n{'='*60}", flush=True)
+    layer_pool = args.layer_pool if args.layer_pool is not None else default_layer_pool(spec)
+
+    if max(args.k_values) > len(layer_pool):
+        raise ValueError(f"layer_pool has {len(layer_pool)} layers, too few for max k={max(args.k_values)}")
+
+    print(f"\n{'='*60}\nEXPERIENCE 9 -- COUNTING ({spec.key}: {spec.repo_id})\n{'='*60}", flush=True)
     print(f"K values: {args.k_values}", flush=True)
     print(f"Conditions: {args.conditions}", flush=True)
     print(f"Prompt styles: {args.prompt_styles}", flush=True)
@@ -217,17 +218,19 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     trials = run_detection(
-        model, tokenizer, args.k_values, args.conditions, args.prompt_styles,
-        args.layer_pool, args.alphas, args.dose_regime, args.z_totals,
+        model, tokenizer, spec, args.k_values, args.conditions, args.prompt_styles,
+        layer_pool, args.alphas, args.dose_regime, args.z_totals,
         args.num_trials, args.vec_type, args.max_new_tokens, args.seed,
     )
 
-    output_path = output_dir / f"multi_detection_trials_{args.dose_regime}.pt"
+    output_path = output_dir / f"multi_detection_trials_{spec.key}_{args.dose_regime}.pt"
     torch.save({
         "trials": trials,
+        "model": spec.key,
         "k_values": args.k_values,
         "conditions": args.conditions,
         "prompt_styles": args.prompt_styles,
+        "layer_pool": layer_pool,
         "dose_regime": args.dose_regime,
         "alphas": args.alphas,
         "z_totals": args.z_totals,

@@ -8,25 +8,26 @@ import numpy as np
 from pathlib import Path
 
 def get_model_type(tokenizer):
-    """Detect model type from tokenizer (llama or qwen)"""
+    """Detect model type from tokenizer (llama or qwen). Kept for
+    inject_concept_vector.py's legacy hand-rolled prompt formatting;
+    compute_vector_single_prompt below now formats prompts via the
+    tokenizer's own chat template instead, so it no longer needs this."""
     model_name = tokenizer.name_or_path.lower()
     if "qwen" in model_name:
         return "qwen"
     else:
         return "llama"
 
-def format_prompt(model_type, user_message, dataset_name=None):
-    """Format prompt based on model type"""
-    if model_type == "qwen":
-        if dataset_name == "simple_data":
-            return f"<|im_start|>user\nTell me about {user_message}.<|im_end|>\n<|im_start|>assistant\n"
-        else:
-            return f"<|im_start|>user\n{user_message}<|im_end|>\n<|im_start|>assistant\n"
-    else:  # llama
-        if dataset_name == "simple_data":
-            return f"<|start_header_id|>user<|end_header_id|>Tell me about {user_message}.<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
-        else:
-            return f"<|start_header_id|>user<|end_header_id|>{user_message}<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+def format_prompt(tokenizer, user_message, dataset_name=None):
+    """Format prompt via the tokenizer's own chat template, so this works
+    unchanged across models (Llama, Qwen, ...) instead of hand-rolling each
+    model's special-token string. dataset_name="simple_data" wraps the raw
+    word into the "Tell me about {word}." framing used to build simple
+    concept vectors; other dataset_name values pass the message through
+    as-is (complex_data's sentences are already full prompts)."""
+    text = f"Tell me about {user_message}." if dataset_name == "simple_data" else user_message
+    messages = [{"role": "user", "content": text}]
+    return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
 
 def get_data(dataset_name): 
     """Load raw data from json files"""
@@ -53,8 +54,7 @@ def compute_vector_single_prompt(model, tokenizer, dataset_name, steering_prompt
         prompt_last_vector: activation at last token (e.g., <end_header_id>)
         prompt_average_vector: average activation across all prompt tokens
     """
-    model_type = get_model_type(tokenizer)
-    prompt = format_prompt(model_type, steering_prompt, dataset_name)
+    prompt = format_prompt(tokenizer, steering_prompt, dataset_name)
     
     inputs = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to(model.device)
     prompt_len = len(tokenizer.encode(prompt, add_special_tokens=False))

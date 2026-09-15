@@ -75,19 +75,31 @@ def _make_layer_hook(layer_specs):
 
 
 @contextmanager
-def apply_multi_injection(model, specs: list[InjectionSpec]):
+def apply_multi_injection(model, specs: list[InjectionSpec], layers=None):
     """
     Registers one forward hook per distinct layer in `specs`, summing every spec's
     alpha * unit(vector) contribution assigned to that layer (handles two injections
     landing on the same layer). Yields with hooks active; guarantees hook removal
     even on exception.
 
+    `layers`: the model's decoder-layer list/sequence to index InjectionSpec.layer
+    into. Defaults to `model.model.layers` (Llama's attribute path) when not given,
+    for backward compatibility -- pass e.g. `model.model.language_model.layers` for
+    a model shaped differently (see code/utils/model_registry.py's
+    ModelSpec.get_layers for the per-model resolution).
+
     K=1, single-layer, token_range=None reduces to identical tensor math as
-    inject_concept_vector.py's "inject at all tokens" branch.
+    inject_concept_vector.py's "inject at all tokens" branch. The hook already
+    handles a decoder layer whose forward() returns a bare tensor instead of a
+    (hidden_states, ...) tuple (see the isinstance check in _make_layer_hook), so
+    no other change is needed for a differently-shaped decoder layer class.
     """
     if not specs:
         yield
         return
+
+    if layers is None:
+        layers = model.model.layers
 
     device = next(model.parameters()).device
     dtype = next(model.parameters()).dtype
@@ -100,7 +112,7 @@ def apply_multi_injection(model, specs: list[InjectionSpec]):
     handles = []
     try:
         for layer, layer_specs in by_layer.items():
-            handle = model.model.layers[layer].register_forward_hook(_make_layer_hook(layer_specs))
+            handle = layers[layer].register_forward_hook(_make_layer_hook(layer_specs))
             handles.append(handle)
         yield
     finally:

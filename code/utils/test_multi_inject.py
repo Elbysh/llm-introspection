@@ -46,6 +46,46 @@ class FakeModel(nn.Module):
         return h
 
 
+class FakeQwenDecoderLayer(nn.Module):
+    """Identity layer returning a bare tensor, like Qwen3_5DecoderLayer.forward()
+    (confirmed via transformers' modeling_qwen3_5.py) -- unlike
+    FakeDecoderLayer above, NOT wrapped in a (hidden_states,) tuple."""
+
+    def forward(self, hidden_states):
+        return hidden_states
+
+
+class FakeQwenTextModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layers = nn.ModuleList([FakeQwenDecoderLayer() for _ in range(NUM_LAYERS)])
+
+
+class FakeQwenInner(nn.Module):
+    """Mimics Qwen3_5Model: holds .language_model, not .layers directly."""
+
+    def __init__(self):
+        super().__init__()
+        self.language_model = FakeQwenTextModel()
+
+
+class FakeQwenModel(nn.Module):
+    """Mimics model.model.language_model.layers[l] -- Qwen3_5ForConditionalGeneration's
+    actual attribute path, confirmed via transformers source, and distinct from
+    FakeModel's model.model.layers[l] Llama shape above."""
+
+    def __init__(self):
+        super().__init__()
+        self.model = FakeQwenInner()
+        self._dummy_param = nn.Parameter(torch.zeros(1))
+
+    def run(self, hidden_states):
+        h = hidden_states
+        for layer in self.model.language_model.layers:
+            h = layer(h)  # bare tensor, no [0] unwrap needed
+        return h
+
+
 def _unit(v):
     return v / torch.norm(v, p=2)
 
@@ -173,6 +213,51 @@ def test_empty_specs_is_a_noop():
     with apply_multi_injection(model, []):
         out = model.run(x)
     assert torch.allclose(out, x)
+
+
+def test_qwen_shaped_nested_layers_and_bare_tensor_return():
+    """Exercises the model_registry.py Qwen path end to end at the hook
+    level: an explicit `layers=` pointing at a nested
+    model.model.language_model.layers (not model.model.layers), with a
+    decoder layer whose forward() returns a bare tensor instead of a
+    (hidden_states,) tuple. Confirms both apply_multi_injection's new
+    `layers` parameter and its existing isinstance(output, tuple) branch
+    are correct for Qwen/Qwen3.8-27B's actual shape, without needing the
+    real 27B weights."""
+    torch.manual_seed(5)
+    model = FakeQwenModel()
+    x = torch.randn(1, 3, HIDDEN_DIM)
+    vector = torch.randn(HIDDEN_DIM)
+    spec = InjectionSpec(layer=2, vector=vector, alpha=3.0)
+
+    qwen_layers = model.model.language_model.layers
+    with apply_multi_injection(model, [spec], layers=qwen_layers):
+        out = model.run(x)
+
+    expected = x + 3.0 * _unit(vector)  # only layer 2 injects; the rest are identity
+    assert torch.allclose(out, expected, atol=1e-6)
+
+    # Hooks were registered on the Qwen-shaped layers, not any default
+    # model.model.layers (FakeQwenModel doesn't even define that attribute).
+    for layer in qwen_layers:
+        assert len(layer._forward_hooks) == 0  # removed after the context manager exited
+
+
+def test_layers_param_none_falls_back_to_llama_default():
+    """apply_multi_injection(model, specs) with no `layers` kwarg must keep
+    resolving model.model.layers, for backward compatibility with every
+    call site that predates the --model flag."""
+    torch.manual_seed(6)
+    model = FakeModel()
+    x = torch.randn(1, 3, HIDDEN_DIM)
+    vector = torch.randn(HIDDEN_DIM)
+    spec = InjectionSpec(layer=1, vector=vector, alpha=2.0)
+
+    with apply_multi_injection(model, [spec]):  # no layers= kwarg
+        out = model.run(x)
+
+    expected = x + 2.0 * _unit(vector)
+    assert torch.allclose(out, expected, atol=1e-6)
 
 
 if __name__ == "__main__":

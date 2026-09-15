@@ -111,7 +111,9 @@ def logit_contrast_check(trials, condition):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=Path, default=Path("plots/multi_detection_trials_individual.pt"))
+    parser.add_argument("--input", type=Path, default=Path("plots/multi_detection_trials_llama_individual.pt"),
+                         help="multi_detection.py now tags its output filename with --model, e.g. "
+                              "multi_detection_trials_qwen_individual.pt for a Qwen run")
     args = parser.parse_args()
 
     data = torch.load(args.input, weights_only=False)

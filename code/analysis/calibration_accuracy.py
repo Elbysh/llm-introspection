@@ -138,7 +138,9 @@ def plot_heatmap(layers, alphas, detection_rate, output_path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=Path, default=Path("plots/calibration_trials.pt"))
+    parser.add_argument("--input", type=Path, default=Path("plots/calibration_trials_llama.pt"),
+                         help="calibration.py now tags its output filename with --model, e.g. "
+                              "calibration_trials_qwen.pt for a Qwen run")
     parser.add_argument("--output", type=Path, default=Path("plots/calibration_heatmap.png"))
     args = parser.parse_args()
 

@@ -46,7 +46,9 @@ def load_trials(input_path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=Path, default=Path("plots/layer_ordering_trials.pt"))
+    parser.add_argument("--input", type=Path, default=Path("plots/layer_ordering_trials_llama.pt"),
+                         help="layer_ordering.py now tags its output filename with --model, e.g. "
+                              "layer_ordering_trials_qwen.pt for a Qwen run")
     args = parser.parse_args()
 
     trials = load_trials(args.input)

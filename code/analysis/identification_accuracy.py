@@ -93,11 +93,12 @@ def print_result(title, result):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--inputs", type=Path, nargs="+", default=[
-        Path("plots/multi_identification_trials_single_concept.pt"),
-        Path("plots/multi_identification_trials_two_concepts.pt"),
-        Path("plots/multi_identification_trials_concept_plus_random.pt"),
-        Path("plots/multi_identification_trials_sham.pt"),
-    ])
+        Path("plots/multi_identification_trials_llama_single_concept.pt"),
+        Path("plots/multi_identification_trials_llama_two_concepts.pt"),
+        Path("plots/multi_identification_trials_llama_concept_plus_random.pt"),
+        Path("plots/multi_identification_trials_llama_sham.pt"),
+    ], help="multi_identification.py now tags output filenames with --model, e.g. "
+             "multi_identification_trials_qwen_two_concepts.pt for a Qwen run")
     parser.add_argument("--threshold", type=float, default=0.5,
                          help="Pre-registered embedding-similarity threshold for a 'correct' identification")
     args = parser.parse_args()

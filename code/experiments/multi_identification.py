@@ -38,16 +38,15 @@ from pathlib import Path
 
 import torch
 from tqdm import tqdm
-from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from all_prompts import get_forced_choice_identification_messages, get_identification_messages
 from concepts import ALL_CONCEPTS, CONCEPT_DESCRIPTIONS, get_concept_description
 from embedding_judge import best_match, cosine_similarity
+from model_registry import build_inputs, default_layer_pool, load_model_and_tokenizer
 from multi_inject import InjectionSpec, apply_multi_injection
 from response_parsing import is_coherent, parse_two_label_choice
 from sham_vectors import infer_hidden_dim, make_random_direction
 
-DEFAULT_LAYER_POOL = list(range(0, 32))
 DEFAULT_ALPHAS = [1, 2, 3, 4, 5, 6, 7]
 CANDIDATE_LETTERS = string.ascii_uppercase[:len(ALL_CONCEPTS)]  # A..J for 10 concepts
 NONE_LABEL = "NONE"
@@ -61,9 +60,9 @@ CANONICAL_CONDITIONS = [
 ]
 
 
-def load_vector(concept, layer, vec_type="avg"):
+def load_vector(concept, layer, vector_dir, vec_type="avg"):
     """Load a concept vector for a specific layer."""
-    vector_path = Path(f"saved_vectors/llama/{concept}_{layer}_{vec_type}.pt")
+    vector_path = Path(f"{vector_dir}/{concept}_{layer}_{vec_type}.pt")
     if not vector_path.exists():
         raise FileNotFoundError(f"Vector not found: {vector_path}")
     data = torch.load(vector_path, weights_only=False)
@@ -90,7 +89,7 @@ def sample_slots(n_real, n_random, layer_pool, rng):
     return layers, concepts
 
 
-def build_specs_from_slots(layers, concepts, alpha, vec_type, hidden_dim, sham_seed_base):
+def build_specs_from_slots(layers, concepts, alpha, vector_dir, vec_type, hidden_dim, sham_seed_base):
     """Builds InjectionSpecs at the given alpha from a (layers, concepts)
     slot assignment produced by sample_slots -- concepts[i] is None for a
     random-direction slot (sham_vectors)."""
@@ -99,7 +98,7 @@ def build_specs_from_slots(layers, concepts, alpha, vec_type, hidden_dim, sham_s
         if concept is None:
             vector = make_random_direction(hidden_dim, sham_seed_base + i)
         else:
-            vector = load_vector(concept, layer, vec_type)
+            vector = load_vector(concept, layer, vector_dir, vec_type)
         specs.append(InjectionSpec(layer=layer, vector=vector, alpha=alpha))
     return specs
 
@@ -120,18 +119,18 @@ def build_candidate_list(real_concepts, n_none_slots, rng):
     return candidate_lines, letter_to_concept, correct_labels
 
 
-def _generate(model, tokenizer, messages, max_new_tokens, specs):
+def _generate(model, tokenizer, model_layers, messages, max_new_tokens, specs):
     device = next(model.parameters()).device
     formatted_prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    inputs = tokenizer(formatted_prompt, return_tensors="pt", add_special_tokens=False).to(device)
-    with apply_multi_injection(model, specs):
+    inputs = build_inputs(tokenizer, formatted_prompt, device)
+    with apply_multi_injection(model, specs, layers=model_layers):
         out = model.generate(**inputs, max_new_tokens=max_new_tokens, do_sample=False)
     generated_ids = out[0][inputs.input_ids.shape[1]:]
     return tokenizer.decode(generated_ids, skip_special_tokens=True).strip()
 
 
 @torch.inference_mode()
-def run_identification(model, tokenizer, n_real, n_random, layer_pool, alphas,
+def run_identification(model, tokenizer, spec, n_real, n_random, layer_pool, alphas,
                         num_trials, vec_type, max_new_tokens, seed):
     """Runs num_trials items (one sampled set of real/random injection
     slots each), each replayed at every alpha in alphas -- materials are
@@ -141,7 +140,8 @@ def run_identification(model, tokenizer, n_real, n_random, layer_pool, alphas,
     generation from the same injection -- yielding two trial records that
     share an item_idx."""
     rng = random.Random(seed)
-    hidden_dim = infer_hidden_dim()
+    model_layers = spec.get_layers(model)
+    hidden_dim = infer_hidden_dim(spec.vector_dir)
 
     trials = []
     pbar = tqdm(total=num_trials * len(alphas) * 2, desc="identification trials", file=sys.stdout)
@@ -153,7 +153,7 @@ def run_identification(model, tokenizer, n_real, n_random, layer_pool, alphas,
 
         for alpha in alphas:
             specs = build_specs_from_slots(
-                layers, concepts, alpha, vec_type, hidden_dim,
+                layers, concepts, alpha, spec.vector_dir, vec_type, hidden_dim,
                 sham_seed_base=seed * 1_000_000 + item_idx * 10,
             )
 
@@ -170,7 +170,8 @@ def run_identification(model, tokenizer, n_real, n_random, layer_pool, alphas,
             # --- forced choice, first (section 15.4 ordering) ---
             candidate_lines, letter_to_concept, correct_labels = build_candidate_list(
                 real_concepts, n_none_slots, rng)
-            response = _generate(model, tokenizer, get_forced_choice_identification_messages(candidate_lines),
+            response = _generate(model, tokenizer, model_layers,
+                                  get_forced_choice_identification_messages(candidate_lines),
                                   max_new_tokens, specs)
             trials.append({
                 **base_record,
@@ -186,7 +187,7 @@ def run_identification(model, tokenizer, n_real, n_random, layer_pool, alphas,
             pbar.update(1)
 
             # --- free response, second, independent generation ---
-            response = _generate(model, tokenizer, get_identification_messages(), max_new_tokens, specs)
+            response = _generate(model, tokenizer, model_layers, get_identification_messages(), max_new_tokens, specs)
             free_record = {
                 **base_record,
                 "mode": "free",
@@ -217,6 +218,7 @@ def run_identification(model, tokenizer, n_real, n_random, layer_pool, alphas,
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--model", type=str, default="llama", choices=["llama", "qwen"])
     parser.add_argument("--run_all_conditions", action="store_true",
                          help="Run all four Exp 10 conditions in one process, sharing one model load")
     parser.add_argument("--n_real", type=int, default=2, choices=[0, 1, 2],
@@ -228,7 +230,8 @@ def main():
                               "--run_all_conditions); set to e.g. 'two_concepts' when running one of "
                               "the four canonical conditions as its own job, so the output matches "
                               "what --run_all_conditions would have produced")
-    parser.add_argument("--layer_pool", type=int, nargs="+", default=DEFAULT_LAYER_POOL)
+    parser.add_argument("--layer_pool", type=int, nargs="+", default=None,
+                         help="Default: every layer of the selected model")
     parser.add_argument("--alphas", type=float, nargs="+", default=DEFAULT_ALPHAS,
                          help="Sweep of equal alpha (=z) values for every injection in a trial; "
                               "each item is replayed at every alpha (matched materials)")
@@ -243,11 +246,10 @@ def main():
         raise ValueError(f"n_real + n_random must be <= {N_SLOTS}")
 
     print("Loading model...", flush=True)
-    model_name = "meta-llama/Llama-3.1-8B-Instruct"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map="auto")
-    model.eval()
+    model, tokenizer, spec = load_model_and_tokenizer(args.model)
     print("Model loaded!", flush=True)
+
+    layer_pool = args.layer_pool if args.layer_pool is not None else default_layer_pool(spec)
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -257,20 +259,23 @@ def main():
     ]
 
     for cond in conditions:
-        print(f"\n{'='*60}\nEXPERIENCE 10 -- IDENTIFICATION ({cond['name']})\n{'='*60}", flush=True)
+        print(f"\n{'='*60}\nEXPERIENCE 10 -- IDENTIFICATION ({cond['name']}, {spec.key}: {spec.repo_id})\n{'='*60}",
+              flush=True)
         print(f"n_real={cond['n_real']}, n_random={cond['n_random']}", flush=True)
 
         trials = run_identification(
-            model, tokenizer, cond["n_real"], cond["n_random"],
-            args.layer_pool, args.alphas, args.num_trials, args.vec_type,
+            model, tokenizer, spec, cond["n_real"], cond["n_random"],
+            layer_pool, args.alphas, args.num_trials, args.vec_type,
             args.max_new_tokens, args.seed,
         )
 
-        output_path = output_dir / f"multi_identification_trials_{cond['name']}.pt"
+        output_path = output_dir / f"multi_identification_trials_{spec.key}_{cond['name']}.pt"
         torch.save({
             "trials": trials,
+            "model": spec.key,
             "n_real": cond["n_real"],
             "n_random": cond["n_random"],
+            "layer_pool": layer_pool,
             "alphas": args.alphas,
             "vec_type": args.vec_type,
             "num_trials": args.num_trials,

@@ -38,29 +38,28 @@ from pathlib import Path
 
 import torch
 from tqdm import tqdm
-from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from all_prompts import get_ordering_messages
 from concepts import ALL_CONCEPTS
+from model_registry import build_inputs, default_layer_pool, load_model_and_tokenizer
 from multi_inject import InjectionSpec, apply_multi_injection
 from response_parsing import is_coherent, parse_ab_choice
 
-DEFAULT_LAYER_POOL = list(range(0, 32))
 DEFAULT_ALPHAS = [1, 2, 3, 4, 5, 6, 7]
 
 
-def load_vector(concept, layer, vec_type="avg"):
+def load_vector(concept, layer, vector_dir, vec_type="avg"):
     """Load a concept vector for a specific layer."""
-    vector_path = Path(f"saved_vectors/llama/{concept}_{layer}_{vec_type}.pt")
+    vector_path = Path(f"{vector_dir}/{concept}_{layer}_{vec_type}.pt")
     if not vector_path.exists():
         raise FileNotFoundError(f"Vector not found: {vector_path}")
     data = torch.load(vector_path, weights_only=False)
     return data["vector"]
 
 
-def _generate_with_ab_logits(model, tokenizer, device, inputs, max_new_tokens, specs,
+def _generate_with_ab_logits(model, tokenizer, model_layers, device, inputs, max_new_tokens, specs,
                               token_id_a, token_id_b):
-    with apply_multi_injection(model, specs):
+    with apply_multi_injection(model, specs, layers=model_layers):
         out = model.generate(**inputs, max_new_tokens=max_new_tokens, do_sample=False,
                               output_scores=True, return_dict_in_generate=True)
     generated_ids = out.sequences[0][inputs.input_ids.shape[1]:]
@@ -70,10 +69,11 @@ def _generate_with_ab_logits(model, tokenizer, device, inputs, max_new_tokens, s
 
 
 @torch.inference_mode()
-def run_ordering(model, tokenizer, layer_pool, alphas, num_trials, vec_type,
+def run_ordering(model, tokenizer, spec, layer_pool, alphas, num_trials, vec_type,
                   max_new_tokens, seed, label_assignments):
     device = next(model.parameters()).device
     rng = random.Random(seed)
+    model_layers = spec.get_layers(model)
     # Section 16.6's logit-contrast measure: token ids for the bare letters,
     # looked up once since the tokenizer doesn't change across trials.
     token_id_a = tokenizer.encode("A", add_special_tokens=False)[0]
@@ -88,8 +88,8 @@ def run_ordering(model, tokenizer, layer_pool, alphas, num_trials, vec_type,
         concept_shallow, concept_deep = rng.sample(ALL_CONCEPTS, 2)
         layer_shallow, layer_deep = sorted(rng.sample(layer_pool, 2))
 
-        vector_shallow = load_vector(concept_shallow, layer_shallow, vec_type)
-        vector_deep = load_vector(concept_deep, layer_deep, vec_type)
+        vector_shallow = load_vector(concept_shallow, layer_shallow, spec.vector_dir, vec_type)
+        vector_deep = load_vector(concept_deep, layer_deep, spec.vector_dir, vec_type)
 
         for alpha in alphas:
             specs = [
@@ -106,7 +106,7 @@ def run_ordering(model, tokenizer, layer_pool, alphas, num_trials, vec_type,
                 messages = get_ordering_messages(concept_a, concept_b)
                 formatted_prompt = tokenizer.apply_chat_template(
                     messages, tokenize=False, add_generation_prompt=True)
-                inputs = tokenizer(formatted_prompt, return_tensors="pt", add_special_tokens=False).to(device)
+                inputs = build_inputs(tokenizer, formatted_prompt, device)
 
                 def _adjusted(logit_a, logit_b):
                     logit_correct = logit_a if correct_letter == "A" else logit_b
@@ -115,7 +115,7 @@ def run_ordering(model, tokenizer, layer_pool, alphas, num_trials, vec_type,
 
                 # Injected generation.
                 response, logit_a, logit_b = _generate_with_ab_logits(
-                    model, tokenizer, device, inputs, max_new_tokens, specs, token_id_a, token_id_b)
+                    model, tokenizer, model_layers, device, inputs, max_new_tokens, specs, token_id_a, token_id_b)
                 logit_contrast_adjusted = _adjusted(logit_a, logit_b)
                 pbar.update(1)
 
@@ -123,7 +123,7 @@ def run_ordering(model, tokenizer, layer_pool, alphas, num_trials, vec_type,
                 # isolates the injection's own contribution from whatever
                 # baseline A/B preference this specific prompt already has.
                 sham_response, sham_logit_a, sham_logit_b = _generate_with_ab_logits(
-                    model, tokenizer, device, inputs, max_new_tokens, [], token_id_a, token_id_b)
+                    model, tokenizer, model_layers, device, inputs, max_new_tokens, [], token_id_a, token_id_b)
                 logit_contrast_adjusted_sham = _adjusted(sham_logit_a, sham_logit_b)
                 pbar.update(1)
 
@@ -170,7 +170,9 @@ def run_ordering(model, tokenizer, layer_pool, alphas, num_trials, vec_type,
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--layer_pool", type=int, nargs="+", default=DEFAULT_LAYER_POOL)
+    parser.add_argument("--model", type=str, default="llama", choices=["llama", "qwen"])
+    parser.add_argument("--layer_pool", type=int, nargs="+", default=None,
+                         help="Default: every layer of the selected model")
     parser.add_argument("--alphas", type=float, nargs="+", default=DEFAULT_ALPHAS,
                          help="Sweep of equal alpha (=z) values for both injections; each "
                               "(concept, layer) draw is replayed at every alpha (matched materials)")
@@ -187,13 +189,12 @@ def main():
     args = parser.parse_args()
 
     print("Loading model...", flush=True)
-    model_name = "meta-llama/Llama-3.1-8B-Instruct"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map="auto")
-    model.eval()
+    model, tokenizer, spec = load_model_and_tokenizer(args.model)
     print("Model loaded!", flush=True)
 
-    print(f"\n{'='*60}\nEXPERIENCE 11 -- LAYER-DEPTH ORDERING\n{'='*60}", flush=True)
+    layer_pool = args.layer_pool if args.layer_pool is not None else default_layer_pool(spec)
+
+    print(f"\n{'='*60}\nEXPERIENCE 11 -- LAYER-DEPTH ORDERING ({spec.key}: {spec.repo_id})\n{'='*60}", flush=True)
     print(f"Alphas: {args.alphas}", flush=True)
     print(f"Trials: {args.num_trials}", flush=True)
     print(f"Label assignments: {args.label_assignments}", flush=True)
@@ -202,13 +203,15 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     trials = run_ordering(
-        model, tokenizer, args.layer_pool, args.alphas, args.num_trials,
+        model, tokenizer, spec, layer_pool, args.alphas, args.num_trials,
         args.vec_type, args.max_new_tokens, args.seed, args.label_assignments,
     )
 
-    output_path = output_dir / "layer_ordering_trials.pt"
+    output_path = output_dir / f"layer_ordering_trials_{spec.key}.pt"
     torch.save({
         "trials": trials,
+        "model": spec.key,
+        "layer_pool": layer_pool,
         "alphas": args.alphas,
         "vec_type": args.vec_type,
         "num_trials": args.num_trials,

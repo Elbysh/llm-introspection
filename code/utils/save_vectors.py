@@ -1,5 +1,6 @@
 from compute_concept_vector_utils import compute_concept_vector
 from inject_concept_vector import inject_concept_vector
+from model_registry import MODEL_REGISTRY, default_layer_pool, load_model_and_tokenizer, resolve_spec
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 import argparse
@@ -37,49 +38,52 @@ def sweep_all_layers_and_coefficients(model, tokenizer, model_name, datasets, la
                         torch.save(save_data, filepath)
 def main():
     parser = argparse.ArgumentParser(description="Sweep layers and coefficients for concept vector injection")
-    parser.add_argument("--model", type=str, default="meta-llama/Llama-3.1-8B-Instruct",
-                       help="Model name or path")
-    parser.add_argument("--datasets", type=str, nargs="+", 
+    parser.add_argument("--model", type=str, default="llama", choices=sorted(MODEL_REGISTRY),
+                       help="Which registered model to compute vectors for (code/utils/model_registry.py)")
+    parser.add_argument("--datasets", type=str, nargs="+",
                        default=["simple_data", "complex_data"],
                        help="Datasets to process")
-    parser.add_argument("--layer_range", type=int, nargs="+",
-                       default=list(range(32)),
-                       help="Layer indices to sweep (default: 0-31)")
-    parser.add_argument("--save_dir", type=str,
-                       default="saved_vectors/llama",
-                       help="Directory to save vectors")
+    parser.add_argument("--layer_range", type=int, nargs="+", default=None,
+                       help="Layer indices to sweep (default: every layer of the selected model)")
+    parser.add_argument("--save_dir", type=str, default=None,
+                       help="Directory to save vectors (default: the selected model's registered vector_dir)")
     parser.add_argument("--device", type=str, choices=["auto", "mps", "cuda", "cpu"], default="auto",
-                       help="Device to use (default: auto, preferring MPS on Apple Silicon)")
-    
+                       help="'mps'/'cpu' force single-device loading for local dev (llama only -- not "
+                            "large enough to hold a 27B model). 'auto'/'cuda' load via device_map='auto' "
+                            "(accelerate-sharded across GPUs), required for Qwen/Qwen3.8-27B.")
+
     args = parser.parse_args()
-    
-    if args.device == "auto":
-        if torch.backends.mps.is_available():
-            device = torch.device("mps")
-        elif torch.cuda.is_available():
-            device = torch.device("cuda")
-        else:
-            device = torch.device("cpu")
-    else:
+    spec = resolve_spec(args.model)
+    layer_range = args.layer_range if args.layer_range is not None else default_layer_pool(spec)
+    save_dir = args.save_dir if args.save_dir is not None else spec.vector_dir
+
+    print(f"Loading model: {spec.repo_id}")
+
+    if args.device in ("mps", "cpu"):
+        if spec.key != "llama":
+            raise ValueError(
+                f"--device {args.device} is a local-dev, single-device path only supported for "
+                f"--model llama; {spec.repo_id} needs device_map='auto' sharding "
+                f"(use --device auto or --device cuda)."
+            )
         device = torch.device(args.device)
         if args.device == "mps" and not torch.backends.mps.is_available():
             raise RuntimeError("MPS was requested but is not available in this PyTorch environment")
+        # float16 is supported by MPS and uses substantially less memory than float32.
+        model_dtype = torch.float16 if device.type == "mps" else None
+        load_kwargs = {"torch_dtype": model_dtype} if model_dtype is not None else {}
+        model = AutoModelForCausalLM.from_pretrained(spec.repo_id, **load_kwargs)
+        tokenizer = AutoTokenizer.from_pretrained(spec.repo_id)
+        model.to(device)
+        model.eval()
+        print(f"Model loaded on {device}")
+    else:
         if args.device == "cuda" and not torch.cuda.is_available():
             raise RuntimeError("CUDA was requested but is not available in this PyTorch environment")
+        model, tokenizer, _ = load_model_and_tokenizer(args.model, device_map="auto")
+        print("Model loaded (device_map='auto')")
 
-    # float16 is supported by MPS and uses substantially less memory than float32.
-    model_dtype = torch.float16 if device.type == "mps" else None
-
-    # Load model
-    print(f"Loading model: {args.model}")
-    load_kwargs = {"torch_dtype": model_dtype} if model_dtype is not None else {}
-    model = AutoModelForCausalLM.from_pretrained(args.model, **load_kwargs)
-    tokenizer = AutoTokenizer.from_pretrained(args.model)
-    
-    model.to(device)
-    print(f"Model loaded on {device}")
-    
-    sweep_all_layers_and_coefficients(model, tokenizer, args.model, args.datasets, args.layer_range, args.save_dir)
+    sweep_all_layers_and_coefficients(model, tokenizer, spec.repo_id, args.datasets, layer_range, save_dir)
 
 if __name__ == "__main__":
     main()
