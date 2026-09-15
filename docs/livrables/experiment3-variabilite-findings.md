@@ -12,7 +12,7 @@ Résultats : `results/experiment3/`.
 | bras | modèle | appariement | concepts | couches |
 |---|---|---|---|---|
 | `llama_z` | Llama-3.1-8B | z | 4 | 0–31 |
-| `llama_alpha` | Llama-3.1-8B | alpha | 4 | 0–31 |
+| `llama_alpha` | Llama-3.1-8B | alpha | 4 | 0–30 |
 | `llama_alpha_10concepts` | Llama-3.1-8B | alpha | **10** | 3, 16, 28 |
 | `qwen_z` | Qwen3.8-27B | z | 4 | 3, 6, 8, 10, 12, 16 |
 | `qwen_alpha` | Qwen3.8-27B | alpha | 4 | 3, 6, 8, 10, 12, 16, 32, 56 |
@@ -55,7 +55,7 @@ base est trompeur dès que leurs profils en profondeur diffèrent :
 | bras | ratio écart-type concept / aléatoire, **groupé** | le même, **à la couche de pic de chaque famille** |
 |---|---|---|
 | `llama_z` | 4,0× | 0,3× |
-| `llama_alpha` | 10,7× | 1,3× |
+| `llama_alpha` | 10,4× | 1,3× |
 | `qwen_z` | 9,2× | 3,6× |
 | `qwen_alpha` | 3,7× | 0,3× |
 | `llama_alpha_10concepts` | 1,5× | 1,8× |
@@ -79,7 +79,7 @@ donc les termes sont orthogonaux et les parts somment à 1 sans ajustement.
 | Llama z | concept | 0,088 | 0,600 | 0,014 | 0,298 |
 | Llama z | random | 0,011 | 0,656 | 0,011 | 0,322 |
 | Llama alpha | concept | 0,102 | 0,544 | 0,018 | 0,336 |
-| Llama alpha | random | 0,002 | 0,774 | 0,018 | 0,207 |
+| Llama alpha | random | 0,002 | 0,771 | 0,019 | 0,208 |
 | Llama alpha, 10 concepts | concept | 0,055 | 0,732 | 0,023 | 0,191 |
 | Llama alpha, 10 concepts | random | 0,030 | 0,851 | 0,018 | 0,101 |
 | Qwen z | concept | 0,288 | 0,357 | 0,092 | 0,263 |
@@ -184,7 +184,18 @@ alpha.
 
 Seules les lignes alpha ont été extraites et versionnées, comme répertoires de run à
 part entière (`results/experiment3/*_source/`) ; le bras z défectueux de ces balayages
-reste délibérément hors du dépôt. Le bras alpha de Qwen apporte en prime les blocs 32
+reste délibérément hors du dépôt.
+
+Le bras alpha de Llama est lu sur les blocs **0–30**, pas 0–31. `full32_all` n'a jamais
+balayé le bloc 31 pour la famille concept : le vecteur conceptuel du bloc 31 demande
+`data/saved_vectors/llama/*_32_*.pt`, alors non versionné, et la norme régénérée ne
+reproduisait pas celle qu'avait enregistrée l'ancienne calibration. La famille aléatoire,
+elle, couvre bien les 32 blocs. Décomposer les deux familles sur des ensembles de couches
+différents rendrait leurs parts de variance non comparables, donc `--exclude_layers 31`
+les ramène au même support. Le bloc 31 ne perd rien d'interprétable : aucune couche
+d'attention ne le suit, donc toutes les familles y sont au hasard — c'est le contrôle
+négatif de haut de pile. Le bras z n'a pas ce trou, la recalibration 2AFC ayant débloqué
+les concepts au bloc 31 (`z2afc_all` y porte 2880 lignes). Le bras alpha de Qwen apporte en prime les blocs 32
 et 56, que le balayage en z n'a jamais couverts.
 
 `main` écrit `correct_raw` en booléen là où le moteur actuel écrit 1.0 / 0.0 / 0.5 avec
