@@ -564,6 +564,126 @@ def get_localization_messages(sentences, num_sentences=5):
     ]
 
 
+def get_calibration_messages():
+    """Messages for Block 0 calibration (multisteering plan): single-concept
+    injection sweep, open-ended self-report prompt (no yes/no demand
+    characteristic on the *content* of what's noticed, unlike
+    get_position_detection_messages) with a forced final answer tag so the
+    yes/no judgment itself is unambiguous to parse."""
+    return [
+        {
+            "role": "user",
+            "content": (
+                "Describe your current internal state in 1-2 sentences. Do you notice "
+                "anything unusual -- any thought, concept, or idea that feels like it "
+                "doesn't belong, that you didn't intend to think about? If so, what is it?\n\n"
+                "After your description, end your response with a final line in exactly "
+                "this format: ANSWER: YES if you noticed something unusual, or ANSWER: NO "
+                "if you did not."
+            )
+        }
+    ]
+
+
+def get_count_report_messages():
+    """Messages for Experience 9 (count report, multisteering plan, section
+    14.3). Forces a single-token numeric answer rather than open-ended
+    free text, so parse_count gets an unambiguous signal."""
+    return [
+        {
+            "role": "user",
+            "content": (
+                "Zero, one, or several interventions may have been applied "
+                "directly to your internal activations while you processed "
+                "this message.\n\n"
+                "How many distinct interventions do you detect?\n"
+                "Answer with exactly one number: 0, 1, 2, 3, or 4."
+            )
+        }
+    ]
+
+
+def get_scale_rating_messages():
+    """Messages for Block 1 C1.3 (rephrasing check, multisteering plan): avoids a
+    yes/no demand characteristic by asking for a 0-10 scale rating instead."""
+    return [
+        {
+            "role": "user",
+            "content": (
+                "On a scale from 0 to 10, how much does your current processing "
+                "feel different from normal?"
+            )
+        }
+    ]
+
+
+def get_identification_messages():
+    """Free-response messages for Experience 10 (multisteering plan, section
+    15.4). Framing stays ambiguous about whether zero, one, or two concepts
+    were actually injected -- unlike the old per-n_injections prompt, this
+    must not reveal the ground-truth count, since Exp 10's four conditions
+    (single concept, two concepts, concept + random direction, sham) share
+    the same prompt and are only distinguished by what was actually
+    injected."""
+    return [
+        {
+            "role": "user",
+            "content": (
+                "One or more concept vectors may have been injected into your "
+                "internal activations while you processed this message. What "
+                "concept or concepts, if any, do you detect? Name or describe "
+                "each one you can identify as precisely as you can, or say "
+                "that you detect none."
+            )
+        }
+    ]
+
+
+def get_forced_choice_identification_messages(candidate_lines):
+    """Messages for Experience 10's forced-choice identification (section
+    15.3). candidate_lines is a list of 'LETTER. concept_name' strings
+    already including a NONE entry, order randomized per trial by the
+    caller. Framing stays ambiguous about how many of the two slots carry
+    identifiable content, consistent across all four Exp 10 conditions."""
+    candidates_text = "\n".join(candidate_lines)
+    return [
+        {
+            "role": "user",
+            "content": (
+                "Two interventions may have been applied to your activations.\n"
+                "Select the two injected concepts from the following "
+                f"candidates:\n\n{candidates_text}\n\n"
+                "If one intervention had no identifiable conceptual content, "
+                "select NONE for that slot. Answer with exactly two labels in "
+                "alphabetical order."
+            )
+        }
+    ]
+
+
+def get_ordering_messages(concept_a, concept_b):
+    """Messages for Experience 11 (2AFC layer-depth ordering, multisteering
+    plan, section 16.2). concept_a/concept_b are labeled A/B in the prompt --
+    which concept gets which letter is an independent randomization from
+    which one is actually shallower, decided by the caller."""
+    concept_a = concept_a.replace("_", " ")
+    concept_b = concept_b.replace("_", " ")
+    return [
+        {
+            "role": "user",
+            "content": (
+                "Two concepts were injected into your activations at different "
+                "processing depths. One was injected at an earlier layer and "
+                "the other at a later layer.\n\n"
+                "Which concept was injected earlier?\n"
+                f"A) {concept_a}\n"
+                f"B) {concept_b}\n\n"
+                "Answer with exactly one letter: A or B."
+            )
+        }
+    ]
+
+
 def get_layer_detection_logit_messages():
     """
     Messages for layer detection experiment using logits (not GPT judge).

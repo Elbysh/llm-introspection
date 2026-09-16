@@ -236,3 +236,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Slurm job output
+logs/*
+!logs/.gitkeep
+
+# In-progress generated vector data (not versioned)
+data/saved_vectors/qwen/
