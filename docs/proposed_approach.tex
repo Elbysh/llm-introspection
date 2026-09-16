@@ -1,0 +1,154 @@
+\section{Proposed Approach}
+\label{sec:proposal}
+% on est sur de cette section ? 
+% perso je l'aurais enlevé pour avoir plus de place par expériences.
+% A la place on peut dire un mot sur les modèles utilisés LLama 3.1 8B en étude principale avec Qwen 3.8 27B en extension
+% le dataset de Hahami
+% la manière de compute les steering vectors comme dans le hahami et comment on a appliqué le dropout bruit gaussien et vecteur aléao
+Our framework addresses three questions: what determines perturbation
+detectability, which alternative explanations survive behavioral controls,
+and how precisely a model can report information about an internal
+intervention. The following experiments examine these questions separately;
+the behavioral hypotheses are not inferred from the calibration procedure
+used to define intervention strength.
+
+\subsection{Perturbation Type, Dose Matching, and Depth}
+\label{sec:localization-approach}
+
+We study Llama-3.1-8B-Instruct and intervene at the outputs of its 32 decoder
+blocks, with Qwen3.8-27B and its 64 blocks as an extension. The two models
+differ in how much a forced choice can reveal: Llama holds a large standing
+preference for one answer label, so its decision rarely moves, whereas Qwen's
+preference is small enough that its decision does move. Comparing them
+separates what a perturbation does from what a discrete report exposes. The main design compares four perturbation families: concept-derived
+directions, fixed isotropic random directions, random directions renewed at
+each targeted token, and dropout. Concept-to-random comparisons test whether
+detectability depends on the structured content of the injected direction.
+Comparing fixed and renewed random directions isolates the effect of
+cross-token directional coherence, while dropout provides a qualitatively
+different, activation-dependent control.
+
+For additive interventions, we apply
+\begin{equation}
+h'_{\ell,t}=h_{\ell,t}+\alpha v,
+\qquad
+\|v\|_2=1,
+\label{eq:intervention}
+\end{equation}
+where $\alpha$ is the Euclidean displacement applied at each targeted token.
+Equal values of $\alpha$, however, need not represent equally unusual
+interventions because natural activations vary differently across layers
+and directions. We therefore introduce a layer- and direction-specific
+scale $s(\ell,v)$ to complement raw-amplitude matching.
+
+For each unit direction $v$, we project unperturbed activations collected at
+the future intervention site:
+\begin{equation}
+p_i(\ell,v)=\langle h_{\ell,i},v\rangle.
+\label{eq:projection}
+\end{equation}
+Our primary scale is the sample standard deviation of these projections,
+\begin{equation}
+s_{\mathrm{SD}}(\ell,v)
+=
+\sqrt{
+\frac{1}{N-1}
+\sum_{i=1}^{N}
+\left(
+p_i(\ell,v)-\bar{p}(\ell,v)
+\right)^2
+}.
+\label{eq:scale}
+\end{equation}
+It converts the raw amplitude into a standardized dose:
+\begin{equation}
+z=\frac{\alpha}{s(\ell,v)},
+\qquad
+\alpha=z\,s(\ell,v).
+\label{eq:dose}
+\end{equation}
+Matching $\alpha$ preserves the absolute displacement, whereas matching $z$
+controls the displacement relative to the natural variability of the
+corresponding layer and direction. These two parameterizations therefore
+test whether apparent differences between perturbation families persist
+after accounting for activation geometry.
+
+Scales are estimated separately for each $(\ell,v)$ pair from unperturbed
+activations recorded at the same block output and eligible token positions
+as the subsequent intervention. The sample SD is the primary definition of
+$s(\ell,v)$, while the corrected median absolute deviation provides a robust
+alternative parameterization. Uncertainty is estimated by resampling
+sentences while retaining all eligible tokens belonging to each sampled
+sentence. Because activation statistics can depend on prompt structure,
+the scales used for behavioral comparisons are computed in the
+corresponding presentation context.
+
+Two-alternative forced-choice localization serves as the main behavioral
+measurement instrument. Each prompt contains two sentences, one of which is
+perturbed, and the model must identify the targeted sentence. Sentence
+order, answer labels, and intervention target are counterbalanced so that
+the measured effect follows the perturbed sentence rather than a particular
+label or physical position.
+
+Accuracy alone cannot carry this measurement, because a perturbation that
+carries no information about its target still displaces the answer logits
+away from the model's default label, and that displacement scores as a
+success on every trial whose target happens to carry the other label. We
+therefore report a paired contrast between two trials that share every factor
+except which sentence was perturbed,
+\begin{equation}
+S = \tfrac{1}{2}\left[L(\text{A targeted})-L(\text{B targeted})\right],
+\label{eq:paired}
+\end{equation}
+where $L$ is the sham-subtracted difference between the two answer logits.
+Any displacement independent of which sentence was targeted cancels exactly,
+and a permutation of the target assignment within each pair provides the null.
+
+Because a concept direction differs from a random one in both its orientation
+and its coordinate statistics, we add a \emph{scrambled concept} control: a
+coordinate permutation of a concept vector, which preserves its norm and the
+multiset of its coordinates while destroying alignment with any feature
+direction. Comparing a concept direction against its own permutation at
+matched amplitude isolates orientation from magnitude.
+
+Dose sweeps are evaluated under both raw-amplitude and standardized
+matching. The primary comparisons ask whether psychometric responses differ
+between perturbation families at matched $\alpha$, and whether these
+differences remain at matched $z$. Variation across layers, concepts, and
+random directions is retained rather than reduced to a single family
+average. A 75\% threshold is reported only when it is bracketed by the tested
+dose range and supported by the observed curve shape; nonmonotonic behavior
+at high doses is treated as a result rather than extrapolated away. The
+executed sweeps, dose grids, trial counts and sham design are listed in
+\cref{app:loc-design}.
+
+\subsection{A Semantic Control Task}
+\label{sec:degradation-approach}
+
+Localization measures what a perturbation leaves legible, not what it costs.
+A second forced choice therefore asks nothing about the intervention: the
+model reads one perturbed sentence and answers, with one of two letters,
+whether it expresses a queried concept. That concept is never the injected
+one, so a targeted injection cannot supply the answer, and both letter
+assignments are run on the same sentence, so a letter preference stays
+separable from a classification. Each trial is scored by the sign and the size
+of the logit difference between the two letters against the sham response of
+the same item, and the blocks, families and doses are those of the
+localization sweep, so every cell pairs with a localization cell.
+
+\subsection{Multi-injection for model perturbation}
+\label{sec:multi-injection-approach}
+
+A complementary question is whether reports remain informative when several concept-derived interventions are present at once: can the model detect, identify and locate those interventions, rather than only report something changed at all?
+
+We extend the additive intervention of \cref{eq:dose} to $n$ simultaneous injections, $v_i, i\in\{0,\dots,n\}$ , each concept direction $v_i$ applied at its own layer $\ell_i$ and sustained through generation.
+The model's behaviour under multi-intervention is evaluated through three tasks.
+\emph{Counting} injects $k\in\{0,\dots,4\}$ concept directions at distinct layers and requires a single forced digit response, with $k{=}0$ serving as the true sham.
+\emph{Identification} injects two concepts and asks the model to name what was injected, scored both by forced choice among labeled candidates and by free response.
+\emph{Relative-depth ordering} injects two concepts at two layers and asks which was injected at the shallower layer, presented as a randomized \texttt{A}/\texttt{B} choice so that label assignment is decorrelated from true depth. Details of the different task prompts can be found in Appendix.
+All tasks draw from a pool of ten concept directions (five simple, five complex) applied across all 32 decoder blocks, with a coherence filter excluding degenerate or non-answer generations before scoring.
+For this program, we use raw amplitude $\alpha$ instead of the standardized dose $z$ described in \cref{eq:dose}; this is a scope choice distinct from the raw-versus-standardized comparison detailed before.
+
+A discrete decision can hide a default-answer preference unrelated to the injection, so each task pairs its accuracy metric with a control that isolates the injection's own contribution.
+A \emph{bias-adjusted logit contrast} compares the first-token logit for the true answer against the model's default (e.g.\ $\mathrm{logit}(k)-\mathrm{logit}(\text{``1''})$ for counting), read directly from the generation call so it is available even for incoherent trials.
+For ordering, a \emph{paired-sham} control repeats each injected trial with zero injection on the same prompt, so that $\text{contrast}_{\text{injected}}-\text{contrast}_{\text{sham}}$ isolates the injection's effect from the prompt's own baseline preference.
