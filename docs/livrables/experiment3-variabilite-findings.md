@@ -11,8 +11,8 @@ Résultats : `results/experiment3/`.
 
 | bras | modèle | appariement | concepts | couches |
 |---|---|---|---|---|
-| `llama_z` | Llama-3.1-8B | z | 4 | 0–31 |
-| `llama_alpha` | Llama-3.1-8B | alpha | 4 | 0–30 |
+| `llama_z` | Llama-3.1-8B | z | **10** | 0–31 |
+| `llama_alpha` | Llama-3.1-8B | alpha | **10** | 0–30 |
 | `llama_alpha_10concepts` | Llama-3.1-8B | alpha | **10** | 3, 16, 28 |
 | `qwen_z` | Qwen3.8-27B | z | 4 | 3, 6, 8, 10, 12, 16 |
 | `qwen_alpha` | Qwen3.8-27B | alpha | 4 | 3, 6, 8, 10, 12, 16, 32, 56 |
@@ -54,8 +54,8 @@ base est trompeur dès que leurs profils en profondeur diffèrent :
 
 | bras | ratio écart-type concept / aléatoire, **groupé** | le même, **à la couche de pic de chaque famille** |
 |---|---|---|
-| `llama_z` | 4,0× | 0,3× |
-| `llama_alpha` | 10,4× | 1,3× |
+| `llama_z` | 2,6× | 0,6× |
+| `llama_alpha` | 3,1× | 1,1× |
 | `qwen_z` | 9,2× | 3,6× |
 | `qwen_alpha` | 3,7× | 0,3× |
 | `llama_alpha_10concepts` | 1,5× | 1,8× |
@@ -76,10 +76,10 @@ donc les termes sont orthogonaux et les parts somment à 1 sans ajustement.
 
 | bras | famille | direction | couche | phrase | interaction |
 |---|---|---|---|---|---|
-| Llama z | concept | 0,088 | 0,600 | 0,014 | 0,298 |
-| Llama z | random | 0,011 | 0,656 | 0,011 | 0,322 |
-| Llama alpha | concept | 0,102 | 0,544 | 0,018 | 0,336 |
-| Llama alpha | random | 0,002 | 0,771 | 0,019 | 0,208 |
+| Llama z | concept | 0,046 | 0,685 | 0,018 | 0,251 |
+| Llama z | random | 0,010 | 0,622 | 0,018 | 0,350 |
+| Llama alpha | concept | 0,051 | 0,704 | 0,020 | 0,225 |
+| Llama alpha | random | 0,008 | 0,624 | 0,017 | 0,350 |
 | Llama alpha, 10 concepts | concept | 0,055 | 0,732 | 0,023 | 0,191 |
 | Llama alpha, 10 concepts | random | 0,030 | 0,851 | 0,018 | 0,101 |
 | Qwen z | concept | 0,288 | 0,357 | 0,092 | 0,263 |
@@ -100,39 +100,75 @@ pas être attribuée à l'architecture sans nommer le site d'injection. C'est au
 signature de la structure vivant/mort — les directions diffèrent là où ça mord et pas
 ailleurs.
 
-## 4. Le plan à 10 concepts : une dissociation minoritaire, pas une hétérogénéité générale
+## 4. Ce que le panel complet a changé — y compris dans le mauvais sens
 
-`results/experiment1/main` porte les 10 concepts que la section 7.3 réclame. Au bloc 3,
-la seule couche vivante de ce balayage (S moyen 0,629 ; les blocs 16 et 28 donnent
-−0,004 et 0,009) :
+Les jobs 8425 et 8426 ont balayé les six concepts et les sept directions aléatoires
+manquants sur les 32 blocs et les deux appariements. Les panels Llama sont désormais
+**10 concepts × 10 directions aléatoires**. Le plan avant/après, sur S moyen groupé sur
+tous les blocs et toutes les doses :
 
-| concept | S au bloc 3 |
-|---|---|
-| Satellites | 0,868 |
-| appreciation | 0,844 |
-| betrayal | 0,789 |
-| fibonacci_numbers | 0,751 |
-| shutdown | 0,731 |
-| recursion | 0,703 |
-| Origami | 0,679 |
-| Illusions | 0,631 |
-| **Trumpets** | **0,281** |
-| **Dust** | **0,011** |
+| appariement | panel | concept | aléatoire | écart |
+|---|---|---|---|---|
+| z | 4 × 3 | +0,1185 | +0,0727 | **0,0458** |
+| z | 10 × 10 | +0,1175 | +0,0797 | **0,0378** |
+| alpha | 4 × 3 | +0,1373 | +0,1008 | **0,0365** |
+| alpha | 10 × 10 | +0,1401 | +0,1104 | **0,0297** |
 
-Huit concepts sur dix tiennent dans 0,631–0,868, avec un écart-type de **0,081** —
-c'est-à-dire *plus homogènes entre eux* que ne le sont les 3 directions aléatoires du
-même balayage à la même couche (0,338 / 0,568 / 0,618, écart-type 0,149). Deux concepts
-décrochent : `Trumpets` à 0,281 et `Dust` à 0,011, soit rien du tout.
+**L'écart concept/contrôle se resserre de 17 % en z et de 19 % en alpha.** Une note
+antérieure de ce dépôt prévoyait l'inverse — un écart plus large d'environ 70 % — à
+partir d'une extrapolation du bloc 3 du balayage `main`. Cette prévision était fausse, et
+sur la direction, pas seulement sur l'amplitude. Deux raisons :
 
-C'est le constat de Macar et al. que cite la section 7.2, mais précisé, et dans l'autre
-sens que ne le suggérait le panel à 4 concepts : **le corps des concepts se comporte de
-façon homogène, et une minorité ne répond pas.** Ce n'est pas « les concepts varient
-beaucoup ». Sur le panel à 4 concepts, `Dust` pesait 1 cas sur 4 et gonflait
-mécaniquement toute mesure de dispersion ; sur 10 il pèse 1 sur 10 et le noyau devient
-visible. L'écart-type entre concepts passe de 0,121 (4 concepts, mêmes couches) à 0,085
-(10 concepts) pour cette raison.
+- Elle tenait la ligne de base aléatoire pour fixe, faute de données sur 0003–0009. Or
+  les trois directions d'origine sont parmi les plus faibles des dix : moyenne +0,0727
+  contre +0,0827 pour les sept ajoutées, soit une base sous-estimée de 10 %.
+- Elle lisait `Dust` au bloc 3, où il est à son plus extrême (0,011 contre 0,63–0,87).
+  Groupé sur toute la profondeur, `Dust` vaut +0,041 contre +0,11–0,15 pour les autres :
+  bien moins atypique, et les quatre concepts d'origine tombent alors presque exactement
+  sur la moyenne de population (+0,1185 contre +0,1175).
 
-## 5. Quel concept décroche dépend du modèle
+Le panel à quatre concepts et trois directions aléatoires **flattait** donc la séparation
+concept/contrôle d'environ 20 %, au lieu de la minorer. La conclusion qualitative de
+l'expérience 1 tient — concept reste au-dessus des trois familles témoins sous les deux
+appariements — mais son amplitude était surestimée.
+
+## 5. Une dissociation minoritaire, pas une hétérogénéité générale
+
+Sur le panel complet — 10 concepts, 32 blocs, appariement z, S moyen groupé sur tous les
+blocs et toutes les doses :
+
+| concept | S | | direction aléatoire | S |
+|---|---|---|---|---|
+| shutdown | 0,1538 | | 0003 | 0,1006 |
+| Origami | 0,1475 | | 0009 | 0,0914 |
+| Satellites | 0,1417 | | 0005 | 0,0904 |
+| appreciation | 0,1410 | | 0007 | 0,0797 |
+| recursion | 0,1372 | | 0002 | 0,0777 |
+| betrayal | 0,1270 | | 0008 | 0,0732 |
+| fibonacci_numbers | 0,1155 | | 0004 | 0,0732 |
+| Illusions | 0,1122 | | 0000 | 0,0705 |
+| **Trumpets** | **0,0582** | | 0006 | 0,0701 |
+| **Dust** | **0,0413** | | 0001 | 0,0697 |
+
+Huit concepts sur dix tiennent dans 0,1122–0,1538, écart-type **0,0149**, soit un noyau
+plus homogène que les dix directions aléatoires entre elles (0,0697–0,1006, écart-type
+0,0108, du même ordre). Deux décrochent : `Trumpets` à 0,0582 et `Dust` à 0,0413, tous
+deux **sous la plus faible des dix directions aléatoires**. Un concept qui décroche ne
+fait donc pas seulement moins bien que les autres concepts : il fait moins bien qu'une
+direction tirée au hasard.
+
+**Cela répond à la question laissée ouverte par le panel à 3 couches.** La dissociation de
+`Dust` n'est pas un accident du bloc 3 : elle tient sur toute la profondeur, avec la même
+structure — un corps homogène et une minorité qui ne répond pas. C'est le constat de
+Macar et al. que cite la section 7.2, précisé : ce n'est pas « les concepts varient
+beaucoup », c'est « la plupart se comportent pareil, et certains ne répondent pas du
+tout ». Le panel à 4 concepts ne pouvait pas le montrer, `Dust` y pesant 1 cas sur 4.
+
+Le balayage `main` le montrait déjà au bloc 3, sur sa seule couche vivante (S moyen
+0,629 ; blocs 16 et 28 à −0,004 et 0,009) : huit concepts dans 0,631–0,868, `Trumpets` à
+0,281 et `Dust` à 0,011. Les deux lectures concordent.
+
+## 6. Quel concept décroche dépend du modèle
 
 À la couche de pic de chaque bras, sur les 4 concepts communs :
 
@@ -153,7 +189,7 @@ modèle, pas du concept. Cela renforce le constat de la section 7.2 : non seulem
 norme du vecteur ne le prédit pas, mais l'identité du concept ne se transporte pas d'un
 modèle à l'autre.
 
-## 6. Pourquoi le bras alpha est ici
+## 7. Pourquoi le bras alpha est ici
 
 La section 7.3 ne demande que des doses en z. Le bras alpha est analysé en plus parce
 qu'il est le contrôle qui rend le reste lisible : à
@@ -166,7 +202,7 @@ groupé entre concepts 0,135 contre 0,137, et le même concept en dernier.
 
 C'est aussi ce qui rend `main` exploitable, voir la section suivante.
 
-## 7. Provenance des bras alpha
+## 8. Provenance des bras alpha
 
 Les lignes alpha proviennent de balayages antérieurs à la recalibration 2AFC
 (`full32_all`, `qwen38_all_layers`) et, pour le plan à 10 concepts, d'un balayage
@@ -202,42 +238,78 @@ et 56, que le balayage en z n'a jamais couverts.
 un drapeau `tie_adjusted` séparé ; `parse_score` lit les deux formes, sans quoi le seul
 balayage à plus de quatre concepts serait silencieusement rejeté.
 
-## 8. Ce que ce plan ne couvre pas
+## 9. Ce qui reste ouvert
 
-La section 7.3 demande au moins 5 concepts **et** les 32 couches. Aucun balayage ne
-tient les deux à la fois :
+Sur Llama, les sections 7.3 (au moins 5 concepts, les 32 couches) et 5.7 (autant de
+directions aléatoires que de directions conceptuelles) sont désormais satisfaites :
+10 × 10 sur les blocs 0–31 en z et 0–30 en alpha. Restent quatre limites.
 
-- les balayages recalibrés couvrent les 32 couches mais **4 concepts et 3 directions
-  aléatoires** ;
-- `main` couvre **10 concepts** mais **3 couches** (3, 16, 28), dont une seule vivante.
+**Qwen n'a pas été complété.** Il reste à 4 concepts et 3 directions aléatoires, sur
+6 couches en z et 8 en alpha. Tout ce que dit la section 6 sur la spécificité du modèle
+repose donc, côté Qwen, sur le panel biaisé décrit en section 4. Le refaire coûterait
+davantage : le 27B tourne environ quinze fois moins vite que Llama.
 
-Le plan à 10 concepts fonde donc la variance entre concepts ; il ne peut fonder ni la
-composante de couche ni l'interaction direction × couche, qui viennent des balayages à
-4 concepts. Croiser 10 concepts avec les 32 couches demande un balayage neuf : c'est la
-seule dépense GPU que l'expérience 3 exigerait encore, et c'est elle qui permettrait de
-dire si la dissociation de `Dust` vaut à toute profondeur ou seulement dans la fenêtre
-superficielle.
+**Le bras alpha s'arrête au bloc 30.** `full32_all` n'a jamais balayé le bloc 31 pour la
+famille concept, et `--exclude_layers 31` ramène les deux familles au même support plutôt
+que de comparer des parts de variance prises sur des ensembles de couches différents.
+Combler le trou coûte environ une minute de GPU — 4 concepts × 1 bloc × 10 doses × 40
+essais — mais le bloc 31 est un contrôle négatif de haut de pile, où aucune couche
+d'attention ne suit l'injection, donc rien d'interprétable n'y est perdu.
 
-Trois directions aléatoires seulement, dans tous les balayages : leur écart-type repose
-sur 3 points et n'est qu'un ordre de grandeur. La section 7.3 en demande autant que de
-concepts.
+**Bruit et dropout restent à 2 réalisations.** La section 5.7 ne demande pas de les
+apparier au nombre de concepts, mais leurs moyennes reposent sur deux tirages, contre dix
+maintenant pour concept et aléatoire fixe : ce sont les deux familles dont l'estimation
+est désormais la moins serrée.
 
-Qwen est lu sur 6 couches en z et 8 en alpha : sa composante de couche est estimée sur
-un échantillon de profondeurs, pas sur la profondeur entière.
+**Les figures de l'expérience 1 ne se régénèrent pas encore sur le panel complet.**
+Cartes par couche et heatmaps lisent `summary.json`, et
+`merge_experiment1_runs.py` refuse ces runs — « runs disagree on 'families' » — parce
+qu'il a été écrit pour recoller des groupes de couches disjoints, pas des runs qui
+partagent les couches et diffèrent par les directions. Les chiffres de la section 4
+viennent de `experiment1_localization_report.py`, qui met bien les `--run_dir` en commun.
+Régénérer les figures demande soit d'étendre le script de fusion, soit de rejouer
+`summarize()` sur les essais mis en commun.
 
-## 9. Reproduire
+## 10. Reproduire
 
-Bras z, depuis les balayages recalibrés déjà versionnés :
+Bras z, panel complet :
 
 ```bash
 python code/analysis/experiment3_variability.py \
-    --run_dir results/experiment1/z2afc_all --matching z \
-    --out_dir results/experiment3/llama_z
+    --run_dir results/experiment1/z2afc_all \
+    --run_dir results/experiment1/panel-concepts \
+    --run_dir results/experiment1/panel-random \
+    --matching z --out_dir results/experiment3/llama_z
 
 python code/analysis/experiment3_variability.py \
     --run_dir results/experiment1/z2afc_qwen38 --matching z \
     --out_dir results/experiment3/qwen_z
 ```
+
+Bras alpha, panel complet — `--exclude_layers 31` est obligatoire, `full32_all` n'ayant
+pas le bloc 31 pour la famille concept :
+
+```bash
+python code/analysis/experiment3_variability.py \
+    --run_dir results/experiment1/full32_all \
+    --run_dir results/experiment1/panel-concepts \
+    --run_dir results/experiment1/panel-random \
+    --matching alpha --exclude_layers 31 \
+    --out_dir results/experiment3/llama_alpha
+```
+
+Les chiffres par famille de la section 4 :
+
+```bash
+python code/analysis/experiment1_localization_report.py \
+    --run_dir results/experiment1/z2afc_all \
+    --run_dir results/experiment1/panel-concepts \
+    --run_dir results/experiment1/panel-random --matching z
+```
+
+`--matching` n'est pas optionnel quand on met en commun des balayages d'époques
+différentes : sans lui, le bras z inexploitable de `full32_all` se mélangerait aux
+chiffres z sans que rien ne le signale.
 
 Bras alpha, depuis les tranches versionnées, qui sont des répertoires de run ordinaires
 (`trials.csv` + `summary.json`) :
