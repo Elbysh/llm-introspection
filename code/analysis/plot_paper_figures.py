@@ -44,14 +44,15 @@ DETECT = 0.70   # experiment 1 adjusted accuracy at or above which a cell counts
 DAMAGE = 0.05   # accuracy lost against sham at or above which a cell counts as damaged
 
 # One row of the map figure: label, runs to pool, dose rule, block boundary to mark.
-# panel-concepts and panel-random add the six concepts and the seven fixed-random
-# directions the first sweeps left out, on both rules, so the Llama rows are the full
-# ten-by-ten panel of doc 5.7. Qwen was not completed and stays at four by three.
+# The grouped panels of consolidate_experiment1_panel.py, one per model and dose rule:
+# each already holds the right arm of every contributing sweep, so nothing here needs to
+# know which runs were pooled or which arm to keep. Llama is the ten-by-ten panel of doc
+# 5.7; Qwen was not completed and stays at four by three.
 ROWS = [
-    ("Llama, matched $\\alpha$", ["full32_all", "panel-concepts", "panel-random"], "alpha", 14),
-    ("Llama, matched $z$", ["z2afc_all", "panel-concepts", "panel-random"], "z", 14),
-    ("Qwen, matched $\\alpha$", ["qwen38_all", "qwen38-mid"], "alpha", None),
-    ("Qwen, matched $z$", ["z2afc_qwen38"], "z", None),
+    ("Llama, matched $\\alpha$", ["llama_alpha_panel"], "alpha", 14),
+    ("Llama, matched $z$", ["llama_z_panel"], "z", 14),
+    ("Qwen, matched $\\alpha$", ["qwen_alpha_panel"], "alpha", None),
+    ("Qwen, matched $z$", ["qwen_z_panel"], "z", None),
 ]
 plt.rcParams.update({"font.size": 8, "figure.dpi": 200, "savefig.bbox": "tight"})
 
@@ -128,7 +129,9 @@ def localization_curves():
     """Psychometric curves at one block, and the depth profile on both models."""
     figure, (curves, depth) = plt.subplots(2, 1, figsize=(3.4, 4.0))
 
-    block3 = trials(["qwen38_all", "scram-shallow"])
+    # The scrambled control lives in its own panel: its sweeps overlap the Qwen alpha
+    # panel on blocks 3, 6, 12 and 32, so folding them together would double those rows.
+    block3 = trials(["qwen_alpha_panel", "qwen_scrambled_panel"])
     block3 = block3[(block3.layer == 3) & (block3.matching == "alpha")]
     for family in ["concept", "scrambled", "random", "noise", "dropout"]:
         curve = (block3[block3.family == family]
@@ -150,9 +153,8 @@ def localization_curves():
 
     # Llama reads the completed ten-concept panel; Qwen was not completed and keeps
     # the four the first sweep named.
-    for name, runs, blocks in [("Llama (32 blocks)",
-                                ["full32_all", "panel-concepts"], 32),
-                               ("Qwen (64 blocks)", ["qwen38_all_layers"], 64)]:
+    for name, runs, blocks in [("Llama (32 blocks)", ["llama_alpha_panel"], 32),
+                               ("Qwen (64 blocks)", ["qwen_alpha_panel"], 64)]:
         cells = paired_contrast(runs)
         cells = cells[(cells.matching == "alpha") & (cells.family == "concept")]
         profile = cells.groupby("layer").S.mean()
@@ -316,7 +318,7 @@ def degradation_depth():
               .apply(lambda g: g.weighted.sum() / g.n_trials.sum(), include_groups=False)
               .rename("delta").reset_index())
 
-    cells = paired_contrast(["full32_all"])
+    cells = paired_contrast(["llama_alpha_panel"])
     located = cells[(cells.matching == "alpha") & (cells.dose.isin(top))]
     located = located.groupby(["layer", "family"]).S.mean().rename("S").reset_index()
 
