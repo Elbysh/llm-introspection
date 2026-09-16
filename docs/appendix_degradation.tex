@@ -11,6 +11,22 @@
 \subsection{Sweep}
 \label{app:deg-design}
 
+% CONSISTENCY NOTE (2026-09-16). Experiment 1 was extended to ten concept and ten
+% fixed random directions; this sweep was not, and it imports nothing from it
+% (summary.json has experiment1_summary: null -- its detection_accuracy is measured
+% here). So no number below is arithmetically stale. Two mismatches remain, both
+% understating this sweep's concept row relative to Experiment 1:
+%   1. It injects only Dust and Satellites, and Dust carries 3 of the 5 evaluated
+%      concepts, i.e. 60% of the concept cells. Dust is 9th of 10 in Experiment 1's
+%      alpha panel (S = +0.059 against a panel mean of +0.143), so this sweep's
+%      concept axis sits about 33% below the full panel's concept mean.
+%   2. Detection here is adjusted accuracy at a 0.70 threshold, the estimator
+%      app:loc-bias shows does not remove the answer bias; Experiment 1 reports the
+%      paired contrast S for that reason. Mean detection accuracy is 0.536-0.569
+%      across families, i.e. the bias-pinned regime.
+% Also: this sweep's calibration is the superseded isolated-sentence one and its z
+% grid stops at 20.48, so its standardized half is void -- already stated below, and
+% every figure filters to matched alpha.
 Five concepts of the complex-example corpus are evaluated
 (\emph{appreciation}, \emph{betrayal}, \emph{Fibonacci numbers},
 \emph{recursion}, \emph{shutdown}), each with four positive and four negative
