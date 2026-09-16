@@ -272,56 +272,46 @@ Régénérer les figures demande soit d'étendre le script de fusion, soit de re
 
 ## 10. Reproduire
 
-Bras z, panel complet :
+Depuis 2026-09-16, seuls cinq répertoires groupés de `results/experiment1` sont versionnés
+(`llama_z_panel`, `llama_alpha_panel`, `qwen_z_panel`, `qwen_alpha_panel`,
+`qwen_scrambled_panel`) ; les balayages sources restent locaux. Chaque panel porte déjà le
+bon bras, donc un seul `--run_dir` suffit et `--matching` ne fait plus que confirmer :
 
 ```bash
 python code/analysis/experiment3_variability.py \
-    --run_dir results/experiment1/z2afc_all \
-    --run_dir results/experiment1/panel-concepts \
-    --run_dir results/experiment1/panel-random \
-    --matching z --out_dir results/experiment3/llama_z
+    --run_dir results/experiment1/llama_z_panel --matching z \
+    --out_dir results/experiment3/llama_z
 
 python code/analysis/experiment3_variability.py \
-    --run_dir results/experiment1/z2afc_qwen38 --matching z \
-    --out_dir results/experiment3/qwen_z
-```
-
-Bras alpha, panel complet — `--exclude_layers 31` est obligatoire, `full32_all` n'ayant
-pas le bloc 31 pour la famille concept :
-
-```bash
-python code/analysis/experiment3_variability.py \
-    --run_dir results/experiment1/full32_all \
-    --run_dir results/experiment1/panel-concepts \
-    --run_dir results/experiment1/panel-random \
-    --matching alpha --exclude_layers 31 \
+    --run_dir results/experiment1/llama_alpha_panel --matching alpha \
     --out_dir results/experiment3/llama_alpha
+
+python code/analysis/experiment3_variability.py \
+    --run_dir results/experiment1/qwen_z_panel --matching z \
+    --out_dir results/experiment3/qwen_z
+
+python code/analysis/experiment3_variability.py \
+    --run_dir results/experiment1/qwen_alpha_panel --matching alpha \
+    --out_dir results/experiment3/qwen_alpha
 ```
+
+`llama_alpha_panel` exclut déjà le bloc 31, donc `--exclude_layers` n'est plus nécessaire.
+Vérifié : les quatre lectures redonnent des composantes de variance identiques à 1e-9 à
+celles obtenues depuis les balayages sources.
 
 Les chiffres par famille de la section 4 :
 
 ```bash
 python code/analysis/experiment1_localization_report.py \
-    --run_dir results/experiment1/z2afc_all \
-    --run_dir results/experiment1/panel-concepts \
-    --run_dir results/experiment1/panel-random --matching z
+    --run_dir results/experiment1/llama_z_panel --matching z
 ```
 
-`--matching` n'est pas optionnel quand on met en commun des balayages d'époques
-différentes : sans lui, le bras z inexploitable de `full32_all` se mélangerait aux
-chiffres z sans que rien ne le signale.
-
-Bras alpha, depuis les tranches versionnées, qui sont des répertoires de run ordinaires
-(`trials.csv` + `summary.json`) :
+Reconstruire un panel groupé à partir des balayages sources, si on les a localement :
 
 ```bash
-for arm in llama_alpha qwen_alpha llama_alpha_10concepts; do
-    python code/analysis/experiment3_variability.py \
-        --run_dir results/experiment3/${arm}_source --matching alpha \
-        --out_dir results/experiment3/$arm
-done
+python code/analysis/consolidate_experiment1_panel.py \
+    --run_dir results/experiment1/z2afc_all \
+    --run_dir results/experiment1/panel-concepts \
+    --run_dir results/experiment1/panel-random \
+    --matching z --out results/experiment1/llama_z_panel
 ```
-
-Vérifié : relancées depuis la tranche versionnée, les analyses alpha redonnent un
-`variability_report.json` et un `per_direction_curves.csv` identiques à ceux obtenus
-depuis les balayages d'origine. Les tranches ont été produites avec `--export_run_dir`.
