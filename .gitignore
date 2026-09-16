@@ -266,3 +266,14 @@ logs/*
 
 # In-progress generated vector data (not versioned)
 data/saved_vectors/qwen/
+
+# Experiment 5, textual induction. Only the run the paper reports is published.
+# The exploratory runs, the rendered prompts and the per-condition figures all
+# rebuild from the committed configs and summaries; the per-trial records are
+# kept, in LFS, because they are what makes the analysis checkable.
+data/experiment_5_text_induction/
+results/experiment_5_text_induction/development_pilot*/
+results/experiment_5_text_induction/threshold_ladder*/
+results/experiment_5_text_induction/induction_scaled*/
+results/experiment_5_text_induction/*/prompts.json
+results/experiment_5_text_induction/*_analysis/presence_[0-9]*.png

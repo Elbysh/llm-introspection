@@ -1,0 +1,802 @@
+[
+  {
+    "pair_id": "dust_01",
+    "concept": "Dust",
+    "neutral_sentence_index": 72,
+    "companion_sentence_index": 1,
+    "evocative_text": "The dust films the grimy wall.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "dust_02",
+    "concept": "Dust",
+    "neutral_sentence_index": 84,
+    "companion_sentence_index": 22,
+    "evocative_text": "The dust swirls thickly.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "dust_03",
+    "concept": "Dust",
+    "neutral_sentence_index": 64,
+    "companion_sentence_index": 31,
+    "evocative_text": "The dust smothers everything.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "dust_04",
+    "concept": "Dust",
+    "neutral_sentence_index": 96,
+    "companion_sentence_index": 39,
+    "evocative_text": "The dust chokes the air.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "dust_05",
+    "concept": "Dust",
+    "neutral_sentence_index": 92,
+    "companion_sentence_index": 1,
+    "evocative_text": "The dust dulls the mirror.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "dust_06",
+    "concept": "Dust",
+    "neutral_sentence_index": 30,
+    "companion_sentence_index": 22,
+    "evocative_text": "The dust billows upward.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "dust_07",
+    "concept": "Dust",
+    "neutral_sentence_index": 56,
+    "companion_sentence_index": 31,
+    "evocative_text": "The dust piles high.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "dust_08",
+    "concept": "Dust",
+    "neutral_sentence_index": 12,
+    "companion_sentence_index": 39,
+    "evocative_text": "The dust blankets the attic.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "dust_09",
+    "concept": "Dust",
+    "neutral_sentence_index": 24,
+    "companion_sentence_index": 1,
+    "evocative_text": "The ashes and dust gather.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "dust_10",
+    "concept": "Dust",
+    "neutral_sentence_index": 44,
+    "companion_sentence_index": 22,
+    "evocative_text": "The dust drifts through the attic.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_01",
+    "concept": "Satellites",
+    "neutral_sentence_index": 80,
+    "companion_sentence_index": 9,
+    "evocative_text": "The satellite orbits Earth.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_02",
+    "concept": "Satellites",
+    "neutral_sentence_index": 68,
+    "companion_sentence_index": 27,
+    "evocative_text": "The satellite beams telemetry.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_03",
+    "concept": "Satellites",
+    "neutral_sentence_index": 70,
+    "companion_sentence_index": 45,
+    "evocative_text": "The satellite orbits the planet.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_04",
+    "concept": "Satellites",
+    "neutral_sentence_index": 72,
+    "companion_sentence_index": 85,
+    "evocative_text": "The satellite sweeps across the sky.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_05",
+    "concept": "Satellites",
+    "neutral_sentence_index": 26,
+    "companion_sentence_index": 9,
+    "evocative_text": "The satellite passes overhead.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_06",
+    "concept": "Satellites",
+    "neutral_sentence_index": 16,
+    "companion_sentence_index": 27,
+    "evocative_text": "The satellite climbs into orbit.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_07",
+    "concept": "Satellites",
+    "neutral_sentence_index": 38,
+    "companion_sentence_index": 45,
+    "evocative_text": "The satellite reaches orbit.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_08",
+    "concept": "Satellites",
+    "neutral_sentence_index": 2,
+    "companion_sentence_index": 85,
+    "evocative_text": "A satellite orbits above the planet.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_09",
+    "concept": "Satellites",
+    "neutral_sentence_index": 62,
+    "companion_sentence_index": 9,
+    "evocative_text": "The spacecraft reaches orbit.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_10",
+    "concept": "Satellites",
+    "neutral_sentence_index": 54,
+    "companion_sentence_index": 27,
+    "evocative_text": "The satellite circles above the planet.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "trumpets_01",
+    "concept": "Trumpets",
+    "neutral_sentence_index": 11,
+    "companion_sentence_index": 1,
+    "evocative_text": "A trumpeter blasts the trumpet.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "trumpets_02",
+    "concept": "Trumpets",
+    "neutral_sentence_index": 37,
+    "companion_sentence_index": 34,
+    "evocative_text": "She blares a brassy trumpet.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "trumpets_03",
+    "concept": "Trumpets",
+    "neutral_sentence_index": 46,
+    "companion_sentence_index": 73,
+    "evocative_text": "The trumpet blares at dawn.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "trumpets_04",
+    "concept": "Trumpets",
+    "neutral_sentence_index": 68,
+    "companion_sentence_index": 94,
+    "evocative_text": "The trumpet blares loudly.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "trumpets_05",
+    "concept": "Trumpets",
+    "neutral_sentence_index": 26,
+    "companion_sentence_index": 1,
+    "evocative_text": "The trumpets blare suddenly.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "trumpets_06",
+    "concept": "Trumpets",
+    "neutral_sentence_index": 12,
+    "companion_sentence_index": 34,
+    "evocative_text": "The trumpet sounds brassily.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "trumpets_07",
+    "concept": "Trumpets",
+    "neutral_sentence_index": 96,
+    "companion_sentence_index": 73,
+    "evocative_text": "The trumpet blast fades.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "trumpets_08",
+    "concept": "Trumpets",
+    "neutral_sentence_index": 64,
+    "companion_sentence_index": 94,
+    "evocative_text": "The trumpet sounds softly.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "trumpets_09",
+    "concept": "Trumpets",
+    "neutral_sentence_index": 84,
+    "companion_sentence_index": 1,
+    "evocative_text": "The brass fanfare swells.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "trumpets_10",
+    "concept": "Trumpets",
+    "neutral_sentence_index": 58,
+    "companion_sentence_index": 34,
+    "evocative_text": "The trumpet blares at night.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "origami_01",
+    "concept": "Origami",
+    "neutral_sentence_index": 77,
+    "companion_sentence_index": 22,
+    "evocative_text": "She folds an origami crane.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "origami_02",
+    "concept": "Origami",
+    "neutral_sentence_index": 13,
+    "companion_sentence_index": 39,
+    "evocative_text": "She folds a paper origami crane.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "origami_03",
+    "concept": "Origami",
+    "neutral_sentence_index": 45,
+    "companion_sentence_index": 60,
+    "evocative_text": "She folds an origami paper crane.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "origami_04",
+    "concept": "Origami",
+    "neutral_sentence_index": 23,
+    "companion_sentence_index": 90,
+    "evocative_text": "A folder creases the origami paper.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "origami_05",
+    "concept": "Origami",
+    "neutral_sentence_index": 59,
+    "companion_sentence_index": 22,
+    "evocative_text": "A folder shapes an origami crane.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "origami_06",
+    "concept": "Origami",
+    "neutral_sentence_index": 75,
+    "companion_sentence_index": 39,
+    "evocative_text": "A folder creases the paper crane.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "origami_07",
+    "concept": "Origami",
+    "neutral_sentence_index": 41,
+    "companion_sentence_index": 60,
+    "evocative_text": "He folds paper cranes.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "origami_08",
+    "concept": "Origami",
+    "neutral_sentence_index": 97,
+    "companion_sentence_index": 90,
+    "evocative_text": "He creases origami paper.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "origami_09",
+    "concept": "Origami",
+    "neutral_sentence_index": 31,
+    "companion_sentence_index": 22,
+    "evocative_text": "A teacher folds the origami crane.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "origami_10",
+    "concept": "Origami",
+    "neutral_sentence_index": 67,
+    "companion_sentence_index": 39,
+    "evocative_text": "A folder pleats origami paper.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "illusions_01",
+    "concept": "Illusions",
+    "neutral_sentence_index": 92,
+    "companion_sentence_index": 9,
+    "evocative_text": "The mirror fakes an illusion.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "illusions_02",
+    "concept": "Illusions",
+    "neutral_sentence_index": 79,
+    "companion_sentence_index": 43,
+    "evocative_text": "A magician conjures an illusion.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "illusions_03",
+    "concept": "Illusions",
+    "neutral_sentence_index": 72,
+    "companion_sentence_index": 73,
+    "evocative_text": "The illusion shimmers across the wall.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "illusions_04",
+    "concept": "Illusions",
+    "neutral_sentence_index": 48,
+    "companion_sentence_index": 90,
+    "evocative_text": "The illusion dissolves in the mirage.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "illusions_05",
+    "concept": "Illusions",
+    "neutral_sentence_index": 96,
+    "companion_sentence_index": 9,
+    "evocative_text": "The illusion melts away.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "illusions_06",
+    "concept": "Illusions",
+    "neutral_sentence_index": 64,
+    "companion_sentence_index": 43,
+    "evocative_text": "The mirage flickers falsely.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "illusions_07",
+    "concept": "Illusions",
+    "neutral_sentence_index": 71,
+    "companion_sentence_index": 73,
+    "evocative_text": "An illusionist performs illusions.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "illusions_08",
+    "concept": "Illusions",
+    "neutral_sentence_index": 84,
+    "companion_sentence_index": 90,
+    "evocative_text": "The illusion deceives completely.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "illusions_09",
+    "concept": "Illusions",
+    "neutral_sentence_index": 30,
+    "companion_sentence_index": 9,
+    "evocative_text": "The illusion tricks the eye.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "illusions_10",
+    "concept": "Illusions",
+    "neutral_sentence_index": 60,
+    "companion_sentence_index": 43,
+    "evocative_text": "The mirage shimmers in the heat.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "appreciation_01",
+    "concept": "appreciation",
+    "neutral_sentence_index": 37,
+    "companion_sentence_index": 22,
+    "evocative_text": "She voices heartfelt appreciation.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "appreciation_02",
+    "concept": "appreciation",
+    "neutral_sentence_index": 41,
+    "companion_sentence_index": 12,
+    "evocative_text": "He writes grateful thanks.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "appreciation_03",
+    "concept": "appreciation",
+    "neutral_sentence_index": 18,
+    "companion_sentence_index": 62,
+    "evocative_text": "The crowd applauds gratefully.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "appreciation_04",
+    "concept": "appreciation",
+    "neutral_sentence_index": 87,
+    "companion_sentence_index": 70,
+    "evocative_text": "A guest thanks the waiter.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "appreciation_05",
+    "concept": "appreciation",
+    "neutral_sentence_index": 31,
+    "companion_sentence_index": 22,
+    "evocative_text": "A student thanks the teacher.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "appreciation_06",
+    "concept": "appreciation",
+    "neutral_sentence_index": 13,
+    "companion_sentence_index": 12,
+    "evocative_text": "She expresses sincere appreciation.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "appreciation_07",
+    "concept": "appreciation",
+    "neutral_sentence_index": 46,
+    "companion_sentence_index": 62,
+    "evocative_text": "The praise warms the heart.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "appreciation_08",
+    "concept": "appreciation",
+    "neutral_sentence_index": 3,
+    "companion_sentence_index": 70,
+    "evocative_text": "The child thanks her mother.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "appreciation_09",
+    "concept": "appreciation",
+    "neutral_sentence_index": 55,
+    "companion_sentence_index": 22,
+    "evocative_text": "A colleague voices sincere gratitude.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "appreciation_10",
+    "concept": "appreciation",
+    "neutral_sentence_index": 33,
+    "companion_sentence_index": 12,
+    "evocative_text": "He expresses deep gratitude.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "betrayal_01",
+    "concept": "betrayal",
+    "neutral_sentence_index": 41,
+    "companion_sentence_index": 34,
+    "evocative_text": "He betrays his friend.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "betrayal_02",
+    "concept": "betrayal",
+    "neutral_sentence_index": 53,
+    "companion_sentence_index": 60,
+    "evocative_text": "She betrays her closest friend.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "betrayal_03",
+    "concept": "betrayal",
+    "neutral_sentence_index": 30,
+    "companion_sentence_index": 76,
+    "evocative_text": "The traitor betrays them.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "betrayal_04",
+    "concept": "betrayal",
+    "neutral_sentence_index": 73,
+    "companion_sentence_index": 94,
+    "evocative_text": "He breaks his oath.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "betrayal_05",
+    "concept": "betrayal",
+    "neutral_sentence_index": 3,
+    "companion_sentence_index": 34,
+    "evocative_text": "The traitor lies to his allies.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "betrayal_06",
+    "concept": "betrayal",
+    "neutral_sentence_index": 31,
+    "companion_sentence_index": 60,
+    "evocative_text": "A traitor deceives the alliance.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "betrayal_07",
+    "concept": "betrayal",
+    "neutral_sentence_index": 87,
+    "companion_sentence_index": 76,
+    "evocative_text": "A friend betrays the trust.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "betrayal_08",
+    "concept": "betrayal",
+    "neutral_sentence_index": 92,
+    "companion_sentence_index": 94,
+    "evocative_text": "The betrayal shatters the trust.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "betrayal_09",
+    "concept": "betrayal",
+    "neutral_sentence_index": 18,
+    "companion_sentence_index": 34,
+    "evocative_text": "The traitor lies smoothly.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "betrayal_10",
+    "concept": "betrayal",
+    "neutral_sentence_index": 96,
+    "companion_sentence_index": 60,
+    "evocative_text": "The betrayal cuts deep.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "fibonacci_numbers_01",
+    "concept": "fibonacci_numbers",
+    "neutral_sentence_index": 31,
+    "companion_sentence_index": 1,
+    "evocative_text": "A teacher explains the Fibonacci sequence.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "fibonacci_numbers_02",
+    "concept": "fibonacci_numbers",
+    "neutral_sentence_index": 35,
+    "companion_sentence_index": 22,
+    "evocative_text": "A mathematician sums Fibonacci numbers.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "fibonacci_numbers_03",
+    "concept": "fibonacci_numbers",
+    "neutral_sentence_index": 15,
+    "companion_sentence_index": 49,
+    "evocative_text": "A student computes Fibonacci numbers.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "fibonacci_numbers_04",
+    "concept": "fibonacci_numbers",
+    "neutral_sentence_index": 23,
+    "companion_sentence_index": 90,
+    "evocative_text": "A coder prints the Fibonacci sequence.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "fibonacci_numbers_05",
+    "concept": "fibonacci_numbers",
+    "neutral_sentence_index": 41,
+    "companion_sentence_index": 1,
+    "evocative_text": "He sums Fibonacci numbers.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "fibonacci_numbers_06",
+    "concept": "fibonacci_numbers",
+    "neutral_sentence_index": 56,
+    "companion_sentence_index": 22,
+    "evocative_text": "The Fibonacci spiral grows.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "fibonacci_numbers_07",
+    "concept": "fibonacci_numbers",
+    "neutral_sentence_index": 8,
+    "companion_sentence_index": 49,
+    "evocative_text": "A sunflower spirals in Fibonacci.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "fibonacci_numbers_08",
+    "concept": "fibonacci_numbers",
+    "neutral_sentence_index": 34,
+    "companion_sentence_index": 90,
+    "evocative_text": "The shell spirals in Fibonacci.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "fibonacci_numbers_09",
+    "concept": "fibonacci_numbers",
+    "neutral_sentence_index": 67,
+    "companion_sentence_index": 1,
+    "evocative_text": "A mathematician lists Fibonacci numbers.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "fibonacci_numbers_10",
+    "concept": "fibonacci_numbers",
+    "neutral_sentence_index": 88,
+    "companion_sentence_index": 22,
+    "evocative_text": "The Fibonacci numbers grow one after another.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_01",
+    "concept": "recursion",
+    "neutral_sentence_index": 92,
+    "companion_sentence_index": 3,
+    "evocative_text": "The mirror reflects another mirror.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_02",
+    "concept": "recursion",
+    "neutral_sentence_index": 96,
+    "companion_sentence_index": 19,
+    "evocative_text": "The echo repeats itself.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_03",
+    "concept": "recursion",
+    "neutral_sentence_index": 31,
+    "companion_sentence_index": 44,
+    "evocative_text": "A function calls itself repeatedly.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_04",
+    "concept": "recursion",
+    "neutral_sentence_index": 88,
+    "companion_sentence_index": 60,
+    "evocative_text": "The routine restarts inside itself.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_05",
+    "concept": "recursion",
+    "neutral_sentence_index": 23,
+    "companion_sentence_index": 3,
+    "evocative_text": "A method calls itself recursively.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_06",
+    "concept": "recursion",
+    "neutral_sentence_index": 35,
+    "companion_sentence_index": 19,
+    "evocative_text": "A function recurses into itself.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_07",
+    "concept": "recursion",
+    "neutral_sentence_index": 72,
+    "companion_sentence_index": 44,
+    "evocative_text": "The recursion nests inside itself.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_08",
+    "concept": "recursion",
+    "neutral_sentence_index": 30,
+    "companion_sentence_index": 60,
+    "evocative_text": "The recursion repeats endlessly.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_09",
+    "concept": "recursion",
+    "neutral_sentence_index": 62,
+    "companion_sentence_index": 3,
+    "evocative_text": "The recursion descends deeper.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_10",
+    "concept": "recursion",
+    "neutral_sentence_index": 15,
+    "companion_sentence_index": 19,
+    "evocative_text": "A procedure invokes itself again.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_01",
+    "concept": "shutdown",
+    "neutral_sentence_index": 30,
+    "companion_sentence_index": 8,
+    "evocative_text": "The system shuts down slowly.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_02",
+    "concept": "shutdown",
+    "neutral_sentence_index": 62,
+    "companion_sentence_index": 50,
+    "evocative_text": "The machine powers down.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_03",
+    "concept": "shutdown",
+    "neutral_sentence_index": 26,
+    "companion_sentence_index": 56,
+    "evocative_text": "The server shuts down suddenly.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_04",
+    "concept": "shutdown",
+    "neutral_sentence_index": 38,
+    "companion_sentence_index": 61,
+    "evocative_text": "The computer shuts off.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_05",
+    "concept": "shutdown",
+    "neutral_sentence_index": 68,
+    "companion_sentence_index": 8,
+    "evocative_text": "The reactor shuts down safely.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_06",
+    "concept": "shutdown",
+    "neutral_sentence_index": 12,
+    "companion_sentence_index": 50,
+    "evocative_text": "The system begins its shutdown.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_07",
+    "concept": "shutdown",
+    "neutral_sentence_index": 96,
+    "companion_sentence_index": 56,
+    "evocative_text": "The power shuts off.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_08",
+    "concept": "shutdown",
+    "neutral_sentence_index": 64,
+    "companion_sentence_index": 61,
+    "evocative_text": "The terminal powers down.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_09",
+    "concept": "shutdown",
+    "neutral_sentence_index": 84,
+    "companion_sentence_index": 8,
+    "evocative_text": "The reactor powers down.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_10",
+    "concept": "shutdown",
+    "neutral_sentence_index": 46,
+    "companion_sentence_index": 50,
+    "evocative_text": "The alarm signals the shutdown.",
+    "reviewed": true
+  }
+]

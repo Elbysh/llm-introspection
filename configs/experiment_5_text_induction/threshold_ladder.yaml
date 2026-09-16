@@ -1,0 +1,685 @@
+# Experiment 5 dose ladder: locate where the discrete presence report lifts off
+# the floor, so a real run can set near/above threshold doses from measurement.
+#
+# The development_pilot run (job 8342) returned false_positive_rate 0.000 in all
+# 496 summary rows and hit_rate nonzero in only 3, all at block 0. Its alphas were
+# 0.27-28.5. The injection was live there (injected-minus-sham margin nonzero in
+# 465/496 conditions, +1.17 at block 0), so the doses, not the plumbing, were the
+# limit. This ladder walks alpha up to 256, one step past the top of the grid the
+# Llama Experiment 1 sweep used (--alpha_doses 0.25 ... 128).
+#
+# dose_axis is alpha, not z: mad_corrected ranges 0.1 to 6.2 across blocks, so a
+# fixed z buys very different amplitudes at different depths and is a poor unit for
+# comparing blocks. scale_statistic is still recorded but does not scale the dose.
+#
+# Blocks 0/3/8/13: block 0 is the positive control (the only block that moved in the
+# pilot), the rest sample the band Experiment 1 found live on Llama.
+protocol:
+  version: "2026-09-14"
+  status: development
+
+model:
+  name: meta-llama/Llama-3.1-8B-Instruct
+  revision: main
+  tokenizer_revision: main
+
+texts:
+  max_token_length_difference: 2
+
+conditions:
+  - condition_id: Dust__block_00__alpha16
+    concept: Dust
+    direction_id: concept__block_00__Dust
+    layer: 0
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_00__alpha32
+    concept: Dust
+    direction_id: concept__block_00__Dust
+    layer: 0
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_00__alpha64
+    concept: Dust
+    direction_id: concept__block_00__Dust
+    layer: 0
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_00__alpha128
+    concept: Dust
+    direction_id: concept__block_00__Dust
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_00__alpha256
+    concept: Dust
+    direction_id: concept__block_00__Dust
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_03__alpha16
+    concept: Dust
+    direction_id: concept__block_03__Dust
+    layer: 3
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_03__alpha32
+    concept: Dust
+    direction_id: concept__block_03__Dust
+    layer: 3
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_03__alpha64
+    concept: Dust
+    direction_id: concept__block_03__Dust
+    layer: 3
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_03__alpha128
+    concept: Dust
+    direction_id: concept__block_03__Dust
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_03__alpha256
+    concept: Dust
+    direction_id: concept__block_03__Dust
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_08__alpha16
+    concept: Dust
+    direction_id: concept__block_08__Dust
+    layer: 8
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_08__alpha32
+    concept: Dust
+    direction_id: concept__block_08__Dust
+    layer: 8
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_08__alpha64
+    concept: Dust
+    direction_id: concept__block_08__Dust
+    layer: 8
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_08__alpha128
+    concept: Dust
+    direction_id: concept__block_08__Dust
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_08__alpha256
+    concept: Dust
+    direction_id: concept__block_08__Dust
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_13__alpha16
+    concept: Dust
+    direction_id: concept__block_13__Dust
+    layer: 13
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_13__alpha32
+    concept: Dust
+    direction_id: concept__block_13__Dust
+    layer: 13
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_13__alpha64
+    concept: Dust
+    direction_id: concept__block_13__Dust
+    layer: 13
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_13__alpha128
+    concept: Dust
+    direction_id: concept__block_13__Dust
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_13__alpha256
+    concept: Dust
+    direction_id: concept__block_13__Dust
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_00__alpha16
+    concept: Satellites
+    direction_id: concept__block_00__Satellites
+    layer: 0
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_00__alpha32
+    concept: Satellites
+    direction_id: concept__block_00__Satellites
+    layer: 0
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_00__alpha64
+    concept: Satellites
+    direction_id: concept__block_00__Satellites
+    layer: 0
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_00__alpha128
+    concept: Satellites
+    direction_id: concept__block_00__Satellites
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_00__alpha256
+    concept: Satellites
+    direction_id: concept__block_00__Satellites
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_03__alpha16
+    concept: Satellites
+    direction_id: concept__block_03__Satellites
+    layer: 3
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_03__alpha32
+    concept: Satellites
+    direction_id: concept__block_03__Satellites
+    layer: 3
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_03__alpha64
+    concept: Satellites
+    direction_id: concept__block_03__Satellites
+    layer: 3
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_03__alpha128
+    concept: Satellites
+    direction_id: concept__block_03__Satellites
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_03__alpha256
+    concept: Satellites
+    direction_id: concept__block_03__Satellites
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_08__alpha16
+    concept: Satellites
+    direction_id: concept__block_08__Satellites
+    layer: 8
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_08__alpha32
+    concept: Satellites
+    direction_id: concept__block_08__Satellites
+    layer: 8
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_08__alpha64
+    concept: Satellites
+    direction_id: concept__block_08__Satellites
+    layer: 8
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_08__alpha128
+    concept: Satellites
+    direction_id: concept__block_08__Satellites
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_08__alpha256
+    concept: Satellites
+    direction_id: concept__block_08__Satellites
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_13__alpha16
+    concept: Satellites
+    direction_id: concept__block_13__Satellites
+    layer: 13
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_13__alpha32
+    concept: Satellites
+    direction_id: concept__block_13__Satellites
+    layer: 13
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_13__alpha64
+    concept: Satellites
+    direction_id: concept__block_13__Satellites
+    layer: 13
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_13__alpha128
+    concept: Satellites
+    direction_id: concept__block_13__Satellites
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_13__alpha256
+    concept: Satellites
+    direction_id: concept__block_13__Satellites
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_00__alpha16
+    concept: recursion
+    direction_id: concept__block_00__recursion
+    layer: 0
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_00__alpha32
+    concept: recursion
+    direction_id: concept__block_00__recursion
+    layer: 0
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_00__alpha64
+    concept: recursion
+    direction_id: concept__block_00__recursion
+    layer: 0
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_00__alpha128
+    concept: recursion
+    direction_id: concept__block_00__recursion
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_00__alpha256
+    concept: recursion
+    direction_id: concept__block_00__recursion
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_03__alpha16
+    concept: recursion
+    direction_id: concept__block_03__recursion
+    layer: 3
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_03__alpha32
+    concept: recursion
+    direction_id: concept__block_03__recursion
+    layer: 3
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_03__alpha64
+    concept: recursion
+    direction_id: concept__block_03__recursion
+    layer: 3
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_03__alpha128
+    concept: recursion
+    direction_id: concept__block_03__recursion
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_03__alpha256
+    concept: recursion
+    direction_id: concept__block_03__recursion
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_08__alpha16
+    concept: recursion
+    direction_id: concept__block_08__recursion
+    layer: 8
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_08__alpha32
+    concept: recursion
+    direction_id: concept__block_08__recursion
+    layer: 8
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_08__alpha64
+    concept: recursion
+    direction_id: concept__block_08__recursion
+    layer: 8
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_08__alpha128
+    concept: recursion
+    direction_id: concept__block_08__recursion
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_08__alpha256
+    concept: recursion
+    direction_id: concept__block_08__recursion
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_13__alpha16
+    concept: recursion
+    direction_id: concept__block_13__recursion
+    layer: 13
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_13__alpha32
+    concept: recursion
+    direction_id: concept__block_13__recursion
+    layer: 13
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_13__alpha64
+    concept: recursion
+    direction_id: concept__block_13__recursion
+    layer: 13
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_13__alpha128
+    concept: recursion
+    direction_id: concept__block_13__recursion
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_13__alpha256
+    concept: recursion
+    direction_id: concept__block_13__recursion
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_00__alpha16
+    concept: shutdown
+    direction_id: concept__block_00__shutdown
+    layer: 0
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_00__alpha32
+    concept: shutdown
+    direction_id: concept__block_00__shutdown
+    layer: 0
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_00__alpha64
+    concept: shutdown
+    direction_id: concept__block_00__shutdown
+    layer: 0
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_00__alpha128
+    concept: shutdown
+    direction_id: concept__block_00__shutdown
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_00__alpha256
+    concept: shutdown
+    direction_id: concept__block_00__shutdown
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_03__alpha16
+    concept: shutdown
+    direction_id: concept__block_03__shutdown
+    layer: 3
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_03__alpha32
+    concept: shutdown
+    direction_id: concept__block_03__shutdown
+    layer: 3
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_03__alpha64
+    concept: shutdown
+    direction_id: concept__block_03__shutdown
+    layer: 3
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_03__alpha128
+    concept: shutdown
+    direction_id: concept__block_03__shutdown
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_03__alpha256
+    concept: shutdown
+    direction_id: concept__block_03__shutdown
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_08__alpha16
+    concept: shutdown
+    direction_id: concept__block_08__shutdown
+    layer: 8
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_08__alpha32
+    concept: shutdown
+    direction_id: concept__block_08__shutdown
+    layer: 8
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_08__alpha64
+    concept: shutdown
+    direction_id: concept__block_08__shutdown
+    layer: 8
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_08__alpha128
+    concept: shutdown
+    direction_id: concept__block_08__shutdown
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_08__alpha256
+    concept: shutdown
+    direction_id: concept__block_08__shutdown
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_13__alpha16
+    concept: shutdown
+    direction_id: concept__block_13__shutdown
+    layer: 13
+    dose: 16
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_13__alpha32
+    concept: shutdown
+    direction_id: concept__block_13__shutdown
+    layer: 13
+    dose: 32
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_13__alpha64
+    concept: shutdown
+    direction_id: concept__block_13__shutdown
+    layer: 13
+    dose: 64
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_13__alpha128
+    concept: shutdown
+    direction_id: concept__block_13__shutdown
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_13__alpha256
+    concept: shutdown
+    direction_id: concept__block_13__shutdown
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+
+statistics:
+  bootstrap_resamples: 1000
+  bootstrap_seed: 2026091405
+  ci_level: 0.95
+
+execution:
+  dtype: bfloat16
+
+paths:
+  text_pairs: configs/experiment_5_text_induction/development_pilot.json
+  directional_scales: results/experiment_0_calibration/directional_scales.json
+  calibration_manifest: results/experiment_0_calibration/run_manifest.json
+  plan_dir: data/experiment_5_text_induction/plans/threshold_ladder
+  output_dir: results/experiment_5_text_induction/threshold_ladder
+  analysis_dir: results/experiment_5_text_induction/threshold_ladder_analysis

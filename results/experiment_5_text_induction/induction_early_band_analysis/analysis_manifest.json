@@ -1,0 +1,13 @@
+{
+  "source_trials_sha256": "9e7a8745c6af0815a386f83025563be3afeabf29688ba017379d184bfaf5cd79",
+  "statistics": {
+    "bootstrap_resamples": 1000,
+    "bootstrap_seed": 2026091405,
+    "ci_level": 0.95
+  },
+  "primary_effect": "false_positive_rate_evocative_minus_neutral_on_paired_sham",
+  "uncertainty": "crossed concept/sentence cluster bootstrap, paired text/intervention/mapping/position/doses",
+  "ci_type": "pointwise percentile; no multiple-comparison correction",
+  "invalid_response_policy": "no affirmative or negative report; incorrect in balanced accuracy",
+  "auroc_score": "presence-oriented next-token logit contrast, including invalid discrete answers"
+}
