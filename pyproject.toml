@@ -9,7 +9,7 @@ description = "LLaMA model introspection experiments"
 authors = [
     {name = "Thomas Gegout", email = "thomasgegout7@gmail.com"}
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.13"
 dependencies = [
     "accelerate==1.14.0",
     "annotated-doc==0.0.5",
@@ -47,12 +47,15 @@ dependencies = [
     "regex==2026.9.3",
     "rich==15.0.0",
     "safetensors==0.8.0",
+    "scipy",
+    "sentence-transformers",
     "setuptools==84.0.0",
     "shellingham==1.5.4",
     "six==1.17.0",
     "sympy==1.14.0",
     "tokenizers==0.23.2",
     "torch==2.14.0",
+    "torchvision>=0.29.0",
     "tqdm==4.70.0",
     "transformers==5.16.1",
     "typer==0.27.2",
@@ -66,3 +69,6 @@ dev = [
     "black>=23.0",
     "ruff>=0.1",
 ]
+
+[tool.setuptools]
+packages = []

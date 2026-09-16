@@ -8,7 +8,10 @@ import numpy as np
 from pathlib import Path
 
 def get_model_type(tokenizer):
-    """Detect model type from tokenizer (llama or qwen)"""
+    """Detect model type from tokenizer (llama or qwen). Kept for
+    inject_concept_vector.py's legacy hand-rolled prompt formatting;
+    compute_vector_single_prompt below now formats prompts via the
+    tokenizer's own chat template instead, so it no longer needs this."""
     model_name = tokenizer.name_or_path.lower()
     if "qwen" in model_name:
         return "qwen"

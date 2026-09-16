@@ -221,7 +221,7 @@ tempCodeRunnerFile.py
 # rule, because they already carry the right arm of every contributing sweep and are what
 # the figures and the Experiment 3 analyses read. The source sweeps stay local -- they
 # are ~300 MB of rows the panels already contain. Rebuild a panel from them with that
-# script; the command is in docs/livrables/experiment3-variabilite-findings.md.
+# script; the command is in docs/misc/experiment3-variabilite-findings.md.
 # The exclusion is unwound one level at a time on purpose: git never descends into an
 # excluded directory, so a bare "results/" makes the negations below unreachable.
 results/*
@@ -240,6 +240,14 @@ results/experiment1/*
 # only where the contributing sweep is nowhere else in the repo.
 !results/experiment3/
 
+# Keep the compact Experiment 2 export under version control. Raw layer
+# outputs remain ignored in the nested layers directory.
+!results/
+!results/experiment_2_presence/
+results/experiment_2_presence/layers/
+results/experiment_2_presence/controls_bootstrap_draws.csv.gz
+results/experiment_2_presence/detection_cells.csv
+
 # Reproducible position-detection analysis caches and source tables
 plots/position_detection/source_data/
 plots/position_detection/analysis_summary.json
@@ -251,3 +259,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Slurm job output
+logs/*
+!logs/.gitkeep
+
+# In-progress generated vector data (not versioned)
+data/saved_vectors/qwen/
