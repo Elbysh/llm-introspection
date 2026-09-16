@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Generates every figure used in reports/multisteering_report.md from the
-saved trial files in plots/*.pt, and prints the numeric tables the report's
+Generates every figure used in multisteering_report.md from the saved trial
+files in results/multisteering/, and prints the numeric tables the report's
 prose and markdown tables are built from. Run from the repo root:
 
-    .venv/bin/python reports/generate_figures.py
+    .venv/bin/python docs/misc/reports/generate_figures.py
 
 Not part of the experiment pipeline proper (code/experiments, code/analysis)
 -- this is report-specific plotting, kept alongside the report so the
@@ -20,18 +20,29 @@ import numpy as np
 import torch
 from scipy.stats import binomtest, ttest_1samp
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "code" / "utils"))
+REPO = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(REPO / "code" / "utils"))
 
-REPO = Path(__file__).resolve().parent.parent
-PLOTS = REPO / "plots"
-FIGDIR = Path(__file__).resolve().parent / "figures"
-FIGDIR.mkdir(exist_ok=True)
+RESULTS = REPO / "results" / "multisteering"
+PLOT_DIRS = [
+    RESULTS / "experiment_9_counting" / "raw",
+    RESULTS / "experiment_10_identification" / "raw",
+    RESULTS / "experiment_11_ordering" / "raw",
+    RESULTS / "experiment_11_modulators" / "raw",
+]
+FIGDIR = RESULTS / "figures"
+FIGDIR.mkdir(parents=True, exist_ok=True)
 
 CHANCE_KW = dict(color="gray", linestyle=":", linewidth=1, label="chance")
 
 
 def load(name):
-    return torch.load(PLOTS / name, weights_only=False)
+    for directory in PLOT_DIRS:
+        path = directory / name
+        if path.exists():
+            return torch.load(path, weights_only=False)
+    searched = ", ".join(str(directory / name) for directory in PLOT_DIRS)
+    raise FileNotFoundError(f"Could not find {name}; searched: {searched}")
 
 
 def savefig(fig, name):

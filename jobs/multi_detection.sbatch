@@ -32,4 +32,4 @@ cd data && PYTHONPATH=../code/utils uv run python ../code/experiments/multi_dete
   --alphas 2 3 4 5 \
   --num_trials 40 \
   --vec_type avg \
-  --output_dir ../plots
+  --output_dir ../results/multisteering/experiment_9_counting/raw

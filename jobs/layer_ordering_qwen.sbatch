@@ -29,4 +29,4 @@ cd data && PYTHONPATH=../code/utils uv run python ../code/experiments/layer_orde
   --num_trials 60 \
   --label_assignments shallow_is_a shallow_is_b \
   --vec_type avg \
-  --output_dir ../plots
+  --output_dir ../results/multisteering/experiment_11_ordering/raw

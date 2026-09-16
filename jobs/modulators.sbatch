@@ -31,4 +31,4 @@ cd data && PYTHONPATH=../code/utils uv run python ../code/experiments/modulators
   --similarity_reference_layer 16 \
   --num_similarity_buckets 4 \
   --vec_type avg \
-  --output_dir ../plots
+  --output_dir ../results/multisteering/experiment_11_modulators/raw

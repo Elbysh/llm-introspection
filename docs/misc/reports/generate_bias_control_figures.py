@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Generates the bias-control figures for reports/summary_report.md: the
+Generates the bias-control figures for the multisteering report: the
 digit-logit contrast for counting, and the sham/injected/double-adjusted
 "reveal" comparison for ordering. Companion to generate_figures.py (which
 covers the original, pre-bias-control report) -- run from the repo root:
 
-    .venv/bin/python reports/generate_bias_control_figures.py
+    .venv/bin/python docs/misc/reports/generate_bias_control_figures.py
 """
 
 from pathlib import Path
@@ -15,14 +15,25 @@ import numpy as np
 import torch
 from scipy.stats import ttest_1samp
 
-REPO = Path(__file__).resolve().parent.parent
-PLOTS = REPO / "plots"
-FIGDIR = Path(__file__).resolve().parent / "figures"
-FIGDIR.mkdir(exist_ok=True)
+REPO = Path(__file__).resolve().parents[3]
+RESULTS = REPO / "results" / "multisteering"
+PLOT_DIRS = [
+    RESULTS / "experiment_9_counting" / "raw",
+    RESULTS / "experiment_10_identification" / "raw",
+    RESULTS / "experiment_11_ordering" / "raw",
+    RESULTS / "experiment_11_modulators" / "raw",
+]
+FIGDIR = RESULTS / "figures"
+FIGDIR.mkdir(parents=True, exist_ok=True)
 
 
 def load(name):
-    return torch.load(PLOTS / name, weights_only=False)
+    for directory in PLOT_DIRS:
+        path = directory / name
+        if path.exists():
+            return torch.load(path, weights_only=False)
+    searched = ", ".join(str(directory / name) for directory in PLOT_DIRS)
+    raise FileNotFoundError(f"Could not find {name}; searched: {searched}")
 
 
 def savefig(fig, name):
