@@ -45,11 +45,11 @@ Can Llama-3.1-8B-Instruct introspect on **multiple simultaneous concept injectio
 
 ### Round 1: the model's answer doesn't track `k` — it defaults to "1"
 
-![Reported count vs. actual k](figures/e9_response_distribution.png)
+![Reported count vs. actual k](../../../results/multisteering/figures/e9_response_distribution.png)
 
 At the true sham (`k=0`), the model answered **"1" in 100% of trials**, in both dosing regimes and across every alpha — never once answering "0". The response distribution stays dominated by "0"/"1" regardless of the true count; "2", "3", and "4" are essentially never reported.
 
-![False-positive/detection rate by alpha](figures/e9_detection_rate_by_alpha.png)
+![False-positive/detection rate by alpha](../../../results/multisteering/figures/e9_detection_rate_by_alpha.png)
 
 Because the false-positive rate is already saturated at 100% at `k=0`, there's no headroom left to observe a real increase in "detects something" rate as `k` grows.
 
@@ -59,7 +59,7 @@ A model that "knows" the true count internally but defaults to saying "1" for ou
 
 ### Round 2: no — the bias goes all the way down to the logits
 
-![Counting digit-logit contrast](figures/summary_counting_digit_logit_contrast.png)
+![Counting digit-logit contrast](../../../results/multisteering/figures/summary_counting_digit_logit_contrast.png)
 
 The result is unambiguous and goes in the opposite direction from "hidden signal": `logit(true k) − logit("1")` is **strongly and consistently negative** at every dose tested (2–5), in both conditions (real injection vs. random-direction control) and both dosing regimes:
 
@@ -85,12 +85,12 @@ The result is unambiguous and goes in the opposite direction from "hidden signal
 
 ### No reliable identification signal in either format
 
-![Identification metrics by condition](figures/e10_metrics_by_condition.png)
+![Identification metrics by condition](../../../results/multisteering/figures/e10_metrics_by_condition.png)
 
 - **Forced-choice exact match** (both slots correct): 0.0–1.2% in every condition — essentially never happens, including `single_concept` where only one slot needs a specific concept letter.
 - **Free response:** similarity to the truly-injected concept clears the 0.5 threshold only 2.8–4.7% of the time (`sham` has no real concept to score against, so it isn't shown here).
 
-![Identification metrics vs. alpha](figures/e10_metrics_by_alpha.png)
+![Identification metrics vs. alpha](../../../results/multisteering/figures/e10_metrics_by_alpha.png)
 
 There's a mild upward trend with alpha for `two_concepts` (exact match rises from 0% at alpha 1–3 to ~4.5% by alpha 5), but sample sizes shrink at high alpha as coherence drops, so this is suggestive at best.
 
@@ -106,7 +106,7 @@ Identification hasn't yet been re-tested with a bias-adjusted logit measure the 
 
 ### Round 1: a strong "always answer A" bias, not layer-depth tracking
 
-![Accuracy by label assignment](figures/e11_label_bias.png)
+![Accuracy by label assignment](../../../results/multisteering/figures/e11_label_bias.png)
 
 - When the shallow (correct) concept happened to be labeled A: **94.9%** accuracy.
 - When it was labeled B: **11.2%** accuracy.
@@ -117,7 +117,7 @@ These are mirror images of the same thing: the model answers "A" ~90%+ of the ti
 
 Rather than only the discrete A/B choice, we extract the model's raw logits for "A" and "B" at the first response token and compute `logit(correct letter) − logit(incorrect letter)`, sign-flipped per trial so a positive value always means evidence toward the correct answer, canceling the fixed A-preference.
 
-![Accuracy vs. logit contrast by alpha](figures/e11_accuracy_vs_logit_by_alpha.png)
+![Accuracy vs. logit contrast by alpha](../../../results/multisteering/figures/e11_accuracy_vs_logit_by_alpha.png)
 
 This told a more interesting story than flat, near-chance accuracy: the mean adjusted contrast was **positive at every alpha**, peaking around alpha 2–3 (+0.38) and fading toward zero by alpha 6–7 — suggestive of a small real effect concentrated at moderate dose, though not significant on its own (t=1.28, p=0.20, n=560).
 
@@ -127,7 +127,7 @@ The adjusted contrast above only controls for a *symmetric* A-vs-B letter prefer
 
 ### Round 2: the hint doesn't survive — it was the baseline all along
 
-![Ordering sham reveal](figures/summary_ordering_sham_reveal.png)
+![Ordering sham reveal](../../../results/multisteering/figures/summary_ordering_sham_reveal.png)
 
 | | mean contrast | n | p |
 |---|---|---|---|
@@ -137,7 +137,7 @@ The adjusted contrast above only controls for a *symmetric* A-vs-B letter prefer
 
 The sham condition — same prompt, zero injection — produces almost the *same* logit contrast as the actual injected trials. Once that baseline is subtracted out, the injection's own contribution is +0.014: not distinguishable from zero at any dose in 2–5 (right panel — the sham line, gray, sits flat regardless of dose, as it should since nothing is injected; the double-adjusted line, red, hovers around zero and even dips slightly negative at alpha 5).
 
-![Accuracy by layer distance](figures/e11_accuracy_by_distance.png)
+![Accuracy by layer distance](../../../results/multisteering/figures/e11_accuracy_by_distance.png)
 
 (No clean trend in raw accuracy vs. layer distance either — noisy, small per-cell samples.)
 
@@ -151,7 +151,7 @@ Same ordering task, same A/B lettered format, swept against three additional var
 
 ### E4 — layer distance: a result that now needs re-checking
 
-![E4 logit contrast by distance](figures/modulators_e4_logit_by_distance.png)
+![E4 logit contrast by distance](../../../results/multisteering/figures/modulators_e4_logit_by_distance.png)
 
 With 1,680 trials (3× `layer_ordering`'s own Round 1 sample), the mean adjusted logit contrast was **+0.322, reaching significance** (t=3.43, p=0.0006) — same sign and similar magnitude to `layer_ordering`'s own (non-significant) Round 1 result. At the time, this looked like the most credible evidence of a real signal in this whole batch. **Given that `layer_ordering`'s nearly identical-looking effect was fully explained away by a matched sham baseline, E4's result should now be treated as unconfirmed, not established** — the same paired-sham design used for `layer_ordering.py` would need to be ported to `modulators.py`'s `run_e4_distance_sweep` before trusting it.
 
@@ -159,11 +159,11 @@ With 1,680 trials (3× `layer_ordering`'s own Round 1 sample), the mean adjusted
 
 Taken at face value, E5 (dose ratio) and E6 (similarity) both look strongly *negative* overall (−0.574, p=3.5×10⁻⁵ and −0.874, p=2.9×10⁻⁷ respectively) — but splitting by which letter was actually correct shows this is the *exact same* A-bias as everywhere else, just unevenly sampled:
 
-![E5/E6 split by correct letter](figures/modulators_e5_e6_bias_decomposition.png)
+![E5/E6 split by correct letter](../../../results/multisteering/figures/modulators_e5_e6_bias_decomposition.png)
 
 Both sweeps show strongly positive contrast when A happens to be correct, strongly negative when B happens to be correct — the overall negative average is simply because each sweep's random draw happened to land more B-correct trials than A-correct (E5: 336 vs. 224; E6: 441 vs. 259). Not a real ratio- or similarity-dependent effect.
 
-![E5 raw accuracy by ratio](figures/modulators_e5_accuracy_by_ratio.png)
+![E5 raw accuracy by ratio](../../../results/multisteering/figures/modulators_e5_accuracy_by_ratio.png)
 
 E5's raw accuracy does drop sharply as the dose ratio grows, but this is confounded with dose magnitude: at ratio=8 and base alpha up to 7, the boosted slot's effective dose reaches **56** — nearly 8× outside the alpha range validated for coherent output. Re-run with `--alpha_ratios`/`--alphas` capped before trusting this.
 
@@ -202,41 +202,41 @@ A third, non-code issue: `multi_identification.py --run_all_conditions` chains a
 
 ### A.1 — Experience 9 (counting)
 
-![Exp 9 coherence vs. dose](figures/appendix_e9_coherence_by_alpha.png)
+![Exp 9 coherence vs. dose](../../../results/multisteering/figures/appendix_e9_coherence_by_alpha.png)
 
 Coherence degrades smoothly and predictably with dose in both regimes — from 100% at the lowest dose down to 63–77% (`individual`) / 77–81% (`budget`) at the highest, `random`-condition trials staying a few points more coherent than `real` throughout.
 
-![Exp 9 count error vs. dose](figures/appendix_e9_mae_by_alpha.png)
+![Exp 9 count error vs. dose](../../../results/multisteering/figures/appendix_e9_mae_by_alpha.png)
 
 Mean `|reported − actual|` count error doesn't show the model getting *closer* to the true count as dose increases — consistent with the "defaults to 1" finding confirmed in the main section above.
 
 ### A.2 — Experience 10 (identification)
 
-![Exp 10 exact match vs. alpha](figures/appendix_e10_exact_match_by_alpha.png)
+![Exp 10 exact match vs. alpha](../../../results/multisteering/figures/appendix_e10_exact_match_by_alpha.png)
 
 Exact-match accuracy stays at or near zero across the entire alpha range, for every condition — occasional spikes reflect a single lucky trial in a shrinking sample, not a real trend.
 
-![Exp 10 free response vs. alpha](figures/appendix_e10_free_response_by_alpha.png)
+![Exp 10 free response vs. alpha](../../../results/multisteering/figures/appendix_e10_free_response_by_alpha.png)
 
 The free-response similarity-above-threshold rate is noisy but trends slightly upward with alpha for `single_concept` and `concept_plus_random`.
 
-![Exp 10 coherence vs. alpha](figures/appendix_e10_coherence_by_alpha.png)
+![Exp 10 coherence vs. alpha](../../../results/multisteering/figures/appendix_e10_coherence_by_alpha.png)
 
 Coherence declines smoothly from 100% (alpha 1) to ~63–65% (alpha 7) in both response formats together.
 
 ### A.3 — Experience 11 (layer_ordering, Round 1)
 
-![Exp 11 bias strength and coherence vs. alpha](figures/appendix_e11_bias_and_coherence_by_alpha.png)
+![Exp 11 bias strength and coherence vs. alpha](../../../results/multisteering/figures/appendix_e11_bias_and_coherence_by_alpha.png)
 
 Two things worth separating: the **discrete "always A" bias itself barely moves with alpha** (86–96% picked-A rate at every dose, left panel) — but the logit-contrast-by-alpha figure in the main section showed the *magnitude* of the underlying logit gap clearly rising then fading (peak at alpha 2–3, near zero by alpha 6–7). We now know (Round 2, main section) that this whole shape — bias magnitude aside — reflects the prompt's baseline preference, not an injection effect; it's shown here for the fuller Round 1 picture rather than as remaining evidence of anything.
 
 ### A.4 — Modulators (E4/E5/E6, Round 1)
 
-![Modulators raw accuracy vs. alpha](figures/appendix_modulators_accuracy_by_alpha.png)
+![Modulators raw accuracy vs. alpha](../../../results/multisteering/figures/appendix_modulators_accuracy_by_alpha.png)
 
 Raw accuracy by alpha, holding E5 to `ratio=1` (no dose asymmetry) for a fair comparison against E4/E6's uniform-alpha design: E4 stays essentially flat just above chance; E5 shows the same rise-then-fall shape seen in `layer_ordering`; E6 declines steadily, entangled with its correct-letter sample imbalance (see main section).
 
-![Modulators logit contrast vs. alpha](figures/appendix_modulators_logit_by_alpha.png)
+![Modulators logit contrast vs. alpha](../../../results/multisteering/figures/appendix_modulators_logit_by_alpha.png)
 
 **E4 is flat and consistently positive** (~+0.25 to +0.40) across the whole range — this is the shape behind E4's significant result, still unconfirmed by a sham test (see main section). **E5 (ratio=1) rises then falls**, peaking around alpha 4–5, the same shape as `layer_ordering`'s own alpha curve — which Round 2 showed was baseline, not signal. **E6 stays negative throughout but trends toward zero** as alpha increases, most likely the same "logit gaps compress at high alpha" pattern as E4/`layer_ordering`, not a similarity-specific effect.
 
@@ -246,9 +246,9 @@ Raw accuracy by alpha, holding E5 to `ratio=1` (no dose asymmetry) for a fair co
 
 ### B.1 Reproducibility
 
-- **Round 2 data:** `plots/multi_detection_trials_{individual,budget}.pt` (alphas/z_totals 2–5, 40 trials/cell, count-only), `plots/layer_ordering_trials.pt` (alphas 2–5, 60 trials, paired sham). **Round 1 data preserved** at `plots/archive_alpha1-7/` for comparison — the appendix A figures above are generated from those archived files, not overwritten by Round 2.
-- **Figures:** `reports/generate_figures.py` (Round 1, 18 figures) and `reports/generate_bias_control_figures.py` (Round 2's two figures).
-- **Analysis:** `code/analysis/count_confusion_matrix.py --input <file>` prints the full digit-logit breakdown by dose/condition; `code/analysis/ordering_accuracy.py --input plots/layer_ordering_trials.pt` prints the full injected/sham/double-adjusted breakdown by alpha and layer distance.
+- **Round 2 data:** `results/multisteering/experiment_9_counting/raw/multi_detection_trials_{individual,budget}.pt` (alphas/z_totals 2–5, 40 trials/cell, count-only), `results/multisteering/experiment_11_ordering/raw/layer_ordering_trials.pt` (alphas 2–5, 60 trials, paired sham). **Round 1 data preserved** under the corresponding `raw/archive_alpha1-7/` directories for comparison — the appendix A figures above are generated from those archived files, not overwritten by Round 2.
+- **Figures:** `docs/misc/reports/generate_figures.py` (Round 1, 18 figures) and `docs/misc/reports/generate_bias_control_figures.py` (Round 2's two figures); both write to `results/multisteering/figures/`.
+- **Analysis:** `code/analysis/count_confusion_matrix.py --input <file>` prints the full digit-logit breakdown by dose/condition; `code/analysis/ordering_accuracy.py --input results/multisteering/experiment_11_ordering/raw/layer_ordering_trials.pt` prints the full injected/sham/double-adjusted breakdown by alpha and layer distance.
 
 ### B.2 Full per-dose numbers (counting, individual regime, condition=real)
 
