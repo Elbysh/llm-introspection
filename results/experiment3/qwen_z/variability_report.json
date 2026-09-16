@@ -110,13 +110,14 @@
       }
     }
   },
+  "excluded_layers": [],
   "matching": "z",
   "model": "Qwen/Qwen3.8-27B",
   "n_curves": 66,
   "n_thresholds_reportable_adjusted": 16,
   "n_trials": 47520,
   "runs": [
-    "results/experiment1/z2afc_qwen38"
+    "results/experiment1/qwen_z_panel"
   ],
   "variance_components": {
     "concept": {
