@@ -75,13 +75,14 @@
       }
     }
   },
+  "excluded_layers": [],
   "matching": "alpha",
   "model": "Qwen/Qwen3.8-27B",
   "n_curves": 88,
   "n_thresholds_reportable_adjusted": 34,
   "n_trials": 38720,
   "runs": [
-    "results/experiment1/qwen38_all_layers"
+    "results/experiment1/qwen_alpha_panel"
   ],
   "variance_components": {
     "concept": {

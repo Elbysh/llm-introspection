@@ -117,9 +117,7 @@
   "n_thresholds_reportable_adjusted": 49,
   "n_trials": 552960,
   "runs": [
-    "results/experiment1/z2afc_all",
-    "results/experiment1/panel-concepts",
-    "results/experiment1/panel-random"
+    "results/experiment1/llama_z_panel"
   ],
   "variance_components": {
     "concept": {

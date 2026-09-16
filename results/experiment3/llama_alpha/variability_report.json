@@ -70,18 +70,14 @@
       }
     }
   },
-  "excluded_layers": [
-    31
-  ],
+  "excluded_layers": [],
   "matching": "alpha",
   "model": "meta-llama/Llama-3.1-8B-Instruct",
   "n_curves": 744,
   "n_thresholds_reportable_adjusted": 22,
   "n_trials": 297600,
   "runs": [
-    "results/experiment1/full32_all",
-    "results/experiment1/panel-concepts",
-    "results/experiment1/panel-random"
+    "results/experiment1/llama_alpha_panel"
   ],
   "variance_components": {
     "concept": {

@@ -234,6 +234,12 @@ results/experiment1/*
 !results/experiment1/qwen_alpha_panel/
 !results/experiment1/qwen_scrambled_panel/
 
+# Experiment 3 reads those panels and writes only small analysis outputs -- a report, a
+# per-direction table and three figures per arm -- so the whole directory is tracked and a
+# new arm needs no rule of its own. The bulky exceptions are the *_source/ row dumps, kept
+# only where the contributing sweep is nowhere else in the repo.
+!results/experiment3/
+
 # Reproducible position-detection analysis caches and source tables
 plots/position_detection/source_data/
 plots/position_detection/analysis_summary.json
