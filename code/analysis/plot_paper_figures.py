@@ -1,6 +1,6 @@
 """Build the figures the manuscript uses, in English, into docs/figures.
 
-The report deliverable keeps its own French figures under docs/livrables/figures.
+The report deliverable keeps its own French figures under docs/misc/figures.
 This writes only what the manuscript cites, so the paper reads from one directory.
 
 Every standardized (z) panel comes from a sweep calibrated in the behavioural 2AFC
@@ -28,7 +28,8 @@ from matplotlib.patches import Patch
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 OUT = REPO_ROOT / "docs/figures"
-LEGACY_FIGURES = REPO_ROOT / "docs/livrables/figures"
+# report.tex and its figures moved to docs/misc in c155bb3.
+LEGACY_FIGURES = REPO_ROOT / "docs/misc/figures"
 FAMILIES = ["concept", "random", "noise", "dropout"]
 LABELS = {"concept": "concept", "random": "fixed random", "noise": "renewed noise",
           "dropout": "dropout", "scrambled": "scrambled concept"}
