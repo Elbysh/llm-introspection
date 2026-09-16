@@ -351,15 +351,15 @@ que si la calibration active `directions.scrambled_concept`, ce que celle de Lla
 pas : la question « le contenu compte-t-il à magnitude fixée ? » n'a donc pas de réponse
 sur le modèle principal, et c'est le trou le plus utile à combler ensuite.
 
-**Les figures de l'expérience 1 n'ont pas encore été régénérées sur le panel complet**
-— mais le blocage, lui, est levé. Cartes par couche et heatmaps lisent `summary.json`, et
-`merge_experiment1_runs.py` refusait ces runs — « runs disagree on 'families' » — parce
-qu'il a été écrit pour recoller des groupes de couches disjoints, pas des runs qui
-partagent les couches et diffèrent par les directions. Il n'est plus dans le chemin :
+**Les cartes par couche de l'expérience 1 sont régénérées ; les heatmaps du manuscrit ne
+le sont pas.** Le blocage est levé pour les premières. `merge_experiment1_runs.py`
+refusait ces runs — « runs disagree on 'families' » — parce qu'il a été écrit pour
+recoller des groupes de couches disjoints, pas des runs qui partagent les couches et
+diffèrent par les directions. Il n'est plus dans le chemin :
 `consolidate_experiment1_panel.py` a déjà rejoué `summarize()` sur les essais mis en
-commun, donc chaque panel porte un `summary.json` recalculé et se donne tel quel au script
-de figures. Un panel ne portant qu'un bras, il faut le nommer, faute de quoi le script
-cherche l'autre grille de doses et s'arrête sur `KeyError: 'alpha'` :
+commun, donc chaque panel porte un `summary.json` recalculé et se donne tel quel au
+script de figures. Un panel ne portant qu'un bras, il faut le nommer, faute de quoi le
+script cherche l'autre grille de doses et s'arrête sur `KeyError: 'alpha'` :
 
 ```bash
 python code/analysis/plot_experiment1_layer_maps.py \
@@ -368,10 +368,17 @@ python code/analysis/plot_experiment1_layer_maps.py \
     --run_dir results/experiment1/llama_alpha_panel --matchings alpha
 ```
 
-Vérifié le 2026-09-16 : les cinq figures sortent pour chaque bras. Reste à décider quelles
-figures du manuscrit sont remplacées, ce qui relève de l'expérience 1. Les chiffres de la
-section 4 viennent de `experiment1_localization_report.py`, qui met bien les `--run_dir`
-en commun.
+Fait le 2026-09-16 : cinq figures par bras, dans `layer_maps/` à l'intérieur de chaque
+panel, sur les 32 blocs et les 18 doses en z et les 31 blocs et 10 doses en alpha. Le
+plafond du bloc 14 et la réponse tardive des familles témoins en z s'y lisent
+directement.
+
+Restent en dehors : `plot_experiment1_heatmaps.py`, qui code encore `full32_all` en dur et
+ne tourne donc pas depuis un clone, et les figures du manuscrit produites par
+`plot_experiment1_qwen_figures.py`. `plot_paper_figures.py`, lui, lit déjà les panels
+depuis c40cac2. Quelles figures du manuscrit sont remplacées relève de l'expérience 1 et
+n'est pas tranché ici. Les chiffres de la section 4 viennent de
+`experiment1_localization_report.py`, qui met bien les `--run_dir` en commun.
 
 ## 11. Reproduire
 
