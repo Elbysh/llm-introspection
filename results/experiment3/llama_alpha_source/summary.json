@@ -10,8 +10,8 @@
     "alpha"
   ],
   "model": "meta-llama/Llama-3.1-8B-Instruct",
-  "n_trials": 136400,
+  "n_trials": 297600,
   "notes": [
-    "The alpha-matched rows of results/experiment1/full32_all, extracted by experiment3_variability.py --export_run_dir. The other matching arm of those runs is deliberately absent."
+    "The alpha-matched rows of results/experiment1/full32_all, results/experiment1/panel-concepts, results/experiment1/panel-random, extracted by experiment3_variability.py --export_run_dir. The other matching arm of those runs is deliberately absent."
   ]
 }
