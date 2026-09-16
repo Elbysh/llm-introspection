@@ -1,0 +1,2287 @@
+# Experiment 5 over the live detection band (blocks 0-13).
+# Spec: docs/livrables/cadrage-experiments.md section 9 ("Expérience 5", H5).
+#
+# Extends induction_scaled.yaml, which sampled the injected arm at block 8 only.
+# Section 9.3 asks for all 32 layers; the injected signal is not spread over them.
+# Measured on the pilot's full 0-30 sweep, the injected-minus-sham margin averages
+# |0.129| over blocks 0-13 and |0.008| over blocks 14-30 -- a factor of 16. So the
+# band below carries essentially all of the detection signal, and blocks 14+ are a
+# built-in null that costs 17/31 of the compute to re-measure.
+#
+# Same 100 text pairs and same two doses as induction_scaled, so the block-8 cells
+# reproduce and the two runs can be read together.
+#
+# Block 0 is included deliberately but must be read with care, not pooled blindly:
+# in the ladder (run 8369) it returned invalid generations on 0.475 of injected
+# trials at alpha 16, rising to 0.856 at alpha 256. Its margin shift is largely
+# broken decoding rather than a presence report. Check invalid_rate_injected per
+# block before aggregating, and expect to exclude block 0.
+protocol:
+  version: "2026-09-14"
+  status: development
+
+model:
+  name: meta-llama/Llama-3.1-8B-Instruct
+  revision: main
+  tokenizer_revision: main
+
+texts:
+  max_token_length_difference: 2
+
+conditions:
+  - condition_id: Dust__block_00__alpha128
+    concept: Dust
+    direction_id: concept__block_00__Dust
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_00__alpha256
+    concept: Dust
+    direction_id: concept__block_00__Dust
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_01__alpha128
+    concept: Dust
+    direction_id: concept__block_01__Dust
+    layer: 1
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_01__alpha256
+    concept: Dust
+    direction_id: concept__block_01__Dust
+    layer: 1
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_02__alpha128
+    concept: Dust
+    direction_id: concept__block_02__Dust
+    layer: 2
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_02__alpha256
+    concept: Dust
+    direction_id: concept__block_02__Dust
+    layer: 2
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_03__alpha128
+    concept: Dust
+    direction_id: concept__block_03__Dust
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_03__alpha256
+    concept: Dust
+    direction_id: concept__block_03__Dust
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_04__alpha128
+    concept: Dust
+    direction_id: concept__block_04__Dust
+    layer: 4
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_04__alpha256
+    concept: Dust
+    direction_id: concept__block_04__Dust
+    layer: 4
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_05__alpha128
+    concept: Dust
+    direction_id: concept__block_05__Dust
+    layer: 5
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_05__alpha256
+    concept: Dust
+    direction_id: concept__block_05__Dust
+    layer: 5
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_06__alpha128
+    concept: Dust
+    direction_id: concept__block_06__Dust
+    layer: 6
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_06__alpha256
+    concept: Dust
+    direction_id: concept__block_06__Dust
+    layer: 6
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_07__alpha128
+    concept: Dust
+    direction_id: concept__block_07__Dust
+    layer: 7
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_07__alpha256
+    concept: Dust
+    direction_id: concept__block_07__Dust
+    layer: 7
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_08__alpha128
+    concept: Dust
+    direction_id: concept__block_08__Dust
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_08__alpha256
+    concept: Dust
+    direction_id: concept__block_08__Dust
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_09__alpha128
+    concept: Dust
+    direction_id: concept__block_09__Dust
+    layer: 9
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_09__alpha256
+    concept: Dust
+    direction_id: concept__block_09__Dust
+    layer: 9
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_10__alpha128
+    concept: Dust
+    direction_id: concept__block_10__Dust
+    layer: 10
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_10__alpha256
+    concept: Dust
+    direction_id: concept__block_10__Dust
+    layer: 10
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_11__alpha128
+    concept: Dust
+    direction_id: concept__block_11__Dust
+    layer: 11
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_11__alpha256
+    concept: Dust
+    direction_id: concept__block_11__Dust
+    layer: 11
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_12__alpha128
+    concept: Dust
+    direction_id: concept__block_12__Dust
+    layer: 12
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_12__alpha256
+    concept: Dust
+    direction_id: concept__block_12__Dust
+    layer: 12
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_13__alpha128
+    concept: Dust
+    direction_id: concept__block_13__Dust
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Dust__block_13__alpha256
+    concept: Dust
+    direction_id: concept__block_13__Dust
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_00__alpha128
+    concept: Illusions
+    direction_id: concept__block_00__Illusions
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_00__alpha256
+    concept: Illusions
+    direction_id: concept__block_00__Illusions
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_01__alpha128
+    concept: Illusions
+    direction_id: concept__block_01__Illusions
+    layer: 1
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_01__alpha256
+    concept: Illusions
+    direction_id: concept__block_01__Illusions
+    layer: 1
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_02__alpha128
+    concept: Illusions
+    direction_id: concept__block_02__Illusions
+    layer: 2
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_02__alpha256
+    concept: Illusions
+    direction_id: concept__block_02__Illusions
+    layer: 2
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_03__alpha128
+    concept: Illusions
+    direction_id: concept__block_03__Illusions
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_03__alpha256
+    concept: Illusions
+    direction_id: concept__block_03__Illusions
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_04__alpha128
+    concept: Illusions
+    direction_id: concept__block_04__Illusions
+    layer: 4
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_04__alpha256
+    concept: Illusions
+    direction_id: concept__block_04__Illusions
+    layer: 4
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_05__alpha128
+    concept: Illusions
+    direction_id: concept__block_05__Illusions
+    layer: 5
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_05__alpha256
+    concept: Illusions
+    direction_id: concept__block_05__Illusions
+    layer: 5
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_06__alpha128
+    concept: Illusions
+    direction_id: concept__block_06__Illusions
+    layer: 6
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_06__alpha256
+    concept: Illusions
+    direction_id: concept__block_06__Illusions
+    layer: 6
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_07__alpha128
+    concept: Illusions
+    direction_id: concept__block_07__Illusions
+    layer: 7
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_07__alpha256
+    concept: Illusions
+    direction_id: concept__block_07__Illusions
+    layer: 7
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_08__alpha128
+    concept: Illusions
+    direction_id: concept__block_08__Illusions
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_08__alpha256
+    concept: Illusions
+    direction_id: concept__block_08__Illusions
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_09__alpha128
+    concept: Illusions
+    direction_id: concept__block_09__Illusions
+    layer: 9
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_09__alpha256
+    concept: Illusions
+    direction_id: concept__block_09__Illusions
+    layer: 9
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_10__alpha128
+    concept: Illusions
+    direction_id: concept__block_10__Illusions
+    layer: 10
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_10__alpha256
+    concept: Illusions
+    direction_id: concept__block_10__Illusions
+    layer: 10
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_11__alpha128
+    concept: Illusions
+    direction_id: concept__block_11__Illusions
+    layer: 11
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_11__alpha256
+    concept: Illusions
+    direction_id: concept__block_11__Illusions
+    layer: 11
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_12__alpha128
+    concept: Illusions
+    direction_id: concept__block_12__Illusions
+    layer: 12
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_12__alpha256
+    concept: Illusions
+    direction_id: concept__block_12__Illusions
+    layer: 12
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_13__alpha128
+    concept: Illusions
+    direction_id: concept__block_13__Illusions
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Illusions__block_13__alpha256
+    concept: Illusions
+    direction_id: concept__block_13__Illusions
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_00__alpha128
+    concept: Origami
+    direction_id: concept__block_00__Origami
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_00__alpha256
+    concept: Origami
+    direction_id: concept__block_00__Origami
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_01__alpha128
+    concept: Origami
+    direction_id: concept__block_01__Origami
+    layer: 1
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_01__alpha256
+    concept: Origami
+    direction_id: concept__block_01__Origami
+    layer: 1
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_02__alpha128
+    concept: Origami
+    direction_id: concept__block_02__Origami
+    layer: 2
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_02__alpha256
+    concept: Origami
+    direction_id: concept__block_02__Origami
+    layer: 2
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_03__alpha128
+    concept: Origami
+    direction_id: concept__block_03__Origami
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_03__alpha256
+    concept: Origami
+    direction_id: concept__block_03__Origami
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_04__alpha128
+    concept: Origami
+    direction_id: concept__block_04__Origami
+    layer: 4
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_04__alpha256
+    concept: Origami
+    direction_id: concept__block_04__Origami
+    layer: 4
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_05__alpha128
+    concept: Origami
+    direction_id: concept__block_05__Origami
+    layer: 5
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_05__alpha256
+    concept: Origami
+    direction_id: concept__block_05__Origami
+    layer: 5
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_06__alpha128
+    concept: Origami
+    direction_id: concept__block_06__Origami
+    layer: 6
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_06__alpha256
+    concept: Origami
+    direction_id: concept__block_06__Origami
+    layer: 6
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_07__alpha128
+    concept: Origami
+    direction_id: concept__block_07__Origami
+    layer: 7
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_07__alpha256
+    concept: Origami
+    direction_id: concept__block_07__Origami
+    layer: 7
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_08__alpha128
+    concept: Origami
+    direction_id: concept__block_08__Origami
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_08__alpha256
+    concept: Origami
+    direction_id: concept__block_08__Origami
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_09__alpha128
+    concept: Origami
+    direction_id: concept__block_09__Origami
+    layer: 9
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_09__alpha256
+    concept: Origami
+    direction_id: concept__block_09__Origami
+    layer: 9
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_10__alpha128
+    concept: Origami
+    direction_id: concept__block_10__Origami
+    layer: 10
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_10__alpha256
+    concept: Origami
+    direction_id: concept__block_10__Origami
+    layer: 10
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_11__alpha128
+    concept: Origami
+    direction_id: concept__block_11__Origami
+    layer: 11
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_11__alpha256
+    concept: Origami
+    direction_id: concept__block_11__Origami
+    layer: 11
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_12__alpha128
+    concept: Origami
+    direction_id: concept__block_12__Origami
+    layer: 12
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_12__alpha256
+    concept: Origami
+    direction_id: concept__block_12__Origami
+    layer: 12
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_13__alpha128
+    concept: Origami
+    direction_id: concept__block_13__Origami
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Origami__block_13__alpha256
+    concept: Origami
+    direction_id: concept__block_13__Origami
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_00__alpha128
+    concept: Satellites
+    direction_id: concept__block_00__Satellites
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_00__alpha256
+    concept: Satellites
+    direction_id: concept__block_00__Satellites
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_01__alpha128
+    concept: Satellites
+    direction_id: concept__block_01__Satellites
+    layer: 1
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_01__alpha256
+    concept: Satellites
+    direction_id: concept__block_01__Satellites
+    layer: 1
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_02__alpha128
+    concept: Satellites
+    direction_id: concept__block_02__Satellites
+    layer: 2
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_02__alpha256
+    concept: Satellites
+    direction_id: concept__block_02__Satellites
+    layer: 2
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_03__alpha128
+    concept: Satellites
+    direction_id: concept__block_03__Satellites
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_03__alpha256
+    concept: Satellites
+    direction_id: concept__block_03__Satellites
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_04__alpha128
+    concept: Satellites
+    direction_id: concept__block_04__Satellites
+    layer: 4
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_04__alpha256
+    concept: Satellites
+    direction_id: concept__block_04__Satellites
+    layer: 4
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_05__alpha128
+    concept: Satellites
+    direction_id: concept__block_05__Satellites
+    layer: 5
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_05__alpha256
+    concept: Satellites
+    direction_id: concept__block_05__Satellites
+    layer: 5
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_06__alpha128
+    concept: Satellites
+    direction_id: concept__block_06__Satellites
+    layer: 6
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_06__alpha256
+    concept: Satellites
+    direction_id: concept__block_06__Satellites
+    layer: 6
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_07__alpha128
+    concept: Satellites
+    direction_id: concept__block_07__Satellites
+    layer: 7
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_07__alpha256
+    concept: Satellites
+    direction_id: concept__block_07__Satellites
+    layer: 7
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_08__alpha128
+    concept: Satellites
+    direction_id: concept__block_08__Satellites
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_08__alpha256
+    concept: Satellites
+    direction_id: concept__block_08__Satellites
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_09__alpha128
+    concept: Satellites
+    direction_id: concept__block_09__Satellites
+    layer: 9
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_09__alpha256
+    concept: Satellites
+    direction_id: concept__block_09__Satellites
+    layer: 9
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_10__alpha128
+    concept: Satellites
+    direction_id: concept__block_10__Satellites
+    layer: 10
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_10__alpha256
+    concept: Satellites
+    direction_id: concept__block_10__Satellites
+    layer: 10
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_11__alpha128
+    concept: Satellites
+    direction_id: concept__block_11__Satellites
+    layer: 11
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_11__alpha256
+    concept: Satellites
+    direction_id: concept__block_11__Satellites
+    layer: 11
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_12__alpha128
+    concept: Satellites
+    direction_id: concept__block_12__Satellites
+    layer: 12
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_12__alpha256
+    concept: Satellites
+    direction_id: concept__block_12__Satellites
+    layer: 12
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_13__alpha128
+    concept: Satellites
+    direction_id: concept__block_13__Satellites
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Satellites__block_13__alpha256
+    concept: Satellites
+    direction_id: concept__block_13__Satellites
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_00__alpha128
+    concept: Trumpets
+    direction_id: concept__block_00__Trumpets
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_00__alpha256
+    concept: Trumpets
+    direction_id: concept__block_00__Trumpets
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_01__alpha128
+    concept: Trumpets
+    direction_id: concept__block_01__Trumpets
+    layer: 1
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_01__alpha256
+    concept: Trumpets
+    direction_id: concept__block_01__Trumpets
+    layer: 1
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_02__alpha128
+    concept: Trumpets
+    direction_id: concept__block_02__Trumpets
+    layer: 2
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_02__alpha256
+    concept: Trumpets
+    direction_id: concept__block_02__Trumpets
+    layer: 2
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_03__alpha128
+    concept: Trumpets
+    direction_id: concept__block_03__Trumpets
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_03__alpha256
+    concept: Trumpets
+    direction_id: concept__block_03__Trumpets
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_04__alpha128
+    concept: Trumpets
+    direction_id: concept__block_04__Trumpets
+    layer: 4
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_04__alpha256
+    concept: Trumpets
+    direction_id: concept__block_04__Trumpets
+    layer: 4
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_05__alpha128
+    concept: Trumpets
+    direction_id: concept__block_05__Trumpets
+    layer: 5
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_05__alpha256
+    concept: Trumpets
+    direction_id: concept__block_05__Trumpets
+    layer: 5
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_06__alpha128
+    concept: Trumpets
+    direction_id: concept__block_06__Trumpets
+    layer: 6
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_06__alpha256
+    concept: Trumpets
+    direction_id: concept__block_06__Trumpets
+    layer: 6
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_07__alpha128
+    concept: Trumpets
+    direction_id: concept__block_07__Trumpets
+    layer: 7
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_07__alpha256
+    concept: Trumpets
+    direction_id: concept__block_07__Trumpets
+    layer: 7
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_08__alpha128
+    concept: Trumpets
+    direction_id: concept__block_08__Trumpets
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_08__alpha256
+    concept: Trumpets
+    direction_id: concept__block_08__Trumpets
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_09__alpha128
+    concept: Trumpets
+    direction_id: concept__block_09__Trumpets
+    layer: 9
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_09__alpha256
+    concept: Trumpets
+    direction_id: concept__block_09__Trumpets
+    layer: 9
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_10__alpha128
+    concept: Trumpets
+    direction_id: concept__block_10__Trumpets
+    layer: 10
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_10__alpha256
+    concept: Trumpets
+    direction_id: concept__block_10__Trumpets
+    layer: 10
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_11__alpha128
+    concept: Trumpets
+    direction_id: concept__block_11__Trumpets
+    layer: 11
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_11__alpha256
+    concept: Trumpets
+    direction_id: concept__block_11__Trumpets
+    layer: 11
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_12__alpha128
+    concept: Trumpets
+    direction_id: concept__block_12__Trumpets
+    layer: 12
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_12__alpha256
+    concept: Trumpets
+    direction_id: concept__block_12__Trumpets
+    layer: 12
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_13__alpha128
+    concept: Trumpets
+    direction_id: concept__block_13__Trumpets
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: Trumpets__block_13__alpha256
+    concept: Trumpets
+    direction_id: concept__block_13__Trumpets
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_00__alpha128
+    concept: appreciation
+    direction_id: concept__block_00__appreciation
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_00__alpha256
+    concept: appreciation
+    direction_id: concept__block_00__appreciation
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_01__alpha128
+    concept: appreciation
+    direction_id: concept__block_01__appreciation
+    layer: 1
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_01__alpha256
+    concept: appreciation
+    direction_id: concept__block_01__appreciation
+    layer: 1
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_02__alpha128
+    concept: appreciation
+    direction_id: concept__block_02__appreciation
+    layer: 2
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_02__alpha256
+    concept: appreciation
+    direction_id: concept__block_02__appreciation
+    layer: 2
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_03__alpha128
+    concept: appreciation
+    direction_id: concept__block_03__appreciation
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_03__alpha256
+    concept: appreciation
+    direction_id: concept__block_03__appreciation
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_04__alpha128
+    concept: appreciation
+    direction_id: concept__block_04__appreciation
+    layer: 4
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_04__alpha256
+    concept: appreciation
+    direction_id: concept__block_04__appreciation
+    layer: 4
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_05__alpha128
+    concept: appreciation
+    direction_id: concept__block_05__appreciation
+    layer: 5
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_05__alpha256
+    concept: appreciation
+    direction_id: concept__block_05__appreciation
+    layer: 5
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_06__alpha128
+    concept: appreciation
+    direction_id: concept__block_06__appreciation
+    layer: 6
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_06__alpha256
+    concept: appreciation
+    direction_id: concept__block_06__appreciation
+    layer: 6
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_07__alpha128
+    concept: appreciation
+    direction_id: concept__block_07__appreciation
+    layer: 7
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_07__alpha256
+    concept: appreciation
+    direction_id: concept__block_07__appreciation
+    layer: 7
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_08__alpha128
+    concept: appreciation
+    direction_id: concept__block_08__appreciation
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_08__alpha256
+    concept: appreciation
+    direction_id: concept__block_08__appreciation
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_09__alpha128
+    concept: appreciation
+    direction_id: concept__block_09__appreciation
+    layer: 9
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_09__alpha256
+    concept: appreciation
+    direction_id: concept__block_09__appreciation
+    layer: 9
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_10__alpha128
+    concept: appreciation
+    direction_id: concept__block_10__appreciation
+    layer: 10
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_10__alpha256
+    concept: appreciation
+    direction_id: concept__block_10__appreciation
+    layer: 10
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_11__alpha128
+    concept: appreciation
+    direction_id: concept__block_11__appreciation
+    layer: 11
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_11__alpha256
+    concept: appreciation
+    direction_id: concept__block_11__appreciation
+    layer: 11
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_12__alpha128
+    concept: appreciation
+    direction_id: concept__block_12__appreciation
+    layer: 12
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_12__alpha256
+    concept: appreciation
+    direction_id: concept__block_12__appreciation
+    layer: 12
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_13__alpha128
+    concept: appreciation
+    direction_id: concept__block_13__appreciation
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: appreciation__block_13__alpha256
+    concept: appreciation
+    direction_id: concept__block_13__appreciation
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_00__alpha128
+    concept: betrayal
+    direction_id: concept__block_00__betrayal
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_00__alpha256
+    concept: betrayal
+    direction_id: concept__block_00__betrayal
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_01__alpha128
+    concept: betrayal
+    direction_id: concept__block_01__betrayal
+    layer: 1
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_01__alpha256
+    concept: betrayal
+    direction_id: concept__block_01__betrayal
+    layer: 1
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_02__alpha128
+    concept: betrayal
+    direction_id: concept__block_02__betrayal
+    layer: 2
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_02__alpha256
+    concept: betrayal
+    direction_id: concept__block_02__betrayal
+    layer: 2
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_03__alpha128
+    concept: betrayal
+    direction_id: concept__block_03__betrayal
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_03__alpha256
+    concept: betrayal
+    direction_id: concept__block_03__betrayal
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_04__alpha128
+    concept: betrayal
+    direction_id: concept__block_04__betrayal
+    layer: 4
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_04__alpha256
+    concept: betrayal
+    direction_id: concept__block_04__betrayal
+    layer: 4
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_05__alpha128
+    concept: betrayal
+    direction_id: concept__block_05__betrayal
+    layer: 5
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_05__alpha256
+    concept: betrayal
+    direction_id: concept__block_05__betrayal
+    layer: 5
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_06__alpha128
+    concept: betrayal
+    direction_id: concept__block_06__betrayal
+    layer: 6
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_06__alpha256
+    concept: betrayal
+    direction_id: concept__block_06__betrayal
+    layer: 6
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_07__alpha128
+    concept: betrayal
+    direction_id: concept__block_07__betrayal
+    layer: 7
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_07__alpha256
+    concept: betrayal
+    direction_id: concept__block_07__betrayal
+    layer: 7
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_08__alpha128
+    concept: betrayal
+    direction_id: concept__block_08__betrayal
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_08__alpha256
+    concept: betrayal
+    direction_id: concept__block_08__betrayal
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_09__alpha128
+    concept: betrayal
+    direction_id: concept__block_09__betrayal
+    layer: 9
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_09__alpha256
+    concept: betrayal
+    direction_id: concept__block_09__betrayal
+    layer: 9
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_10__alpha128
+    concept: betrayal
+    direction_id: concept__block_10__betrayal
+    layer: 10
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_10__alpha256
+    concept: betrayal
+    direction_id: concept__block_10__betrayal
+    layer: 10
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_11__alpha128
+    concept: betrayal
+    direction_id: concept__block_11__betrayal
+    layer: 11
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_11__alpha256
+    concept: betrayal
+    direction_id: concept__block_11__betrayal
+    layer: 11
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_12__alpha128
+    concept: betrayal
+    direction_id: concept__block_12__betrayal
+    layer: 12
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_12__alpha256
+    concept: betrayal
+    direction_id: concept__block_12__betrayal
+    layer: 12
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_13__alpha128
+    concept: betrayal
+    direction_id: concept__block_13__betrayal
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: betrayal__block_13__alpha256
+    concept: betrayal
+    direction_id: concept__block_13__betrayal
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_00__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_00__fibonacci_numbers
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_00__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_00__fibonacci_numbers
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_01__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_01__fibonacci_numbers
+    layer: 1
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_01__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_01__fibonacci_numbers
+    layer: 1
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_02__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_02__fibonacci_numbers
+    layer: 2
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_02__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_02__fibonacci_numbers
+    layer: 2
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_03__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_03__fibonacci_numbers
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_03__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_03__fibonacci_numbers
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_04__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_04__fibonacci_numbers
+    layer: 4
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_04__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_04__fibonacci_numbers
+    layer: 4
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_05__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_05__fibonacci_numbers
+    layer: 5
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_05__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_05__fibonacci_numbers
+    layer: 5
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_06__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_06__fibonacci_numbers
+    layer: 6
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_06__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_06__fibonacci_numbers
+    layer: 6
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_07__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_07__fibonacci_numbers
+    layer: 7
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_07__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_07__fibonacci_numbers
+    layer: 7
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_08__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_08__fibonacci_numbers
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_08__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_08__fibonacci_numbers
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_09__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_09__fibonacci_numbers
+    layer: 9
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_09__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_09__fibonacci_numbers
+    layer: 9
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_10__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_10__fibonacci_numbers
+    layer: 10
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_10__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_10__fibonacci_numbers
+    layer: 10
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_11__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_11__fibonacci_numbers
+    layer: 11
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_11__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_11__fibonacci_numbers
+    layer: 11
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_12__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_12__fibonacci_numbers
+    layer: 12
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_12__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_12__fibonacci_numbers
+    layer: 12
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_13__alpha128
+    concept: fibonacci_numbers
+    direction_id: concept__block_13__fibonacci_numbers
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: fibonacci_numbers__block_13__alpha256
+    concept: fibonacci_numbers
+    direction_id: concept__block_13__fibonacci_numbers
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_00__alpha128
+    concept: recursion
+    direction_id: concept__block_00__recursion
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_00__alpha256
+    concept: recursion
+    direction_id: concept__block_00__recursion
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_01__alpha128
+    concept: recursion
+    direction_id: concept__block_01__recursion
+    layer: 1
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_01__alpha256
+    concept: recursion
+    direction_id: concept__block_01__recursion
+    layer: 1
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_02__alpha128
+    concept: recursion
+    direction_id: concept__block_02__recursion
+    layer: 2
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_02__alpha256
+    concept: recursion
+    direction_id: concept__block_02__recursion
+    layer: 2
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_03__alpha128
+    concept: recursion
+    direction_id: concept__block_03__recursion
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_03__alpha256
+    concept: recursion
+    direction_id: concept__block_03__recursion
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_04__alpha128
+    concept: recursion
+    direction_id: concept__block_04__recursion
+    layer: 4
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_04__alpha256
+    concept: recursion
+    direction_id: concept__block_04__recursion
+    layer: 4
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_05__alpha128
+    concept: recursion
+    direction_id: concept__block_05__recursion
+    layer: 5
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_05__alpha256
+    concept: recursion
+    direction_id: concept__block_05__recursion
+    layer: 5
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_06__alpha128
+    concept: recursion
+    direction_id: concept__block_06__recursion
+    layer: 6
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_06__alpha256
+    concept: recursion
+    direction_id: concept__block_06__recursion
+    layer: 6
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_07__alpha128
+    concept: recursion
+    direction_id: concept__block_07__recursion
+    layer: 7
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_07__alpha256
+    concept: recursion
+    direction_id: concept__block_07__recursion
+    layer: 7
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_08__alpha128
+    concept: recursion
+    direction_id: concept__block_08__recursion
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_08__alpha256
+    concept: recursion
+    direction_id: concept__block_08__recursion
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_09__alpha128
+    concept: recursion
+    direction_id: concept__block_09__recursion
+    layer: 9
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_09__alpha256
+    concept: recursion
+    direction_id: concept__block_09__recursion
+    layer: 9
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_10__alpha128
+    concept: recursion
+    direction_id: concept__block_10__recursion
+    layer: 10
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_10__alpha256
+    concept: recursion
+    direction_id: concept__block_10__recursion
+    layer: 10
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_11__alpha128
+    concept: recursion
+    direction_id: concept__block_11__recursion
+    layer: 11
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_11__alpha256
+    concept: recursion
+    direction_id: concept__block_11__recursion
+    layer: 11
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_12__alpha128
+    concept: recursion
+    direction_id: concept__block_12__recursion
+    layer: 12
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_12__alpha256
+    concept: recursion
+    direction_id: concept__block_12__recursion
+    layer: 12
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_13__alpha128
+    concept: recursion
+    direction_id: concept__block_13__recursion
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: recursion__block_13__alpha256
+    concept: recursion
+    direction_id: concept__block_13__recursion
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_00__alpha128
+    concept: shutdown
+    direction_id: concept__block_00__shutdown
+    layer: 0
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_00__alpha256
+    concept: shutdown
+    direction_id: concept__block_00__shutdown
+    layer: 0
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_01__alpha128
+    concept: shutdown
+    direction_id: concept__block_01__shutdown
+    layer: 1
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_01__alpha256
+    concept: shutdown
+    direction_id: concept__block_01__shutdown
+    layer: 1
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_02__alpha128
+    concept: shutdown
+    direction_id: concept__block_02__shutdown
+    layer: 2
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_02__alpha256
+    concept: shutdown
+    direction_id: concept__block_02__shutdown
+    layer: 2
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_03__alpha128
+    concept: shutdown
+    direction_id: concept__block_03__shutdown
+    layer: 3
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_03__alpha256
+    concept: shutdown
+    direction_id: concept__block_03__shutdown
+    layer: 3
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_04__alpha128
+    concept: shutdown
+    direction_id: concept__block_04__shutdown
+    layer: 4
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_04__alpha256
+    concept: shutdown
+    direction_id: concept__block_04__shutdown
+    layer: 4
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_05__alpha128
+    concept: shutdown
+    direction_id: concept__block_05__shutdown
+    layer: 5
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_05__alpha256
+    concept: shutdown
+    direction_id: concept__block_05__shutdown
+    layer: 5
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_06__alpha128
+    concept: shutdown
+    direction_id: concept__block_06__shutdown
+    layer: 6
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_06__alpha256
+    concept: shutdown
+    direction_id: concept__block_06__shutdown
+    layer: 6
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_07__alpha128
+    concept: shutdown
+    direction_id: concept__block_07__shutdown
+    layer: 7
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_07__alpha256
+    concept: shutdown
+    direction_id: concept__block_07__shutdown
+    layer: 7
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_08__alpha128
+    concept: shutdown
+    direction_id: concept__block_08__shutdown
+    layer: 8
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_08__alpha256
+    concept: shutdown
+    direction_id: concept__block_08__shutdown
+    layer: 8
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_09__alpha128
+    concept: shutdown
+    direction_id: concept__block_09__shutdown
+    layer: 9
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_09__alpha256
+    concept: shutdown
+    direction_id: concept__block_09__shutdown
+    layer: 9
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_10__alpha128
+    concept: shutdown
+    direction_id: concept__block_10__shutdown
+    layer: 10
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_10__alpha256
+    concept: shutdown
+    direction_id: concept__block_10__shutdown
+    layer: 10
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_11__alpha128
+    concept: shutdown
+    direction_id: concept__block_11__shutdown
+    layer: 11
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_11__alpha256
+    concept: shutdown
+    direction_id: concept__block_11__shutdown
+    layer: 11
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_12__alpha128
+    concept: shutdown
+    direction_id: concept__block_12__shutdown
+    layer: 12
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_12__alpha256
+    concept: shutdown
+    direction_id: concept__block_12__shutdown
+    layer: 12
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_13__alpha128
+    concept: shutdown
+    direction_id: concept__block_13__shutdown
+    layer: 13
+    dose: 128
+    dose_axis: alpha
+    dose_role: near_threshold
+    scale_statistic: mad_corrected
+  - condition_id: shutdown__block_13__alpha256
+    concept: shutdown
+    direction_id: concept__block_13__shutdown
+    layer: 13
+    dose: 256
+    dose_axis: alpha
+    dose_role: above_threshold
+    scale_statistic: mad_corrected
+
+statistics:
+  bootstrap_resamples: 1000
+  bootstrap_seed: 2026091405
+  ci_level: 0.95
+
+execution:
+  dtype: bfloat16
+
+paths:
+  text_pairs: configs/experiment_5_text_induction/induction_scaled.json
+  directional_scales: results/experiment_0_calibration/directional_scales.json
+  calibration_manifest: results/experiment_0_calibration/run_manifest.json
+  plan_dir: data/experiment_5_text_induction/plans/induction_early_band
+  output_dir: results/experiment_5_text_induction/induction_early_band
+  analysis_dir: results/experiment_5_text_induction/induction_early_band_analysis

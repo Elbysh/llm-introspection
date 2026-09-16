@@ -1,0 +1,162 @@
+[
+  {
+    "pair_id": "dust_01",
+    "concept": "Dust",
+    "neutral_sentence_index": 72,
+    "companion_sentence_index": 22,
+    "evocative_text": "The dust drifts across the room.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "dust_02",
+    "concept": "Dust",
+    "neutral_sentence_index": 84,
+    "companion_sentence_index": 46,
+    "evocative_text": "The dust settles gently.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "dust_03",
+    "concept": "Dust",
+    "neutral_sentence_index": 64,
+    "companion_sentence_index": 7,
+    "evocative_text": "The dust gathers thickly.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "dust_04",
+    "concept": "Dust",
+    "neutral_sentence_index": 96,
+    "companion_sentence_index": 34,
+    "evocative_text": "The dust blows away.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "dust_05",
+    "concept": "Dust",
+    "neutral_sentence_index": 92,
+    "companion_sentence_index": 19,
+    "evocative_text": "The mirror collects the dust.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_01",
+    "concept": "Satellites",
+    "neutral_sentence_index": 80,
+    "companion_sentence_index": 27,
+    "evocative_text": "The satellite orbits high.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_02",
+    "concept": "Satellites",
+    "neutral_sentence_index": 68,
+    "companion_sentence_index": 34,
+    "evocative_text": "The satellite signals faintly.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_03",
+    "concept": "Satellites",
+    "neutral_sentence_index": 70,
+    "companion_sentence_index": 45,
+    "evocative_text": "The satellite scans the ocean.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_04",
+    "concept": "Satellites",
+    "neutral_sentence_index": 72,
+    "companion_sentence_index": 9,
+    "evocative_text": "The satellite sweeps across the sky.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "satellites_05",
+    "concept": "Satellites",
+    "neutral_sentence_index": 26,
+    "companion_sentence_index": 56,
+    "evocative_text": "The satellite passes overhead.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_01",
+    "concept": "recursion",
+    "neutral_sentence_index": 92,
+    "companion_sentence_index": 19,
+    "evocative_text": "The mirror reflects another mirror.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_02",
+    "concept": "recursion",
+    "neutral_sentence_index": 96,
+    "companion_sentence_index": 3,
+    "evocative_text": "The echo repeats itself.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_03",
+    "concept": "recursion",
+    "neutral_sentence_index": 31,
+    "companion_sentence_index": 44,
+    "evocative_text": "A function calls itself again.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_04",
+    "concept": "recursion",
+    "neutral_sentence_index": 88,
+    "companion_sentence_index": 9,
+    "evocative_text": "The routine restarts inside itself.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "recursion_05",
+    "concept": "recursion",
+    "neutral_sentence_index": 23,
+    "companion_sentence_index": 60,
+    "evocative_text": "A method runs inside another method.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_01",
+    "concept": "shutdown",
+    "neutral_sentence_index": 30,
+    "companion_sentence_index": 50,
+    "evocative_text": "The system shuts down slowly.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_02",
+    "concept": "shutdown",
+    "neutral_sentence_index": 62,
+    "companion_sentence_index": 8,
+    "evocative_text": "The machine powers down.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_03",
+    "concept": "shutdown",
+    "neutral_sentence_index": 26,
+    "companion_sentence_index": 56,
+    "evocative_text": "The server shuts down suddenly.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_04",
+    "concept": "shutdown",
+    "neutral_sentence_index": 38,
+    "companion_sentence_index": 61,
+    "evocative_text": "The computer shuts off.",
+    "reviewed": true
+  },
+  {
+    "pair_id": "shutdown_05",
+    "concept": "shutdown",
+    "neutral_sentence_index": 68,
+    "companion_sentence_index": 13,
+    "evocative_text": "The reactor shuts down safely.",
+    "reviewed": true
+  }
+]
