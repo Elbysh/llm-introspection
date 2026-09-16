@@ -1,0 +1,340 @@
+{
+  "dose_selection": {
+    "anchor": 64.0,
+    "basis": "max_abs_pooled_s",
+    "doses": [
+      32.0,
+      64.0,
+      128.0
+    ],
+    "grid": [
+      0.25,
+      0.5,
+      1.0,
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      32.0,
+      64.0,
+      128.0
+    ],
+    "pooled_s": {
+      "concept": {
+        "0.25": -0.0005859375,
+        "0.5": 0.003515625,
+        "1.0": 0.001171875,
+        "2.0": 0.0037109375,
+        "4.0": 0.0044921875,
+        "8.0": 0.17109375,
+        "16.0": 0.462890625,
+        "32.0": 0.5306640625,
+        "64.0": 0.5755859375,
+        "128.0": 0.4552734375
+      },
+      "random": {
+        "0.25": 0.0020833333333333333,
+        "0.5": 0.0026041666666666665,
+        "1.0": 0.0015625,
+        "2.0": 0.0020833333333333333,
+        "4.0": -0.00026041666666666666,
+        "8.0": 0.025260416666666667,
+        "16.0": 0.20520833333333333,
+        "32.0": 0.30364583333333334,
+        "64.0": 0.278125,
+        "128.0": 0.2799479166666667
+      },
+      "scrambled": {
+        "0.25": -0.0001953125,
+        "0.5": 0.00625,
+        "1.0": 0.003125,
+        "2.0": 0.003515625,
+        "4.0": 0.0021484375,
+        "8.0": 0.0416015625,
+        "16.0": 0.250390625,
+        "32.0": 0.25625,
+        "64.0": 0.2681640625,
+        "128.0": 0.2259765625
+      }
+    }
+  },
+  "excluded_layers": [],
+  "matching": "alpha",
+  "model": "Qwen/Qwen3.8-27B",
+  "n_curves": 44,
+  "n_thresholds_reportable_adjusted": 11,
+  "n_trials": 17600,
+  "runs": [
+    "results/experiment1/qwen_scrambled_panel"
+  ],
+  "variance_components": {
+    "concept": {
+      "by_layer": {
+        "12": {
+          "max_direction": "Satellites",
+          "mean_s": 0.37968749999999996,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.1410590010683735
+        },
+        "3": {
+          "max_direction": "recursion",
+          "mean_s": 0.8208333333333333,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.08974065643099936
+        },
+        "32": {
+          "max_direction": "recursion",
+          "mean_s": 0.07473958333333332,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.12058875810860616
+        },
+        "6": {
+          "max_direction": "Satellites",
+          "mean_s": 0.8067708333333334,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.23885835358786112
+        }
+      },
+      "decomposition": {
+        "components": {
+          "direction": 0.011215188768174907,
+          "interaction": 0.011428116692437065,
+          "layer": 0.09767040252685551,
+          "phrase": 0.006353463066948778
+        },
+        "grand_mean": 0.5205078125,
+        "sd": {
+          "direction": 0.10590178831433823,
+          "interaction": 0.10690236991029275,
+          "layer": 0.31252264322262396,
+          "phrase": 0.07970861350537205
+        },
+        "shares": {
+          "direction": 0.08854061138980408,
+          "interaction": 0.09022161462442028,
+          "layer": 0.771079054768629,
+          "phrase": 0.05015871921714688
+        },
+        "total_variance": 0.12666717105441622
+      },
+      "decomposition_direction_layer": {
+        "components": {
+          "direction": 0.01121518876817491,
+          "interaction": 0.007449684143066406,
+          "layer": 0.0976704025268555
+        },
+        "grand_mean": 0.5205078125,
+        "sd": {
+          "direction": 0.10590178831433825,
+          "interaction": 0.08631155277867734,
+          "layer": 0.31252264322262396
+        },
+        "shares": {
+          "direction": 0.09640402471168454,
+          "interaction": 0.06403633046822896,
+          "layer": 0.8395596448200866
+        },
+        "total_variance": 0.1163352754380968
+      },
+      "directions": [
+        "Dust",
+        "Satellites",
+        "recursion",
+        "shutdown"
+      ],
+      "mean_s_by_direction": {
+        "Dust": 0.4901041666666668,
+        "Satellites": 0.6338541666666666,
+        "recursion": 0.5966145833333333,
+        "shutdown": 0.3614583333333333
+      },
+      "n_directions": 4,
+      "n_layers": 4,
+      "n_phrases": 5,
+      "spread_between_directions": {
+        "max": "Satellites",
+        "min": "shutdown",
+        "ratio_max_over_min": 1.753602305475504,
+        "sd": 0.12228485198189189
+      }
+    },
+    "random": {
+      "by_layer": {
+        "12": {
+          "max_direction": "0000",
+          "mean_s": 0.3427083333333334,
+          "min_direction": "0002",
+          "sd_between_directions": 0.30364538664918544
+        },
+        "3": {
+          "max_direction": "0002",
+          "mean_s": 0.4725694444444444,
+          "min_direction": "0001",
+          "sd_between_directions": 0.41465704607118575
+        },
+        "32": {
+          "max_direction": "0000",
+          "mean_s": -0.07430555555555556,
+          "min_direction": "0001",
+          "sd_between_directions": 0.0474425517609729
+        },
+        "6": {
+          "max_direction": "0002",
+          "mean_s": 0.40798611111111116,
+          "min_direction": "0001",
+          "sd_between_directions": 0.06950604906395905
+        }
+      },
+      "decomposition": {
+        "components": {
+          "direction": 0.01296133535879629,
+          "interaction": 0.034845483097029326,
+          "layer": 0.045679637767650466,
+          "phrase": 0.0032220082224151242
+        },
+        "grand_mean": 0.2872395833333333,
+        "sd": {
+          "direction": 0.11384786058067271,
+          "interaction": 0.1866694487510726,
+          "layer": 0.2137279527054205,
+          "phrase": 0.05676273621325107
+        },
+        "shares": {
+          "direction": 0.13402482846833133,
+          "interaction": 0.36031471802062903,
+          "layer": 0.4723437398099564,
+          "phrase": 0.03331671370108302
+        },
+        "total_variance": 0.09670846444589122
+      },
+      "decomposition_direction_layer": {
+        "components": {
+          "direction": 0.012961335358796296,
+          "interaction": 0.032242476851851845,
+          "layer": 0.04567963776765046
+        },
+        "grand_mean": 0.2872395833333334,
+        "sd": {
+          "direction": 0.11384786058067273,
+          "interaction": 0.17956190256246407,
+          "layer": 0.2137279527054205
+        },
+        "shares": {
+          "direction": 0.14261491351716116,
+          "interaction": 0.35476730757416003,
+          "layer": 0.5026177789086789
+        },
+        "total_variance": 0.0908834499782986
+      },
+      "directions": [
+        "0000",
+        "0001",
+        "0002"
+      ],
+      "mean_s_by_direction": {
+        "0000": 0.38671874999999994,
+        "0001": 0.12786458333333334,
+        "0002": 0.34713541666666664
+      },
+      "n_directions": 3,
+      "n_layers": 4,
+      "n_phrases": 5,
+      "spread_between_directions": {
+        "max": "0000",
+        "min": "0001",
+        "ratio_max_over_min": 3.0244399185336044,
+        "sd": 0.13943458336508355
+      }
+    },
+    "scrambled": {
+      "by_layer": {
+        "12": {
+          "max_direction": "Dust",
+          "mean_s": 0.23906249999999998,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.24073470322735557
+        },
+        "3": {
+          "max_direction": "Satellites",
+          "mean_s": 0.5091145833333334,
+          "min_direction": "recursion",
+          "sd_between_directions": 0.3425709736124845
+        },
+        "32": {
+          "max_direction": "Dust",
+          "mean_s": 0.058333333333333334,
+          "min_direction": "recursion",
+          "sd_between_directions": 0.12090215951721427
+        },
+        "6": {
+          "max_direction": "Satellites",
+          "mean_s": 0.19401041666666663,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.15466411626474222
+        }
+      },
+      "decomposition": {
+        "components": {
+          "direction": 0.016625518798828134,
+          "interaction": 0.026082026163736984,
+          "layer": 0.026782718234592016,
+          "phrase": 0.002875035603841146
+        },
+        "grand_mean": 0.2501302083333333,
+        "sd": {
+          "direction": 0.1289399813821459,
+          "interaction": 0.16149930700698684,
+          "layer": 0.1636542643336617,
+          "phrase": 0.05361935848032076
+        },
+        "shares": {
+          "direction": 0.2297443536376138,
+          "interaction": 0.36042172969480213,
+          "layer": 0.3701044378776552,
+          "phrase": 0.039729478789929155
+        },
+        "total_variance": 0.07236529880099826
+      },
+      "decomposition_direction_layer": {
+        "components": {
+          "direction": 0.016625518798828124,
+          "interaction": 0.0234706793891059,
+          "layer": 0.026782718234592016
+        },
+        "grand_mean": 0.2501302083333333,
+        "sd": {
+          "direction": 0.12893998138214588,
+          "interaction": 0.15320143403084027,
+          "layer": 0.1636542643336617
+        },
+        "shares": {
+          "direction": 0.24859133024512256,
+          "interaction": 0.35094287773479155,
+          "layer": 0.40046579202008575
+        },
+        "total_variance": 0.06687891642252605
+      },
+      "directions": [
+        "Dust",
+        "Satellites",
+        "recursion",
+        "shutdown"
+      ],
+      "mean_s_by_direction": {
+        "Dust": 0.37187500000000007,
+        "Satellites": 0.3632812500000001,
+        "recursion": 0.05755208333333332,
+        "shutdown": 0.2078125
+      },
+      "n_directions": 4,
+      "n_layers": 4,
+      "n_phrases": 5,
+      "spread_between_directions": {
+        "max": "Dust",
+        "min": "recursion",
+        "ratio_max_over_min": 6.4615384615384635,
+        "sd": 0.14888706592057455
+      }
+    }
+  }
+}

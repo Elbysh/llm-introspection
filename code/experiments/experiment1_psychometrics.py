@@ -537,7 +537,22 @@ def build_conditions(calibration, args):
                 for direction_id in ids:
                     conditions[layer].append(("scrambled", direction_id))
         if "random" in args.families:
-            ids = calibration.direction_ids("random", layer)[: args.num_random]
+            ids = calibration.direction_ids("random", layer)
+            if args.random_ids:
+                # Extending an existing sweep means running the directions it did NOT
+                # cover, and --num_random can only take a prefix. Re-running the prefix
+                # to reach 0003+ would put two rows under each pairing key of doc 5.8,
+                # where the paired estimator expects exactly two per (A-target,
+                # B-target) pair and drops any key carrying four -- silently.
+                by_suffix = {did.rsplit("__", 1)[-1]: did for did in ids}
+                unknown = [s for s in args.random_ids if s not in by_suffix]
+                if unknown:
+                    raise ValueError(
+                        f"random ids {unknown} are not calibrated at layer {layer}; "
+                        f"available: {sorted(by_suffix)}")
+                ids = [by_suffix[s] for s in args.random_ids]
+            else:
+                ids = ids[: args.num_random]
             if not ids:
                 raise ValueError(f"no random direction calibrated at layer {layer}")
             for direction_id in ids:
@@ -1115,6 +1130,9 @@ def build_parser():
     parser.add_argument("--matchings", nargs="+", default=list(MATCHINGS), choices=list(MATCHINGS))
     parser.add_argument("--concepts", nargs="+", default=None,
                         help="Concept directions to test (default: the calibrated ones).")
+    parser.add_argument("--random_ids", nargs="+", default=None,
+                        help="explicit fixed-random suffixes, e.g. 0003 0004; overrides "
+                             "--num_random, which can only take the first n")
     parser.add_argument("--num_random", type=int, default=2,
                         help="Fixed random directions per layer, taken from the bank.")
     parser.add_argument("--num_noise", type=int, default=1,

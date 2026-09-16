@@ -1,0 +1,27 @@
+[transformers] Model config: pad_token_id must be `None` or an integer within the vocabulary (between 0 and 31999), got -1. This may result in unexpected behavior.
+[transformers] The following generation flags are not valid and may be ignored: ['pad_token_id']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+Loading weights:   0%|          | 0/21 [00:00<?, ?it/s]Loading weights: 100%|██████████| 21/21 [00:00<00:00, 13622.08it/s]
+Baseline vectors:   0%|          | 0/4 [00:00<?, ?it/s]Baseline vectors:  25%|██▌       | 1/4 [00:00<00:00,  8.84it/s]Baseline vectors: 100%|██████████| 4/4 [00:00<00:00, 32.42it/s]
+Concept vectors:   0%|          | 0/2 [00:00<?, ?it/s]Concept vectors: 100%|██████████| 2/2 [00:00<00:00, 372.13it/s]
+Baseline vectors:   0%|          | 0/4 [00:00<?, ?it/s]Baseline vectors: 100%|██████████| 4/4 [00:00<00:00, 388.75it/s]
+Concept vectors:   0%|          | 0/2 [00:00<?, ?it/s]Concept vectors: 100%|██████████| 2/2 [00:00<00:00, 384.92it/s]
+Baseline vectors:   0%|          | 0/4 [00:00<?, ?it/s]Baseline vectors: 100%|██████████| 4/4 [00:00<00:00, 381.58it/s]
+Concept vectors:   0%|          | 0/2 [00:00<?, ?it/s]Concept vectors: 100%|██████████| 2/2 [00:00<00:00, 386.20it/s]
+Baseline vectors:   0%|          | 0/4 [00:00<?, ?it/s]Baseline vectors: 100%|██████████| 4/4 [00:00<00:00, 390.39it/s]
+Concept vectors:   0%|          | 0/2 [00:00<?, ?it/s]Concept vectors: 100%|██████████| 2/2 [00:00<00:00, 388.52it/s]
+fibonacci_numbers (positive):   0%|          | 0/2 [00:00<?, ?it/s]fibonacci_numbers (positive): 100%|██████████| 2/2 [00:00<00:00, 208.44it/s]
+fibonacci_numbers (negative):   0%|          | 0/2 [00:00<?, ?it/s]fibonacci_numbers (negative): 100%|██████████| 2/2 [00:00<00:00, 335.30it/s]
+recursion (positive):   0%|          | 0/2 [00:00<?, ?it/s]recursion (positive): 100%|██████████| 2/2 [00:00<00:00, 355.03it/s]
+recursion (negative):   0%|          | 0/2 [00:00<?, ?it/s]recursion (negative): 100%|██████████| 2/2 [00:00<00:00, 354.73it/s]
+fibonacci_numbers (positive):   0%|          | 0/2 [00:00<?, ?it/s]fibonacci_numbers (positive): 100%|██████████| 2/2 [00:00<00:00, 348.57it/s]
+fibonacci_numbers (negative):   0%|          | 0/2 [00:00<?, ?it/s]fibonacci_numbers (negative): 100%|██████████| 2/2 [00:00<00:00, 356.72it/s]
+recursion (positive):   0%|          | 0/2 [00:00<?, ?it/s]recursion (positive): 100%|██████████| 2/2 [00:00<00:00, 371.29it/s]
+recursion (negative):   0%|          | 0/2 [00:00<?, ?it/s]recursion (negative): 100%|██████████| 2/2 [00:00<00:00, 369.72it/s]
+fibonacci_numbers (positive):   0%|          | 0/2 [00:00<?, ?it/s]fibonacci_numbers (positive): 100%|██████████| 2/2 [00:00<00:00, 353.26it/s]
+fibonacci_numbers (negative):   0%|          | 0/2 [00:00<?, ?it/s]fibonacci_numbers (negative): 100%|██████████| 2/2 [00:00<00:00, 359.78it/s]
+recursion (positive):   0%|          | 0/2 [00:00<?, ?it/s]recursion (positive): 100%|██████████| 2/2 [00:00<00:00, 359.27it/s]
+recursion (negative):   0%|          | 0/2 [00:00<?, ?it/s]recursion (negative): 100%|██████████| 2/2 [00:00<00:00, 368.67it/s]
+fibonacci_numbers (positive):   0%|          | 0/2 [00:00<?, ?it/s]fibonacci_numbers (positive): 100%|██████████| 2/2 [00:00<00:00, 351.64it/s]
+fibonacci_numbers (negative):   0%|          | 0/2 [00:00<?, ?it/s]fibonacci_numbers (negative): 100%|██████████| 2/2 [00:00<00:00, 356.20it/s]
+recursion (positive):   0%|          | 0/2 [00:00<?, ?it/s]recursion (positive): 100%|██████████| 2/2 [00:00<00:00, 373.18it/s]
+recursion (negative):   0%|          | 0/2 [00:00<?, ?it/s]recursion (negative): 100%|██████████| 2/2 [00:00<00:00, 368.18it/s]

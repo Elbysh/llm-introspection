@@ -1,0 +1,555 @@
+WARNING: the calibration in this directory was produced by a different version of configs/experiment_0_calibration/development_full.yaml (config sha256 3545c6bda6bd4f0d3a08882dd073a85a180e2c4d0df8aa357b953ab63977ddf9 vs 2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1)
+========================================================================
+EXPERIMENT 1: 2AFC LOCALIZATION, ALPHA- AND Z-MATCHED PSYCHOMETRICS
+========================================================================
+Model:       meta-llama/Llama-3.1-8B-Instruct
+Calibration: /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment_0_calibration (config=configs/experiment_0_calibration/development_full.yaml, estimator=sd)
+Layers:      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+Families:    ['concept', 'random', 'noise', 'dropout']
+Matchings:   ['alpha', 'z']
+Alpha doses: [0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0]
+z doses:     [0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.64, 1.28, 2.56, 5.12, 10.24, 20.48]
+Output:      /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32
+Pairs:       5 (largest token-length gap 0)
+Forward passes: 300080 perturbed + 20 sham
+Directions:  217 rebuilt and matched to their calibrated norms
+Model loaded.
+Answer token ids: A=362 ('ĠA'), B=426 ('ĠB')
+Prompt tail: '<|start_header_id|>assistant<|end_header_id|>\n\nThe answer is'
+Perturbed spans: [' The sun sets behind the mountains.\n', ' The river flows to the sea.\n\n']
+Running 20 shams...
+
+Saved 300100 trials to /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/trials.csv
+Saved summary to /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/summary.json
+
+Thresholds (blank when 75% is not bracketed in the tested range):
+ layer    family  matching    metric  acc@peak  threshold75              bracket
+     0   concept     alpha       raw       69%                                  
+     0   concept     alpha  adjusted       90%                            [1, 2]
+     0   concept         z       raw       69%                                  
+     0   concept         z  adjusted       79%        16.39         [0.64, 1.28]
+     0   dropout     alpha       raw       62%                                  
+     0   dropout     alpha  adjusted       80%                            [1, 2]
+     0   dropout         z       raw       50%                                  
+     0   dropout         z  adjusted       56%                                  
+     0     noise     alpha       raw       65%                                  
+     0     noise     alpha  adjusted       81%                            [1, 2]
+     0     noise         z       raw       50%                                  
+     0     noise         z  adjusted       61%                                  
+     0    random     alpha       raw       62%                                  
+     0    random     alpha  adjusted       92%                            [1, 2]
+     0    random         z       raw       58%                                  
+     0    random         z  adjusted       69%                                  
+     1   concept     alpha       raw       56%                                  
+     1   concept     alpha  adjusted       80%                            [2, 4]
+     1   concept         z       raw       55%                                  
+     1   concept         z  adjusted       79%                      [0.01, 0.02]
+     1   dropout     alpha       raw       66%                                  
+     1   dropout     alpha  adjusted       82%                            [1, 2]
+     1   dropout         z       raw       65%                                  
+     1   dropout         z  adjusted       78%                      [0.64, 1.28]
+     1     noise     alpha       raw       61%                                  
+     1     noise     alpha  adjusted       88%                            [1, 2]
+     1     noise         z       raw       63%                                  
+     1     noise         z  adjusted       78%        17.31         [0.32, 0.64]
+     1    random     alpha       raw       60%                                  
+     1    random     alpha  adjusted       68%                                  
+     1    random         z       raw       57%                                  
+     1    random         z  adjusted       63%                                  
+     2   concept     alpha       raw       50%                                  
+     2   concept     alpha  adjusted       79%                          [16, 32]
+     2   concept         z       raw       50%                                  
+     2   concept         z  adjusted       78%                      [0.08, 0.16]
+     2   dropout     alpha       raw       71%                                  
+     2   dropout     alpha  adjusted       79%                            [1, 2]
+     2   dropout         z       raw       57%                                  
+     2   dropout         z  adjusted       86%        7.533         [0.64, 1.28]
+     2     noise     alpha       raw       61%                                  
+     2     noise     alpha  adjusted       82%                            [2, 4]
+     2     noise         z       raw       55%                                  
+     2     noise         z  adjusted       83%        8.548         [0.64, 1.28]
+     2    random     alpha       raw       63%                                  
+     2    random     alpha  adjusted       77%                            [2, 4]
+     2    random         z       raw       59%                                  
+     2    random         z  adjusted       69%                                  
+     3   concept     alpha       raw       56%                                  
+     3   concept     alpha  adjusted       82%                            [2, 4]
+     3   concept         z       raw       57%                                  
+     3   concept         z  adjusted       75%                      [0.01, 0.02]
+     3   dropout     alpha       raw       60%                                  
+     3   dropout     alpha  adjusted       86%                            [2, 4]
+     3   dropout         z       raw       61%                                  
+     3   dropout         z  adjusted       87%                      [0.64, 1.28]
+     3     noise     alpha       raw       64%                                  
+     3     noise     alpha  adjusted       83%                            [2, 4]
+     3     noise         z       raw       56%                                  
+     3     noise         z  adjusted       84%        4.226         [0.64, 1.28]
+     3    random     alpha       raw       72%                                  
+     3    random     alpha  adjusted       89%                            [2, 4]
+     3    random         z       raw       75%                                  
+     3    random         z  adjusted       84%                      [0.32, 0.64]
+     4   concept     alpha       raw       52%                                  
+     4   concept     alpha  adjusted       75%                                  
+     4   concept         z       raw       53%                                  
+     4   concept         z  adjusted       79%        2.541         [0.64, 1.28]
+     4   dropout     alpha       raw       57%                                  
+     4   dropout     alpha  adjusted       76%                           [8, 16]
+     4   dropout         z       raw       54%                                  
+     4   dropout         z  adjusted       76%                      [1.28, 2.56]
+     4     noise     alpha       raw       61%                                  
+     4     noise     alpha  adjusted       73%                                  
+     4     noise         z       raw       54%                                  
+     4     noise         z  adjusted       73%                                  
+     4    random     alpha       raw       68%                                  
+     4    random     alpha  adjusted       74%                                  
+     4    random         z       raw       57%                                  
+     4    random         z  adjusted       78%        12.58         [5.12, 10.2]
+     5   concept     alpha       raw       51%                                  
+     5   concept     alpha  adjusted       76%                           [8, 16]
+     5   concept         z       raw       52%                                  
+     5   concept         z  adjusted       77%        4.677         [0.64, 1.28]
+     5   dropout     alpha       raw       62%                                  
+     5   dropout     alpha  adjusted       74%                                  
+     5   dropout         z       raw       54%                                  
+     5   dropout         z  adjusted       81%         10.1         [1.28, 2.56]
+     5     noise     alpha       raw       65%                                  
+     5     noise     alpha  adjusted       74%                                  
+     5     noise         z       raw       52%                                  
+     5     noise         z  adjusted       75%                      [1.28, 2.56]
+     5    random     alpha       raw       69%                                  
+     5    random     alpha  adjusted       79%                            [2, 4]
+     5    random         z       raw       54%                                  
+     5    random         z  adjusted       82%        8.923         [5.12, 10.2]
+     6   concept     alpha       raw       53%                                  
+     6   concept     alpha  adjusted       75%        89.48            [64, 128]
+     6   concept         z       raw       52%                                  
+     6   concept         z  adjusted       79%        2.785         [0.64, 1.28]
+     6   dropout     alpha       raw       69%                                  
+     6   dropout     alpha  adjusted       68%                                  
+     6   dropout         z       raw       52%                                  
+     6   dropout         z  adjusted       71%                                  
+     6     noise     alpha       raw       62%                                  
+     6     noise     alpha  adjusted       67%                                  
+     6     noise         z       raw       55%                                  
+     6     noise         z  adjusted       69%                                  
+     6    random     alpha       raw       60%                                  
+     6    random     alpha  adjusted       80%                            [4, 8]
+     6    random         z       raw       58%                                  
+     6    random         z  adjusted       81%         11.1         [5.12, 10.2]
+     7   concept     alpha       raw       56%                                  
+     7   concept     alpha  adjusted       75%                                  
+     7   concept         z       raw       53%                                  
+     7   concept         z  adjusted       77%        6.142         [1.28, 2.56]
+     7   dropout     alpha       raw       65%                                  
+     7   dropout     alpha  adjusted       67%                                  
+     7   dropout         z       raw       59%                                  
+     7   dropout         z  adjusted       69%                                  
+     7     noise     alpha       raw       62%                                  
+     7     noise     alpha  adjusted       71%                                  
+     7     noise         z       raw       52%                                  
+     7     noise         z  adjusted       69%                                  
+     7    random     alpha       raw       68%                                  
+     7    random     alpha  adjusted       61%                                  
+     7    random         z       raw       66%                                  
+     7    random         z  adjusted       60%                                  
+     8   concept     alpha       raw       56%                                  
+     8   concept     alpha  adjusted       77%                         [64, 128]
+     8   concept         z       raw       57%                                  
+     8   concept         z  adjusted       80%                      [0.64, 1.28]
+     8   dropout     alpha       raw       70%                                  
+     8   dropout     alpha  adjusted       74%                                  
+     8   dropout         z       raw       54%                                  
+     8   dropout         z  adjusted       76%                      [2.56, 5.12]
+     8     noise     alpha       raw       66%                                  
+     8     noise     alpha  adjusted       73%                                  
+     8     noise         z       raw       57%                                  
+     8     noise         z  adjusted       61%                                  
+     8    random     alpha       raw       66%                                  
+     8    random     alpha  adjusted       70%                                  
+     8    random         z       raw       56%                                  
+     8    random         z  adjusted       78%                      [5.12, 10.2]
+     9   concept     alpha       raw       57%                                  
+     9   concept     alpha  adjusted       81%                            [4, 8]
+     9   concept         z       raw       60%                                  
+     9   concept         z  adjusted       84%                      [0.64, 1.28]
+     9   dropout     alpha       raw       62%                                  
+     9   dropout     alpha  adjusted       81%                            [4, 8]
+     9   dropout         z       raw       64%                                  
+     9   dropout         z  adjusted       80%        11.33         [1.28, 2.56]
+     9     noise     alpha       raw       64%                                  
+     9     noise     alpha  adjusted       82%                            [4, 8]
+     9     noise         z       raw       63%                                  
+     9     noise         z  adjusted       75%                      [5.12, 10.2]
+     9    random     alpha       raw       70%                                  
+     9    random     alpha  adjusted       82%                            [4, 8]
+     9    random         z       raw       65%                                  
+     9    random         z  adjusted       84%        5.279         [1.28, 2.56]
+    10   concept     alpha       raw       61%                                  
+    10   concept     alpha  adjusted       81%        23.81             [16, 32]
+    10   concept         z       raw       62%                                  
+    10   concept         z  adjusted       83%                      [0.16, 0.32]
+    10   dropout     alpha       raw       74%                                  
+    10   dropout     alpha  adjusted       76%                            [4, 8]
+    10   dropout         z       raw       57%                                  
+    10   dropout         z  adjusted       75%                      [2.56, 5.12]
+    10     noise     alpha       raw       74%                                  
+    10     noise     alpha  adjusted       74%                                  
+    10     noise         z       raw       64%                                  
+    10     noise         z  adjusted       72%                                  
+    10    random     alpha       raw       78%                          [32, 64]
+    10    random     alpha  adjusted       68%                                  
+    10    random         z       raw       73%                                  
+    10    random         z  adjusted       62%                                  
+    11   concept     alpha       raw       56%                                  
+    11   concept     alpha  adjusted       83%                            [4, 8]
+    11   concept         z       raw       60%                                  
+    11   concept         z  adjusted       84%                      [0.08, 0.16]
+    11   dropout     alpha       raw       65%                                  
+    11   dropout     alpha  adjusted       66%                                  
+    11   dropout         z       raw       54%                                  
+    11   dropout         z  adjusted       63%                                  
+    11     noise     alpha       raw       70%                                  
+    11     noise     alpha  adjusted       74%                                  
+    11     noise         z       raw       61%                                  
+    11     noise         z  adjusted       72%                                  
+    11    random     alpha       raw       64%                                  
+    11    random     alpha  adjusted       68%                                  
+    11    random         z       raw       53%                                  
+    11    random         z  adjusted       68%                                  
+    12   concept     alpha       raw       55%                                  
+    12   concept     alpha  adjusted       73%                                  
+    12   concept         z       raw       58%                                  
+    12   concept         z  adjusted       78%                      [0.16, 0.32]
+    12   dropout     alpha       raw       68%                                  
+    12   dropout     alpha  adjusted       67%                                  
+    12   dropout         z       raw       60%                                  
+    12   dropout         z  adjusted       62%                                  
+    12     noise     alpha       raw       59%                                  
+    12     noise     alpha  adjusted       70%                                  
+    12     noise         z       raw       53%                                  
+    12     noise         z  adjusted       59%                                  
+    12    random     alpha       raw       60%                                  
+    12    random     alpha  adjusted       69%                                  
+    12    random         z       raw       51%                                  
+    12    random         z  adjusted       67%                                  
+    13   concept     alpha       raw       52%                                  
+    13   concept     alpha  adjusted       80%                            [4, 8]
+    13   concept         z       raw       57%                                  
+    13   concept         z  adjusted       81%                      [0.04, 0.08]
+    13   dropout     alpha       raw       61%                                  
+    13   dropout     alpha  adjusted       58%                                  
+    13   dropout         z       raw       51%                                  
+    13   dropout         z  adjusted       68%                                  
+    13     noise     alpha       raw       56%                                  
+    13     noise     alpha  adjusted       78%                            [4, 8]
+    13     noise         z       raw       51%                                  
+    13     noise         z  adjusted       65%                                  
+    13    random     alpha       raw       52%                                  
+    13    random     alpha  adjusted       70%                                  
+    13    random         z       raw       52%                                  
+    13    random         z  adjusted       68%                                  
+    14   concept     alpha       raw       50%                                  
+    14   concept     alpha  adjusted       52%                                  
+    14   concept         z       raw       50%                                  
+    14   concept         z  adjusted       52%                                  
+    14   dropout     alpha       raw       50%                                  
+    14   dropout     alpha  adjusted       57%                                  
+    14   dropout         z       raw       51%                                  
+    14   dropout         z  adjusted       52%                                  
+    14     noise     alpha       raw       50%                                  
+    14     noise     alpha  adjusted       51%                                  
+    14     noise         z       raw       50%                                  
+    14     noise         z  adjusted       56%                                  
+    14    random     alpha       raw       50%                                  
+    14    random     alpha  adjusted       50%                                  
+    14    random         z       raw       50%                                  
+    14    random         z  adjusted       51%                                  
+    15   concept     alpha       raw       50%                                  
+    15   concept     alpha  adjusted       56%                                  
+    15   concept         z       raw       50%                                  
+    15   concept         z  adjusted       54%                                  
+    15   dropout     alpha       raw       52%                                  
+    15   dropout     alpha  adjusted       60%                                  
+    15   dropout         z       raw       50%                                  
+    15   dropout         z  adjusted       54%                                  
+    15     noise     alpha       raw       50%                                  
+    15     noise     alpha  adjusted       54%                                  
+    15     noise         z       raw       50%                                  
+    15     noise         z  adjusted       56%                                  
+    15    random     alpha       raw       50%                                  
+    15    random     alpha  adjusted       55%                                  
+    15    random         z       raw       50%                                  
+    15    random         z  adjusted       58%                                  
+    16   concept     alpha       raw       51%                                  
+    16   concept     alpha  adjusted       53%                                  
+    16   concept         z       raw       51%                                  
+    16   concept         z  adjusted       52%                                  
+    16   dropout     alpha       raw       52%                                  
+    16   dropout     alpha  adjusted       52%                                  
+    16   dropout         z       raw       50%                                  
+    16   dropout         z  adjusted       53%                                  
+    16     noise     alpha       raw       50%                                  
+    16     noise     alpha  adjusted       52%                                  
+    16     noise         z       raw       50%                                  
+    16     noise         z  adjusted       56%                                  
+    16    random     alpha       raw       50%                                  
+    16    random     alpha  adjusted       54%                                  
+    16    random         z       raw       50%                                  
+    16    random         z  adjusted       55%                                  
+    17   concept     alpha       raw       50%                                  
+    17   concept     alpha  adjusted       60%                                  
+    17   concept         z       raw       50%                                  
+    17   concept         z  adjusted       57%                                  
+    17   dropout     alpha       raw       50%                                  
+    17   dropout     alpha  adjusted       55%                                  
+    17   dropout         z       raw       50%                                  
+    17   dropout         z  adjusted       52%                                  
+    17     noise     alpha       raw       51%                                  
+    17     noise     alpha  adjusted       55%                                  
+    17     noise         z       raw       50%                                  
+    17     noise         z  adjusted       58%                                  
+    17    random     alpha       raw       50%                                  
+    17    random     alpha  adjusted       57%                                  
+    17    random         z       raw       50%                                  
+    17    random         z  adjusted       55%                                  
+    18   concept     alpha       raw       50%                                  
+    18   concept     alpha  adjusted       52%                                  
+    18   concept         z       raw       51%                                  
+    18   concept         z  adjusted       53%                                  
+    18   dropout     alpha       raw       51%                                  
+    18   dropout     alpha  adjusted       54%                                  
+    18   dropout         z       raw       50%                                  
+    18   dropout         z  adjusted       54%                                  
+    18     noise     alpha       raw       50%                                  
+    18     noise     alpha  adjusted       52%                                  
+    18     noise         z       raw       50%                                  
+    18     noise         z  adjusted       58%                                  
+    18    random     alpha       raw       50%                                  
+    18    random     alpha  adjusted       55%                                  
+    18    random         z       raw       50%                                  
+    18    random         z  adjusted       52%                                  
+    19   concept     alpha       raw       50%                                  
+    19   concept     alpha  adjusted       53%                                  
+    19   concept         z       raw       50%                                  
+    19   concept         z  adjusted       51%                                  
+    19   dropout     alpha       raw       50%                                  
+    19   dropout     alpha  adjusted       56%                                  
+    19   dropout         z       raw       50%                                  
+    19   dropout         z  adjusted       56%                                  
+    19     noise     alpha       raw       50%                                  
+    19     noise     alpha  adjusted       52%                                  
+    19     noise         z       raw       50%                                  
+    19     noise         z  adjusted       56%                                  
+    19    random     alpha       raw       50%                                  
+    19    random     alpha  adjusted       54%                                  
+    19    random         z       raw       50%                                  
+    19    random         z  adjusted       57%                                  
+    20   concept     alpha       raw       50%                                  
+    20   concept     alpha  adjusted       54%                                  
+    20   concept         z       raw       50%                                  
+    20   concept         z  adjusted       51%                                  
+    20   dropout     alpha       raw       50%                                  
+    20   dropout     alpha  adjusted       54%                                  
+    20   dropout         z       raw       50%                                  
+    20   dropout         z  adjusted       54%                                  
+    20     noise     alpha       raw       50%                                  
+    20     noise     alpha  adjusted       55%                                  
+    20     noise         z       raw       50%                                  
+    20     noise         z  adjusted       53%                                  
+    20    random     alpha       raw       50%                                  
+    20    random     alpha  adjusted       53%                                  
+    20    random         z       raw       50%                                  
+    20    random         z  adjusted       52%                                  
+    21   concept     alpha       raw       51%                                  
+    21   concept     alpha  adjusted       52%                                  
+    21   concept         z       raw       50%                                  
+    21   concept         z  adjusted       53%                                  
+    21   dropout     alpha       raw       50%                                  
+    21   dropout     alpha  adjusted       56%                                  
+    21   dropout         z       raw       50%                                  
+    21   dropout         z  adjusted       52%                                  
+    21     noise     alpha       raw       50%                                  
+    21     noise     alpha  adjusted       52%                                  
+    21     noise         z       raw       50%                                  
+    21     noise         z  adjusted       52%                                  
+    21    random     alpha       raw       50%                                  
+    21    random     alpha  adjusted       53%                                  
+    21    random         z       raw       50%                                  
+    21    random         z  adjusted       52%                                  
+    22   concept     alpha       raw       51%                                  
+    22   concept     alpha  adjusted       52%                                  
+    22   concept         z       raw       51%                                  
+    22   concept         z  adjusted       54%                                  
+    22   dropout     alpha       raw       51%                                  
+    22   dropout     alpha  adjusted       56%                                  
+    22   dropout         z       raw       50%                                  
+    22   dropout         z  adjusted       53%                                  
+    22     noise     alpha       raw       50%                                  
+    22     noise     alpha  adjusted       61%                                  
+    22     noise         z       raw       50%                                  
+    22     noise         z  adjusted       56%                                  
+    22    random     alpha       raw       50%                                  
+    22    random     alpha  adjusted       52%                                  
+    22    random         z       raw       50%                                  
+    22    random         z  adjusted       53%                                  
+    23   concept     alpha       raw       50%                                  
+    23   concept     alpha  adjusted       52%                                  
+    23   concept         z       raw       51%                                  
+    23   concept         z  adjusted       50%                                  
+    23   dropout     alpha       raw       50%                                  
+    23   dropout     alpha  adjusted       59%                                  
+    23   dropout         z       raw       50%                                  
+    23   dropout         z  adjusted       55%                                  
+    23     noise     alpha       raw       50%                                  
+    23     noise     alpha  adjusted       56%                                  
+    23     noise         z       raw       50%                                  
+    23     noise         z  adjusted       54%                                  
+    23    random     alpha       raw       50%                                  
+    23    random     alpha  adjusted       58%                                  
+    23    random         z       raw       50%                                  
+    23    random         z  adjusted       56%                                  
+    24   concept     alpha       raw       50%                                  
+    24   concept     alpha  adjusted       52%                                  
+    24   concept         z       raw       50%                                  
+    24   concept         z  adjusted       53%                                  
+    24   dropout     alpha       raw       50%                                  
+    24   dropout     alpha  adjusted       56%                                  
+    24   dropout         z       raw       50%                                  
+    24   dropout         z  adjusted       54%                                  
+    24     noise     alpha       raw       50%                                  
+    24     noise     alpha  adjusted       57%                                  
+    24     noise         z       raw       50%                                  
+    24     noise         z  adjusted       53%                                  
+    24    random     alpha       raw       50%                                  
+    24    random     alpha  adjusted       54%                                  
+    24    random         z       raw       50%                                  
+    24    random         z  adjusted       53%                                  
+    25   concept     alpha       raw       50%                                  
+    25   concept     alpha  adjusted       52%                                  
+    25   concept         z       raw       50%                                  
+    25   concept         z  adjusted       52%                                  
+    25   dropout     alpha       raw       50%                                  
+    25   dropout     alpha  adjusted       57%                                  
+    25   dropout         z       raw       50%                                  
+    25   dropout         z  adjusted       52%                                  
+    25     noise     alpha       raw       50%                                  
+    25     noise     alpha  adjusted       53%                                  
+    25     noise         z       raw       50%                                  
+    25     noise         z  adjusted       56%                                  
+    25    random     alpha       raw       50%                                  
+    25    random     alpha  adjusted       53%                                  
+    25    random         z       raw       50%                                  
+    25    random         z  adjusted       52%                                  
+    26   concept     alpha       raw       50%                                  
+    26   concept     alpha  adjusted       53%                                  
+    26   concept         z       raw       50%                                  
+    26   concept         z  adjusted       54%                                  
+    26   dropout     alpha       raw       50%                                  
+    26   dropout     alpha  adjusted       56%                                  
+    26   dropout         z       raw       50%                                  
+    26   dropout         z  adjusted       54%                                  
+    26     noise     alpha       raw       50%                                  
+    26     noise     alpha  adjusted       59%                                  
+    26     noise         z       raw       50%                                  
+    26     noise         z  adjusted       53%                                  
+    26    random     alpha       raw       50%                                  
+    26    random     alpha  adjusted       55%                                  
+    26    random         z       raw       50%                                  
+    26    random         z  adjusted       54%                                  
+    27   concept     alpha       raw       50%                                  
+    27   concept     alpha  adjusted       53%                                  
+    27   concept         z       raw       50%                                  
+    27   concept         z  adjusted       54%                                  
+    27   dropout     alpha       raw       50%                                  
+    27   dropout     alpha  adjusted       52%                                  
+    27   dropout         z       raw       50%                                  
+    27   dropout         z  adjusted       54%                                  
+    27     noise     alpha       raw       50%                                  
+    27     noise     alpha  adjusted       55%                                  
+    27     noise         z       raw       50%                                  
+    27     noise         z  adjusted       59%                                  
+    27    random     alpha       raw       50%                                  
+    27    random     alpha  adjusted       53%                                  
+    27    random         z       raw       50%                                  
+    27    random         z  adjusted       59%                                  
+    28   concept     alpha       raw       50%                                  
+    28   concept     alpha  adjusted       55%                                  
+    28   concept         z       raw       50%                                  
+    28   concept         z  adjusted       54%                                  
+    28   dropout     alpha       raw       50%                                  
+    28   dropout     alpha  adjusted       56%                                  
+    28   dropout         z       raw       50%                                  
+    28   dropout         z  adjusted       56%                                  
+    28     noise     alpha       raw       50%                                  
+    28     noise     alpha  adjusted       58%                                  
+    28     noise         z       raw       50%                                  
+    28     noise         z  adjusted       54%                                  
+    28    random     alpha       raw       50%                                  
+    28    random     alpha  adjusted       55%                                  
+    28    random         z       raw       50%                                  
+    28    random         z  adjusted       52%                                  
+    29   concept     alpha       raw       50%                                  
+    29   concept     alpha  adjusted       53%                                  
+    29   concept         z       raw       50%                                  
+    29   concept         z  adjusted       53%                                  
+    29   dropout     alpha       raw       50%                                  
+    29   dropout     alpha  adjusted       53%                                  
+    29   dropout         z       raw       50%                                  
+    29   dropout         z  adjusted       59%                                  
+    29     noise     alpha       raw       50%                                  
+    29     noise     alpha  adjusted       55%                                  
+    29     noise         z       raw       50%                                  
+    29     noise         z  adjusted       55%                                  
+    29    random     alpha       raw       50%                                  
+    29    random     alpha  adjusted       52%                                  
+    29    random         z       raw       50%                                  
+    29    random         z  adjusted       52%                                  
+    30   concept     alpha       raw       50%                                  
+    30   concept     alpha  adjusted       52%                                  
+    30   concept         z       raw       50%                                  
+    30   concept         z  adjusted       52%                                  
+    30   dropout     alpha       raw       50%                                  
+    30   dropout     alpha  adjusted       52%                                  
+    30   dropout         z       raw       50%                                  
+    30   dropout         z  adjusted       54%                                  
+    30     noise     alpha       raw       50%                                  
+    30     noise     alpha  adjusted       52%                                  
+    30     noise         z       raw       50%                                  
+    30     noise         z  adjusted       51%                                  
+    30    random     alpha       raw       50%                                  
+    30    random     alpha  adjusted       52%                                  
+    30    random         z       raw       50%                                  
+    30    random         z  adjusted       53%                                  
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer0.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer1.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer2.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer3.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer4.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer5.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer6.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer7.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer8.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer9.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer10.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer11.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer12.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer13.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer14.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer15.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer16.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer17.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer18.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer19.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer20.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer21.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer22.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer23.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer24.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer25.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer26.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer27.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer28.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer29.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32/curves_layer30.png
+
+EXPERIMENT COMPLETE

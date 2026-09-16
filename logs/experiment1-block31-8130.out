@@ -1,0 +1,41 @@
+WARNING: the calibration in this directory was produced by a different version of configs/experiment_0_calibration/development_full.yaml (config sha256 3545c6bda6bd4f0d3a08882dd073a85a180e2c4d0df8aa357b953ab63977ddf9 vs 2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1)
+========================================================================
+EXPERIMENT 1: 2AFC LOCALIZATION, ALPHA- AND Z-MATCHED PSYCHOMETRICS
+========================================================================
+Model:       meta-llama/Llama-3.1-8B-Instruct
+Calibration: /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment_0_calibration (config=configs/experiment_0_calibration/development_full.yaml, estimator=sd)
+Layers:      [31]
+Families:    ['random', 'noise', 'dropout']
+Matchings:   ['alpha', 'z']
+Alpha doses: [0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0]
+z doses:     [0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.64, 1.28, 2.56, 5.12, 10.24, 20.48]
+Output:      /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32_block31
+Pairs:       5 (largest token-length gap 0)
+Forward passes: 6160 perturbed + 20 sham
+Directions:  3 rebuilt and matched to their calibrated norms
+Model loaded.
+Answer token ids: A=362 ('ĠA'), B=426 ('ĠB')
+Prompt tail: '<|start_header_id|>assistant<|end_header_id|>\n\nThe answer is'
+Perturbed spans: [' The sun sets behind the mountains.\n', ' The river flows to the sea.\n\n']
+Running 20 shams...
+
+Saved 6180 trials to /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32_block31/trials.csv
+Saved summary to /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32_block31/summary.json
+
+Thresholds (blank when 75% is not bracketed in the tested range):
+ layer    family  matching    metric  acc@peak  threshold75              bracket
+    31   dropout     alpha       raw       50%                                  
+    31   dropout     alpha  adjusted       50%                                  
+    31   dropout         z       raw       50%                                  
+    31   dropout         z  adjusted       50%                                  
+    31     noise     alpha       raw       50%                                  
+    31     noise     alpha  adjusted       50%                                  
+    31     noise         z       raw       50%                                  
+    31     noise         z  adjusted       50%                                  
+    31    random     alpha       raw       50%                                  
+    31    random     alpha  adjusted       50%                                  
+    31    random         z       raw       50%                                  
+    31    random         z  adjusted       50%                                  
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32_block31/curves_layer31.png
+
+EXPERIMENT COMPLETE

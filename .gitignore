@@ -213,9 +213,32 @@ tempCodeRunnerFile.py
 # PyPI configuration file
 .pypirc
 
-# Experiment results and activation tensors
-results/
+# Experiment results and activation tensors. Everything under results/ is local by
+# default and force-added when a specific artefact has to be versioned.
+#
+# Experiment 1 is the exception with a policy: only the grouped panels of
+# code/analysis/consolidate_experiment1_panel.py are tracked, one per model and dose
+# rule, because they already carry the right arm of every contributing sweep and are what
+# the figures and the Experiment 3 analyses read. The source sweeps stay local -- they
+# are ~300 MB of rows the panels already contain. Rebuild a panel from them with that
+# script; the command is in docs/misc/experiment3-variabilite-findings.md.
+# The exclusion is unwound one level at a time on purpose: git never descends into an
+# excluded directory, so a bare "results/" makes the negations below unreachable.
+results/*
 runs/
+!results/experiment1/
+results/experiment1/*
+!results/experiment1/llama_z_panel/
+!results/experiment1/llama_alpha_panel/
+!results/experiment1/qwen_z_panel/
+!results/experiment1/qwen_alpha_panel/
+!results/experiment1/qwen_scrambled_panel/
+
+# Experiment 3 reads those panels and writes only small analysis outputs -- a report, a
+# per-direction table and three figures per arm -- so the whole directory is tracked and a
+# new arm needs no rule of its own. The bulky exceptions are the *_source/ row dumps, kept
+# only where the contributing sweep is nowhere else in the repo.
+!results/experiment3/
 
 # Keep the compact Experiment 2 export under version control. Raw layer
 # outputs remain ignored in the nested layers directory.

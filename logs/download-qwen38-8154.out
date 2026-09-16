@@ -1,0 +1,3 @@
+path=/raid/home/students/gegout_tho/.cache/huggingface/hub/models--Qwen--Qwen3.8-27B/snapshots/1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0
+decoder blocks: 64
+hidden size:    5120

@@ -1,0 +1,36 @@
+answer tokens: A=357 ['ĠA'] B=417 ['ĠB']
+
+--- rendered prompt (repr of tail) ---
+'ce was directly targeted?\nMake your best forced choice.\nAnswer with exactly one letter: A or B.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nThe answer is'
+sentence token ranges: [(31, 42), (45, 57)] labels=['A', 'B']
+  A: ' The lighthouse keeper polished the brass lamp every evening.'
+  B: ' A cold wind pushed the fishing boats back toward the harbour.'
+
+loading model...
+loaded in 11s
+model.model.layers: 64 blocks, class Qwen3_5DecoderLayer
+GPU allocated: 53.8 GB of 85.1 GB
+
+sham contrast (logit A - logit B): +0.125
+sham top token: ['ĠA'] is_choice=True
+clean RMS token norms, (block, sentence) -> norm:
+  block  6 sentence A: 34.4
+  block  6 sentence B: 32.1
+  block 32 sentence A: 92.6
+  block 32 sentence B: 86.6
+  block 56 sentence A: 212.0
+  block 56 sentence B: 215.1
+
+block  6 alpha   16.0: contrast target-A   +0.000  target-B   -0.125  (sham +0.125)  |dh| 16.00  finite=True
+block  6 alpha   64.0: contrast target-A   +0.750  target-B   -1.375  (sham +0.125)  |dh| 64.00  finite=True
+block  6 alpha  256.0: contrast target-A   +0.000  target-B   +0.250  (sham +0.125)  |dh| 256.01  finite=True
+block 32 alpha   16.0: contrast target-A   +0.000  target-B   +0.125  (sham +0.125)  |dh| 16.00  finite=True
+block 32 alpha   64.0: contrast target-A   -0.125  target-B   +0.125  (sham +0.125)  |dh| 64.00  finite=True
+block 32 alpha  256.0: contrast target-A   -0.375  target-B   +0.125  (sham +0.125)  |dh| 256.00  finite=True
+block 56 alpha   16.0: contrast target-A   +0.125  target-B   +0.125  (sham +0.125)  |dh| 16.01  finite=True
+block 56 alpha   64.0: contrast target-A   +0.125  target-B   +0.125  (sham +0.125)  |dh| 64.00  finite=True
+block 56 alpha  256.0: contrast target-A   +0.125  target-B   +0.125  (sham +0.125)  |dh| 256.00  finite=True
+
+throughput: 2.7 perturbed forward passes/s
+
+SMOKE TEST OK

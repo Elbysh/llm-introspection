@@ -1,0 +1,116 @@
+Disabled optional PyTorch Triton-native kernels
+Steps 1-2 — natural contexts: 8/200
+Steps 1-2 — natural contexts: 16/200
+Steps 1-2 — natural contexts: 24/200
+Steps 1-2 — natural contexts: 32/200
+Steps 1-2 — natural contexts: 40/200
+Steps 1-2 — natural contexts: 48/200
+Steps 1-2 — natural contexts: 56/200
+Steps 1-2 — natural contexts: 64/200
+Steps 1-2 — natural contexts: 72/200
+Steps 1-2 — natural contexts: 80/200
+Steps 1-2 — natural contexts: 88/200
+Steps 1-2 — natural contexts: 96/200
+Steps 1-2 — natural contexts: 104/200
+Steps 1-2 — natural contexts: 112/200
+Steps 1-2 — natural contexts: 120/200
+Steps 1-2 — natural contexts: 128/200
+Steps 1-2 — natural contexts: 136/200
+Steps 1-2 — natural contexts: 144/200
+Steps 1-2 — natural contexts: 152/200
+Steps 1-2 — natural contexts: 160/200
+Steps 1-2 — natural contexts: 168/200
+Steps 1-2 — natural contexts: 176/200
+Steps 1-2 — natural contexts: 184/200
+Steps 1-2 — natural contexts: 192/200
+Steps 1-2 — natural contexts: 200/200
+Steps 3, 4 and 6 — decoder block 0: 2494 directions
+Steps 3, 4 and 6 — decoder block 1: 2494 directions
+Steps 3, 4 and 6 — decoder block 2: 2494 directions
+Steps 3, 4 and 6 — decoder block 3: 2494 directions
+Steps 3, 4 and 6 — decoder block 4: 2494 directions
+Steps 3, 4 and 6 — decoder block 5: 2494 directions
+Steps 3, 4 and 6 — decoder block 6: 2494 directions
+Steps 3, 4 and 6 — decoder block 7: 2494 directions
+Steps 3, 4 and 6 — decoder block 8: 2494 directions
+Steps 3, 4 and 6 — decoder block 9: 2494 directions
+Steps 3, 4 and 6 — decoder block 10: 2494 directions
+Steps 3, 4 and 6 — decoder block 11: 2494 directions
+Steps 3, 4 and 6 — decoder block 12: 2494 directions
+Steps 3, 4 and 6 — decoder block 13: 2494 directions
+Steps 3, 4 and 6 — decoder block 14: 2494 directions
+Steps 3, 4 and 6 — decoder block 15: 2494 directions
+Steps 3, 4 and 6 — decoder block 16: 2494 directions
+Steps 3, 4 and 6 — decoder block 17: 2494 directions
+Steps 3, 4 and 6 — decoder block 18: 2494 directions
+Steps 3, 4 and 6 — decoder block 19: 2494 directions
+Steps 3, 4 and 6 — decoder block 20: 2494 directions
+Steps 3, 4 and 6 — decoder block 21: 2494 directions
+Steps 3, 4 and 6 — decoder block 22: 2494 directions
+Steps 3, 4 and 6 — decoder block 23: 2494 directions
+Steps 3, 4 and 6 — decoder block 24: 2494 directions
+Steps 3, 4 and 6 — decoder block 25: 2494 directions
+Steps 3, 4 and 6 — decoder block 26: 2494 directions
+Steps 3, 4 and 6 — decoder block 27: 2494 directions
+Steps 3, 4 and 6 — decoder block 28: 2494 directions
+Steps 3, 4 and 6 — decoder block 29: 2494 directions
+Steps 3, 4 and 6 — decoder block 30: 2494 directions
+Steps 3, 4 and 6 — decoder block 31: 2494 directions
+Steps 3, 4 and 6 — decoder block 32: 2494 directions
+Steps 3, 4 and 6 — decoder block 33: 2494 directions
+Steps 3, 4 and 6 — decoder block 34: 2494 directions
+Steps 3, 4 and 6 — decoder block 35: 2494 directions
+Steps 3, 4 and 6 — decoder block 36: 2494 directions
+Steps 3, 4 and 6 — decoder block 37: 2494 directions
+Steps 3, 4 and 6 — decoder block 38: 2494 directions
+Steps 3, 4 and 6 — decoder block 39: 2494 directions
+Steps 3, 4 and 6 — decoder block 40: 2494 directions
+Steps 3, 4 and 6 — decoder block 41: 2494 directions
+Steps 3, 4 and 6 — decoder block 42: 2494 directions
+Steps 3, 4 and 6 — decoder block 43: 2494 directions
+Steps 3, 4 and 6 — decoder block 44: 2494 directions
+Steps 3, 4 and 6 — decoder block 45: 2494 directions
+Steps 3, 4 and 6 — decoder block 46: 2494 directions
+Steps 3, 4 and 6 — decoder block 47: 2494 directions
+Steps 3, 4 and 6 — decoder block 48: 2494 directions
+Steps 3, 4 and 6 — decoder block 49: 2494 directions
+Steps 3, 4 and 6 — decoder block 50: 2494 directions
+Steps 3, 4 and 6 — decoder block 51: 2494 directions
+Steps 3, 4 and 6 — decoder block 52: 2494 directions
+Steps 3, 4 and 6 — decoder block 53: 2494 directions
+Steps 3, 4 and 6 — decoder block 54: 2494 directions
+Steps 3, 4 and 6 — decoder block 55: 2494 directions
+Steps 3, 4 and 6 — decoder block 56: 2494 directions
+Steps 3, 4 and 6 — decoder block 57: 2494 directions
+Steps 3, 4 and 6 — decoder block 58: 2494 directions
+Steps 3, 4 and 6 — decoder block 59: 2494 directions
+Steps 3, 4 and 6 — decoder block 60: 2494 directions
+Steps 3, 4 and 6 — decoder block 61: 2494 directions
+Steps 3, 4 and 6 — decoder block 62: 2494 directions
+Steps 3, 4 and 6 — decoder block 63: 2494 directions
+{
+  "config_sha256": "df09fa42f093f0ff4f4510f740598ebc6698cc247ed50acef7c2c0d052f5a3a9",
+  "contexts_sha256": "878c82abd6e0c99a58b45975bf9059e60a94fbbd92e47e561389716791878b3c",
+  "directions_sha256": "8e4ea8d6078b09dfd76208121426c5519516d10a1b6719b8d0876fc10e0d6aaf",
+  "dose_conversion_included": false,
+  "experiment_id": "experiment_0_natural_directional_scale",
+  "git_commit": "f97ae4ac00fbdb0a945a38ac6965719e22ccd7b9",
+  "model_dtype": "bfloat16",
+  "model_name": "Qwen/Qwen3.8-27B",
+  "n_contexts": 200,
+  "n_directions": 159616,
+  "n_observations": 2464,
+  "n_records": 159616,
+  "observations_sha256": "a64e6ba3a3c89b5b49722be594df8548ffc0bbd93e3d9bbfbce04a1cc057b46b",
+  "plan_manifest_sha256": "a0826c3ebb75279eb1d1342a1f7be18b9fe4bbedcdb6c1e0085ade2be8cb01a2",
+  "projection_dtype": "float32",
+  "projections_file": "projections.npz",
+  "protocol_status": "development",
+  "protocol_version": "2026-09-14",
+  "requested_model_revision": "main",
+  "requested_tokenizer_revision": "main",
+  "resolved_model_revision": null,
+  "resolved_tokenizer_revision": null,
+  "statistics_file": "directional_scales.json",
+  "torch_version": "2.14.0+cu130"
+}

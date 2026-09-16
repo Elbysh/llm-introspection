@@ -44,8 +44,16 @@ PAIR_KEY = ("layer", "family", "matching", "dose", "direction_id",
             "pair_id", "order", "label_order")
 
 
-def load_trials(run_dirs):
-    """Perturbed and sham rows from every run directory, with numbers parsed."""
+def load_trials(run_dirs, matching=None):
+    """Perturbed and sham rows from every run directory, with numbers parsed.
+
+    `matching` keeps only that arm's perturbed rows. It matters when a panel is
+    assembled from runs of different vintage: the alpha arm of a pre-recalibration
+    sweep is valid, because under matching == "alpha" the amplitude is the grid value
+    and no calibrated scale is consulted, while its z arm is not. Pooling such a run
+    whole would blend its unusable z rows into the z figures without any sign of it.
+    Sham rows are kept either way -- they carry no dose and serve both arms.
+    """
     perturbed, shams, models = [], [], set()
     for run_dir in run_dirs:
         path = run_dir / "trials.csv"
@@ -68,7 +76,10 @@ def load_trials(run_dirs):
                 for field in ("correct_raw", "correct_adjusted"):
                     row[field] = float(row[field]) if row.get(field) else None
                 row["tie_adjusted"] = row.get("tie_adjusted") == "True"
-                (shams if row["kind"] == "sham" else perturbed).append(row)
+                if row["kind"] == "sham":
+                    shams.append(row)
+                elif matching is None or row["matching"] == matching:
+                    perturbed.append(row)
     if len(models) > 1:
         raise SystemExit(f"run directories disagree on the model: {sorted(models)}")
     return perturbed, shams, (models.pop() if models else None)
@@ -150,6 +161,9 @@ def main():
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--run_dir", action="append", required=True,
                         help="Experiment 1 output directory; repeat to pool a split sweep")
+    parser.add_argument("--matching", choices=("alpha", "z"), default=None,
+                        help="keep only this dose arm; required when pooling runs whose "
+                             "other arm is not interpretable")
     parser.add_argument("--layers", type=int, nargs="*", default=None,
                         help="restrict to these decoder blocks")
     parser.add_argument("--permutation_draws", type=int, default=200)
@@ -162,7 +176,7 @@ def main():
     args = parser.parse_args()
 
     run_dirs = [Path(d) if Path(d).is_absolute() else REPO_ROOT / d for d in args.run_dir]
-    perturbed, shams, model = load_trials(run_dirs)
+    perturbed, shams, model = load_trials(run_dirs, args.matching)
     if args.layers:
         keep = set(args.layers)
         perturbed = [row for row in perturbed if row["layer"] in keep]

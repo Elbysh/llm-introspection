@@ -1,0 +1,612 @@
+{
+  "dose_selection": {
+    "anchor": 64.0,
+    "basis": "max_abs_pooled_s",
+    "doses": [
+      32.0,
+      64.0,
+      128.0
+    ],
+    "grid": [
+      0.25,
+      0.5,
+      1.0,
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      32.0,
+      64.0,
+      128.0
+    ],
+    "pooled_s": {
+      "concept": {
+        "0.25": 0.003316532258064516,
+        "0.5": 0.005201612903225806,
+        "1.0": 0.02092741935483871,
+        "2.0": 0.07924395161290322,
+        "4.0": 0.16702620967741935,
+        "8.0": 0.17167338709677418,
+        "16.0": 0.2175907258064516,
+        "32.0": 0.24659274193548386,
+        "64.0": 0.2619380040322581,
+        "128.0": 0.2549193548387097
+      },
+      "dropout": {
+        "0.25": 0.0022681451612903227,
+        "0.5": 0.002116935483870968,
+        "1.0": 0.014364919354838709,
+        "2.0": 0.06784274193548387,
+        "4.0": 0.13629032258064516,
+        "8.0": 0.21489415322580646,
+        "16.0": 0.2486391129032258,
+        "32.0": 0.2245967741935484,
+        "64.0": 0.20650201612903227,
+        "128.0": 0.1867061491935484
+      },
+      "noise": {
+        "0.25": 5.040322580645161e-05,
+        "0.5": 0.00020161290322580645,
+        "1.0": 0.007106854838709677,
+        "2.0": 0.0546875,
+        "4.0": 0.12242943548387097,
+        "8.0": 0.2339717741935484,
+        "16.0": 0.2326108870967742,
+        "32.0": 0.2439516129032258,
+        "64.0": 0.23639112903225806,
+        "128.0": 0.20221774193548386
+      },
+      "random": {
+        "0.25": -0.0013911290322580646,
+        "0.5": -0.0019556451612903225,
+        "1.0": 0.007772177419354839,
+        "2.0": 0.05028225806451613,
+        "4.0": 0.1328326612903226,
+        "8.0": 0.22379032258064516,
+        "16.0": 0.21161290322580645,
+        "32.0": 0.19429939516129033,
+        "64.0": 0.1724899193548387,
+        "128.0": 0.15039314516129032
+      }
+    }
+  },
+  "excluded_layers": [],
+  "matching": "alpha",
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "n_curves": 744,
+  "n_thresholds_reportable_adjusted": 22,
+  "n_trials": 297600,
+  "runs": [
+    "results/experiment1/llama_alpha_panel"
+  ],
+  "variance_components": {
+    "concept": {
+      "by_layer": {
+        "0": {
+          "max_direction": "Dust",
+          "mean_s": 0.08838541666666669,
+          "min_direction": "betrayal",
+          "sd_between_directions": 0.2772595861037446
+        },
+        "1": {
+          "max_direction": "Satellites",
+          "mean_s": 0.5302083333333334,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.20198128866858492
+        },
+        "10": {
+          "max_direction": "fibonacci_numbers",
+          "mean_s": 0.7286979166666667,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.3098851295614894
+        },
+        "11": {
+          "max_direction": "shutdown",
+          "mean_s": 0.6446354166666668,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.37356415974732343
+        },
+        "12": {
+          "max_direction": "shutdown",
+          "mean_s": 0.5206770833333333,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.18707095491559453
+        },
+        "13": {
+          "max_direction": "shutdown",
+          "mean_s": 0.42536458333333327,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.1042170161881248
+        },
+        "14": {
+          "max_direction": "Satellites",
+          "mean_s": -0.02192708333333333,
+          "min_direction": "Illusions",
+          "sd_between_directions": 0.04665744912481688
+        },
+        "15": {
+          "max_direction": "Dust",
+          "mean_s": -0.0077604166666666655,
+          "min_direction": "Origami",
+          "sd_between_directions": 0.02883664354593597
+        },
+        "16": {
+          "max_direction": "Dust",
+          "mean_s": -0.003593749999999999,
+          "min_direction": "Illusions",
+          "sd_between_directions": 0.02975843337063265
+        },
+        "17": {
+          "max_direction": "Dust",
+          "mean_s": 0.03138020833333333,
+          "min_direction": "Illusions",
+          "sd_between_directions": 0.0388802170545871
+        },
+        "18": {
+          "max_direction": "Dust",
+          "mean_s": 0.01046875,
+          "min_direction": "recursion",
+          "sd_between_directions": 0.026387118453037452
+        },
+        "19": {
+          "max_direction": "Dust",
+          "mean_s": 0.0022916666666666684,
+          "min_direction": "appreciation",
+          "sd_between_directions": 0.03237109407297631
+        },
+        "2": {
+          "max_direction": "Satellites",
+          "mean_s": 0.6340625,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.22260007481204303
+        },
+        "20": {
+          "max_direction": "Dust",
+          "mean_s": 0.0027083333333333326,
+          "min_direction": "shutdown",
+          "sd_between_directions": 0.020689317038176315
+        },
+        "21": {
+          "max_direction": "betrayal",
+          "mean_s": 0.0036458333333333343,
+          "min_direction": "recursion",
+          "sd_between_directions": 0.018847803049266792
+        },
+        "22": {
+          "max_direction": "betrayal",
+          "mean_s": 0.0019791666666666673,
+          "min_direction": "recursion",
+          "sd_between_directions": 0.014412441175878157
+        },
+        "23": {
+          "max_direction": "Dust",
+          "mean_s": 0.0032291666666666675,
+          "min_direction": "recursion",
+          "sd_between_directions": 0.014462545415915119
+        },
+        "24": {
+          "max_direction": "betrayal",
+          "mean_s": 0.003645833333333333,
+          "min_direction": "appreciation",
+          "sd_between_directions": 0.01194010337781208
+        },
+        "25": {
+          "max_direction": "Illusions",
+          "mean_s": 0.0040625,
+          "min_direction": "appreciation",
+          "sd_between_directions": 0.011830549522578098
+        },
+        "26": {
+          "max_direction": "Dust",
+          "mean_s": 0.005416666666666666,
+          "min_direction": "Origami",
+          "sd_between_directions": 0.012096097983223891
+        },
+        "27": {
+          "max_direction": "Illusions",
+          "mean_s": 0.007395833333333333,
+          "min_direction": "appreciation",
+          "sd_between_directions": 0.012949573524842762
+        },
+        "28": {
+          "max_direction": "Illusions",
+          "mean_s": 0.008541666666666666,
+          "min_direction": "appreciation",
+          "sd_between_directions": 0.014482122333551482
+        },
+        "29": {
+          "max_direction": "Illusions",
+          "mean_s": 0.005416666666666667,
+          "min_direction": "recursion",
+          "sd_between_directions": 0.010013012367248265
+        },
+        "3": {
+          "max_direction": "Satellites",
+          "mean_s": 0.6288541666666666,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.2716627479622505
+        },
+        "30": {
+          "max_direction": "Illusions",
+          "mean_s": 0.005208333333333334,
+          "min_direction": "appreciation",
+          "sd_between_directions": 0.008433998473257723
+        },
+        "4": {
+          "max_direction": "appreciation",
+          "mean_s": 0.5824479166666667,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.27066635366225805
+        },
+        "5": {
+          "max_direction": "appreciation",
+          "mean_s": 0.6716145833333333,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.20534125260223443
+        },
+        "6": {
+          "max_direction": "appreciation",
+          "mean_s": 0.5489062500000002,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.26096221213468807
+        },
+        "7": {
+          "max_direction": "Satellites",
+          "mean_s": 0.48999999999999994,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.2992806608620901
+        },
+        "8": {
+          "max_direction": "fibonacci_numbers",
+          "mean_s": 0.6686458333333334,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.2000629542604984
+        },
+        "9": {
+          "max_direction": "shutdown",
+          "mean_s": 0.6643749999999999,
+          "min_direction": "Dust",
+          "sd_between_directions": 0.3076185290792321
+        }
+      },
+      "decomposition": {
+        "components": {
+          "direction": 0.006329636349448138,
+          "interaction": 0.02779228986461585,
+          "layer": 0.08708156187419383,
+          "phrase": 0.0024692143908097235
+        },
+        "grand_mean": 0.25448336693548385,
+        "sd": {
+          "direction": 0.0795590117425307,
+          "interaction": 0.1667101972424478,
+          "layer": 0.29509585201116234,
+          "phrase": 0.0496911902736262
+        },
+        "shares": {
+          "direction": 0.05118054528257336,
+          "interaction": 0.2247245294030822,
+          "layer": 0.7041292065962009,
+          "phrase": 0.019965718718143604
+        },
+        "total_variance": 0.12367270247906753
+      },
+      "decomposition_direction_layer": {
+        "components": {
+          "direction": 0.006329636349448138,
+          "interaction": 0.020947157449730008,
+          "layer": 0.08708156187419383
+        },
+        "grand_mean": 0.2544833669354838,
+        "sd": {
+          "direction": 0.0795590117425307,
+          "interaction": 0.14473132850122675,
+          "layer": 0.29509585201116234
+        },
+        "shares": {
+          "direction": 0.05534913747384335,
+          "interaction": 0.18317120184517918,
+          "layer": 0.7614796606809776
+        },
+        "total_variance": 0.11435835567337196
+      },
+      "directions": [
+        "Dust",
+        "Illusions",
+        "Origami",
+        "Satellites",
+        "Trumpets",
+        "appreciation",
+        "betrayal",
+        "fibonacci_numbers",
+        "recursion",
+        "shutdown"
+      ],
+      "mean_s_by_direction": {
+        "Dust": 0.04313676075268817,
+        "Illusions": 0.220724126344086,
+        "Origami": 0.23941532258064516,
+        "Satellites": 0.32688172043010755,
+        "Trumpets": 0.21832997311827954,
+        "appreciation": 0.31179435483870965,
+        "betrayal": 0.2811155913978495,
+        "fibonacci_numbers": 0.2941028225806452,
+        "recursion": 0.29713541666666665,
+        "shutdown": 0.3121975806451613
+      },
+      "n_directions": 10,
+      "n_layers": 31,
+      "n_phrases": 5,
+      "spread_between_directions": {
+        "max": "Satellites",
+        "min": "Dust",
+        "ratio_max_over_min": 7.5777994157741,
+        "sd": 0.0838625618328262
+      }
+    },
+    "random": {
+      "by_layer": {
+        "0": {
+          "max_direction": "0005",
+          "mean_s": -0.014869791666666674,
+          "min_direction": "0002",
+          "sd_between_directions": 0.19933426623986703
+        },
+        "1": {
+          "max_direction": "0006",
+          "mean_s": -0.009505208333333334,
+          "min_direction": "0009",
+          "sd_between_directions": 0.11202621010647387
+        },
+        "10": {
+          "max_direction": "0003",
+          "mean_s": 0.5259375000000001,
+          "min_direction": "0007",
+          "sd_between_directions": 0.262396846464896
+        },
+        "11": {
+          "max_direction": "0008",
+          "mean_s": 0.42510416666666667,
+          "min_direction": "0003",
+          "sd_between_directions": 0.17307308994680418
+        },
+        "12": {
+          "max_direction": "0009",
+          "mean_s": 0.4404166666666667,
+          "min_direction": "0002",
+          "sd_between_directions": 0.08093004428456245
+        },
+        "13": {
+          "max_direction": "0005",
+          "mean_s": 0.31677083333333333,
+          "min_direction": "0007",
+          "sd_between_directions": 0.0754131176267444
+        },
+        "14": {
+          "max_direction": "0006",
+          "mean_s": -0.028749999999999998,
+          "min_direction": "0007",
+          "sd_between_directions": 0.025619024069822086
+        },
+        "15": {
+          "max_direction": "0007",
+          "mean_s": -0.021666666666666664,
+          "min_direction": "0006",
+          "sd_between_directions": 0.022079620582377054
+        },
+        "16": {
+          "max_direction": "0007",
+          "mean_s": -0.005572916666666668,
+          "min_direction": "0008",
+          "sd_between_directions": 0.038082261070183226
+        },
+        "17": {
+          "max_direction": "0007",
+          "mean_s": 0.021458333333333333,
+          "min_direction": "0009",
+          "sd_between_directions": 0.009933226136632623
+        },
+        "18": {
+          "max_direction": "0008",
+          "mean_s": 0.010416666666666666,
+          "min_direction": "0006",
+          "sd_between_directions": 0.015150989048105159
+        },
+        "19": {
+          "max_direction": "0002",
+          "mean_s": 0.0020833333333333337,
+          "min_direction": "0006",
+          "sd_between_directions": 0.014910354551099923
+        },
+        "2": {
+          "max_direction": "0003",
+          "mean_s": 0.23489583333333336,
+          "min_direction": "0001",
+          "sd_between_directions": 0.17537042613246598
+        },
+        "20": {
+          "max_direction": "0005",
+          "mean_s": -0.004583333333333334,
+          "min_direction": "0002",
+          "sd_between_directions": 0.010522609402708783
+        },
+        "21": {
+          "max_direction": "0003",
+          "mean_s": 0.0043749999999999995,
+          "min_direction": "0002",
+          "sd_between_directions": 0.013633060533356873
+        },
+        "22": {
+          "max_direction": "0007",
+          "mean_s": 0.005208333333333334,
+          "min_direction": "0009",
+          "sd_between_directions": 0.010735850578986322
+        },
+        "23": {
+          "max_direction": "0000",
+          "mean_s": 0.012604166666666663,
+          "min_direction": "0008",
+          "sd_between_directions": 0.01992492903545458
+        },
+        "24": {
+          "max_direction": "0006",
+          "mean_s": 0.010312499999999999,
+          "min_direction": "0003",
+          "sd_between_directions": 0.017667095229777437
+        },
+        "25": {
+          "max_direction": "0009",
+          "mean_s": 0.007083333333333333,
+          "min_direction": "0001",
+          "sd_between_directions": 0.007990638813134736
+        },
+        "26": {
+          "max_direction": "0002",
+          "mean_s": 0.011770833333333333,
+          "min_direction": "0006",
+          "sd_between_directions": 0.015103567995798333
+        },
+        "27": {
+          "max_direction": "0008",
+          "mean_s": 0.0046875,
+          "min_direction": "0007",
+          "sd_between_directions": 0.009448656127908179
+        },
+        "28": {
+          "max_direction": "0003",
+          "mean_s": 0.011875,
+          "min_direction": "0008",
+          "sd_between_directions": 0.0112962014264383
+        },
+        "29": {
+          "max_direction": "0005",
+          "mean_s": -0.0008333333333333333,
+          "min_direction": "0008",
+          "sd_between_directions": 0.006010054589838556
+        },
+        "3": {
+          "max_direction": "0003",
+          "mean_s": 0.4210416666666667,
+          "min_direction": "0004",
+          "sd_between_directions": 0.26484284808561237
+        },
+        "30": {
+          "max_direction": "0006",
+          "mean_s": 0.001354166666666667,
+          "min_direction": "0002",
+          "sd_between_directions": 0.003029003956606165
+        },
+        "4": {
+          "max_direction": "0003",
+          "mean_s": 0.46348958333333334,
+          "min_direction": "0007",
+          "sd_between_directions": 0.18381940017262197
+        },
+        "5": {
+          "max_direction": "0005",
+          "mean_s": 0.5978125000000001,
+          "min_direction": "0006",
+          "sd_between_directions": 0.28826668271351497
+        },
+        "6": {
+          "max_direction": "0007",
+          "mean_s": 0.52078125,
+          "min_direction": "0004",
+          "sd_between_directions": 0.3565291278772104
+        },
+        "7": {
+          "max_direction": "0009",
+          "mean_s": 0.3455729166666667,
+          "min_direction": "0000",
+          "sd_between_directions": 0.19896034060699677
+        },
+        "8": {
+          "max_direction": "0007",
+          "mean_s": 0.5405729166666667,
+          "min_direction": "0006",
+          "sd_between_directions": 0.4278336094123339
+        },
+        "9": {
+          "max_direction": "0002",
+          "mean_s": 0.49437500000000006,
+          "min_direction": "0003",
+          "sd_between_directions": 0.2434432423964948
+        }
+      },
+      "decomposition": {
+        "components": {
+          "direction": 0.0006803068674620988,
+          "interaction": 0.028318254937065978,
+          "layer": 0.0504882222246498,
+          "phrase": 0.0013874861712923855
+        },
+        "grand_mean": 0.17239415322580645,
+        "sd": {
+          "direction": 0.026082692872134557,
+          "interaction": 0.16828028683439417,
+          "layer": 0.224695843808135,
+          "phrase": 0.03724897543949881
+        },
+        "shares": {
+          "direction": 0.008411907344273545,
+          "interaction": 0.3501515978675418,
+          "layer": 0.6242804058633252,
+          "phrase": 0.01715608892485954
+        },
+        "total_variance": 0.08087427020047025
+      },
+      "decomposition_direction_layer": {
+        "components": {
+          "direction": 0.0006803068674620979,
+          "interaction": 0.022398457317195725,
+          "layer": 0.0504882222246498
+        },
+        "grand_mean": 0.17239415322580645,
+        "sd": {
+          "direction": 0.02608269287213454,
+          "interaction": 0.1496611416406935,
+          "layer": 0.224695843808135
+        },
+        "shares": {
+          "direction": 0.009247447811400716,
+          "interaction": 0.30446343408137616,
+          "layer": 0.6862891181072232
+        },
+        "total_variance": 0.07356698640930762
+      },
+      "directions": [
+        "0000",
+        "0001",
+        "0002",
+        "0003",
+        "0004",
+        "0005",
+        "0006",
+        "0007",
+        "0008",
+        "0009"
+      ],
+      "mean_s_by_direction": {
+        "0000": 0.16518817204301076,
+        "0001": 0.1433719758064516,
+        "0002": 0.1664818548387097,
+        "0003": 0.2200016801075269,
+        "0004": 0.13407258064516125,
+        "0005": 0.19312836021505375,
+        "0006": 0.14921875,
+        "0007": 0.19107022849462366,
+        "0008": 0.1621975806451613,
+        "0009": 0.19921034946236563
+      },
+      "n_directions": 10,
+      "n_layers": 31,
+      "n_phrases": 5,
+      "spread_between_directions": {
+        "max": "0003",
+        "min": "0004",
+        "ratio_max_over_min": 1.6409147869674192,
+        "sd": 0.027493572328861376
+      }
+    }
+  }
+}

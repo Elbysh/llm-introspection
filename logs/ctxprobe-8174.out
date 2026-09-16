@@ -1,0 +1,63 @@
+
+blk          direction   context         SD       MAD    SD/MAD    |mean| tailmass
+  1       concept:Dust  isolated    198.597    0.0800    2482.2    87.124    0.163
+  1       concept:Dust    prompt      0.024    0.0264       0.9     0.089    0.059
+  1 concept:Satellites  isolated    127.759    0.0671    1903.3    55.990    0.163
+  1 concept:Satellites    prompt      0.032    0.0245       1.3     0.108    0.058
+  1  concept:recursion  isolated    200.998    0.0800    2511.4    88.160    0.163
+  1  concept:recursion    prompt      0.024    0.0254       0.9     0.101    0.078
+  1   concept:shutdown  isolated    198.736    0.0821    2420.1    87.179    0.163
+  1   concept:shutdown    prompt      0.026    0.0279       0.9     0.095    0.036
+  1           random:0  isolated      5.372    0.0243     220.8     2.338    0.162
+  1           random:0    prompt      0.021    0.0243       0.9     0.009    0.000
+  1           random:1  isolated      2.243    0.0249      89.9     0.972    0.161
+  1           random:1    prompt      0.020    0.0202       1.0     0.011    0.048
+  1           random:2  isolated      3.551    0.0251     141.4     1.555    0.162
+  1           random:2    prompt      0.019    0.0168       1.1     0.006    0.047
+
+  5       concept:Dust  isolated    187.635    0.1544    1214.9    82.287    0.163
+  5       concept:Dust    prompt      0.125    0.1159       1.1     0.129    0.079
+  5 concept:Satellites  isolated     68.926    0.1770     389.5    29.926    0.163
+  5 concept:Satellites    prompt      0.128    0.0842       1.5     0.323    0.090
+  5  concept:recursion  isolated    193.814    0.1581    1225.9    85.082    0.163
+  5  concept:recursion    prompt      0.092    0.0907       1.0     0.060    0.054
+  5   concept:shutdown  isolated    180.777    0.1537    1176.5    79.333    0.163
+  5   concept:shutdown    prompt      0.098    0.0862       1.1     0.077    0.014
+  5           random:0  isolated      2.114    0.0831      25.4     0.954    0.160
+  5           random:0    prompt      0.060    0.0610       1.0     0.009    0.001
+  5           random:1  isolated      1.945    0.0748      26.0     0.850    0.158
+  5           random:1    prompt      0.056    0.0533       1.1     0.024    0.112
+  5           random:2  isolated      1.096    0.0903      12.1     0.466    0.155
+  5           random:2    prompt      0.055    0.0491       1.1     0.026    0.002
+
+  9       concept:Dust  isolated    164.210    0.2695     609.4    71.842    0.163
+  9       concept:Dust    prompt      0.194    0.2465       0.8     0.365    0.032
+  9 concept:Satellites  isolated     51.952    0.4128     125.8    21.854    0.162
+  9 concept:Satellites    prompt      0.255    0.1880       1.4     0.692    0.007
+  9  concept:recursion  isolated    181.173    0.2545     712.0    79.713    0.163
+  9  concept:recursion    prompt      0.156    0.1524       1.0     0.149    0.059
+  9   concept:shutdown  isolated    157.437    0.2474     636.3    68.963    0.163
+  9   concept:shutdown    prompt      0.181    0.1928       0.9     0.305    0.002
+  9           random:0  isolated      0.167    0.1186       1.4     0.113    0.114
+  9           random:0    prompt      0.088    0.0816       1.1     0.041    0.039
+  9           random:1  isolated      7.019    0.1310      53.6     3.032    0.161
+  9           random:1    prompt      0.075    0.0782       1.0     0.048    0.031
+  9           random:2  isolated      1.704    0.1098      15.5     0.830    0.157
+  9           random:2    prompt      0.082    0.0927       0.9     0.000    0.050
+
+ 13       concept:Dust  isolated    151.663    0.3812     397.8    65.786    0.163
+ 13       concept:Dust    prompt      0.271    0.3149       0.9     1.040    0.067
+ 13 concept:Satellites  isolated     42.248    0.5007      84.4    17.343    0.162
+ 13 concept:Satellites    prompt      0.314    0.2379       1.3     1.086    0.048
+ 13  concept:recursion  isolated    174.159    0.3436     506.9    76.474    0.163
+ 13  concept:recursion    prompt      0.198    0.2179       0.9     0.506    0.004
+ 13   concept:shutdown  isolated    142.296    0.3093     460.1    62.218    0.163
+ 13   concept:shutdown    prompt      0.231    0.2529       0.9     0.494    0.037
+ 13           random:0  isolated      1.372    0.1258      10.9     0.795    0.156
+ 13           random:0    prompt      0.107    0.1214       0.9     0.223    0.025
+ 13           random:1  isolated      2.214    0.1437      15.4     1.222    0.158
+ 13           random:1    prompt      0.119    0.1231       1.0     0.158    0.118
+ 13           random:2  isolated      1.622    0.1285      12.6     0.778    0.156
+ 13           random:2    prompt      0.074    0.0691       1.1     0.006    0.018
+
+wrote /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/context_probe/context_probe.json
