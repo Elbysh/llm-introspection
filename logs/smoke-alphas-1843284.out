@@ -1,79 +1,0 @@
-=== multi_detection.py (individual, alphas 1-7) ===
-Loading model...
-Model loaded!
-
-============================================================
-EXPERIENCE 9 -- COUNTING
-============================================================
-K values: [0, 1, 2]
-Conditions: ['real', 'random']
-Prompt styles: ['count']
-Dose regime: individual
-Alphas: [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
-Z_totals: [1, 2, 3, 4, 5, 6, 7]
-Trials per cell: 1
-detection trials:   0%|          | 0/42 [00:00<?, ?it/s]detection trials:   2%|▏         | 1/42 [00:07<05:27,  7.98s/it]detection trials:   5%|▍         | 2/42 [00:08<02:14,  3.36s/it]detection trials:   7%|▋         | 3/42 [00:08<01:13,  1.88s/it]detection trials:  10%|▉         | 4/42 [00:08<00:45,  1.19s/it]detection trials:  12%|█▏        | 5/42 [00:08<00:29,  1.24it/s]detection trials:  14%|█▍        | 6/42 [00:08<00:20,  1.74it/s]detection trials:  17%|█▋        | 7/42 [00:08<00:14,  2.34it/s]detection trials:  19%|█▉        | 8/42 [00:08<00:11,  2.86it/s]detection trials:  21%|██▏       | 9/42 [00:09<00:09,  3.42it/s]detection trials:  24%|██▍       | 10/42 [00:09<00:08,  3.99it/s]detection trials:  26%|██▌       | 11/42 [00:09<00:07,  4.23it/s]detection trials:  29%|██▊       | 12/42 [00:09<00:06,  4.73it/s]detection trials:  31%|███       | 13/42 [00:14<00:48,  1.67s/it]detection trials:  33%|███▎      | 14/42 [00:14<00:33,  1.21s/it]detection trials:  36%|███▌      | 15/42 [00:15<00:26,  1.00it/s]detection trials:  38%|███▊      | 16/42 [00:15<00:20,  1.24it/s]detection trials:  40%|████      | 17/42 [00:15<00:15,  1.58it/s]detection trials:  43%|████▎     | 18/42 [00:16<00:12,  1.96it/s]detection trials:  45%|████▌     | 19/42 [00:16<00:09,  2.37it/s]detection trials:  48%|████▊     | 20/42 [00:21<00:38,  1.77s/it]detection trials:  50%|█████     | 21/42 [00:26<00:58,  2.79s/it]detection trials:  52%|█████▏    | 22/42 [00:26<00:39,  1.99s/it]detection trials:  55%|█████▍    | 23/42 [00:26<00:27,  1.43s/it]detection trials:  57%|█████▋    | 24/42 [00:26<00:18,  1.04s/it]detection trials:  60%|█████▉    | 25/42 [00:26<00:13,  1.31it/s]detection trials:  62%|██████▏   | 26/42 [00:27<00:09,  1.74it/s]detection trials:  64%|██████▍   | 27/42 [00:27<00:06,  2.28it/s]detection trials:  67%|██████▋   | 28/42 [00:27<00:04,  2.90it/s]detection trials:  69%|██████▉   | 29/42 [00:27<00:03,  3.58it/s]detection trials:  71%|███████▏  | 30/42 [00:27<00:02,  4.29it/s]detection trials:  74%|███████▍  | 31/42 [00:27<00:02,  4.98it/s]detection trials:  76%|███████▌  | 32/42 [00:27<00:01,  5.61it/s]detection trials:  79%|███████▊  | 33/42 [00:27<00:01,  6.15it/s]detection trials:  81%|████████  | 34/42 [00:28<00:01,  6.60it/s]detection trials:  83%|████████▎ | 35/42 [00:28<00:01,  6.96it/s]detection trials:  86%|████████▌ | 36/42 [00:28<00:00,  7.23it/s]detection trials:  88%|████████▊ | 37/42 [00:28<00:00,  7.43it/s]detection trials:  90%|█████████ | 38/42 [00:28<00:00,  7.58it/s]detection trials:  93%|█████████▎| 39/42 [00:28<00:00,  7.69it/s]detection trials:  95%|█████████▌| 40/42 [00:28<00:00,  7.75it/s]detection trials:  98%|█████████▊| 41/42 [00:33<00:01,  1.55s/it]detection trials: 100%|██████████| 42/42 [00:33<00:00,  1.12s/it]detection trials: 100%|██████████| 42/42 [00:33<00:00,  1.24it/s]
-
-Saved 42 trials to ../plots/smoke2/multi_detection_trials_individual.pt
-=== multi_detection.py (budget, z_totals 1-7) ===
-Loading model...
-Model loaded!
-
-============================================================
-EXPERIENCE 9 -- COUNTING
-============================================================
-K values: [0, 1, 2]
-Conditions: ['real']
-Prompt styles: ['count']
-Dose regime: budget
-Alphas: [1, 2, 3, 4, 5, 6, 7]
-Z_totals: [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
-Trials per cell: 1
-detection trials:   0%|          | 0/21 [00:00<?, ?it/s]detection trials:   5%|▍         | 1/21 [00:06<02:04,  6.22s/it]detection trials:  10%|▉         | 2/21 [00:06<00:50,  2.63s/it]detection trials:  14%|█▍        | 3/21 [00:06<00:26,  1.49s/it]detection trials:  19%|█▉        | 4/21 [00:06<00:16,  1.05it/s]detection trials:  24%|██▍       | 5/21 [00:06<00:10,  1.53it/s]detection trials:  29%|██▊       | 6/21 [00:06<00:07,  2.11it/s]detection trials:  33%|███▎      | 7/21 [00:06<00:05,  2.78it/s]detection trials:  38%|███▊      | 8/21 [00:07<00:04,  2.94it/s]detection trials:  43%|████▎     | 9/21 [00:07<00:03,  3.56it/s]detection trials:  48%|████▊     | 10/21 [00:07<00:02,  4.18it/s]detection trials:  52%|█████▏    | 11/21 [00:07<00:02,  4.76it/s]detection trials:  57%|█████▋    | 12/21 [00:07<00:01,  5.10it/s]detection trials:  62%|██████▏   | 13/21 [00:12<00:12,  1.62s/it]detection trials:  67%|██████▋   | 14/21 [00:12<00:08,  1.18s/it]detection trials:  71%|███████▏  | 15/21 [00:13<00:05,  1.14it/s]detection trials:  76%|███████▌  | 16/21 [00:13<00:03,  1.51it/s]detection trials:  81%|████████  | 17/21 [00:13<00:02,  1.91it/s]detection trials:  86%|████████▌ | 18/21 [00:13<00:01,  2.36it/s]detection trials:  90%|█████████ | 19/21 [00:13<00:00,  2.83it/s]detection trials:  95%|█████████▌| 20/21 [00:18<00:01,  1.72s/it]detection trials: 100%|██████████| 21/21 [00:23<00:00,  2.69s/it]detection trials: 100%|██████████| 21/21 [00:23<00:00,  1.13s/it]
-
-Saved 21 trials to ../plots/smoke2/multi_detection_trials_budget.pt
-=== multi_identification.py (alphas 1-7) ===
-Loading model...
-Model loaded!
-
-============================================================
-EXPERIENCE 10 -- IDENTIFICATION (single_concept)
-============================================================
-n_real=1, n_random=0
-identification trials:   0%|          | 0/14 [00:00<?, ?it/s]identification trials:   7%|▋         | 1/14 [00:07<01:37,  7.52s/it]identification trials:  14%|█▍        | 2/14 [00:20<02:06, 10.52s/it]identification trials:  21%|██▏       | 3/14 [00:20<01:05,  5.95s/it]identification trials:  29%|██▊       | 4/14 [00:27<01:05,  6.50s/it]identification trials:  36%|███▌      | 5/14 [00:28<00:39,  4.34s/it]identification trials:  43%|████▎     | 6/14 [00:35<00:42,  5.36s/it]identification trials:  50%|█████     | 7/14 [00:36<00:26,  3.78s/it]identification trials:  57%|█████▋    | 8/14 [00:43<00:29,  4.91s/it]identification trials:  64%|██████▍   | 9/14 [00:44<00:17,  3.52s/it]identification trials:  71%|███████▏  | 10/14 [00:51<00:18,  4.70s/it]identification trials:  79%|███████▊  | 11/14 [00:51<00:10,  3.41s/it]identification trials:  86%|████████▌ | 12/14 [00:59<00:09,  4.60s/it]identification trials:  93%|█████████▎| 13/14 [00:59<00:03,  3.35s/it]identification trials: 100%|██████████| 14/14 [01:07<00:00,  4.55s/it]identification trials: 100%|██████████| 14/14 [01:07<00:00,  4.80s/it]
-Saved 14 trials to ../plots/smoke2/multi_identification_trials_single_concept.pt
-
-============================================================
-EXPERIENCE 10 -- IDENTIFICATION (two_concepts)
-============================================================
-n_real=2, n_random=0
-identification trials:   0%|          | 0/14 [00:00<?, ?it/s]identification trials:   7%|▋         | 1/14 [00:00<00:07,  1.67it/s]identification trials:  14%|█▍        | 2/14 [00:07<00:54,  4.56s/it]identification trials:  21%|██▏       | 3/14 [00:08<00:29,  2.69s/it]identification trials:  29%|██▊       | 4/14 [00:15<00:45,  4.53s/it]identification trials:  36%|███▌      | 5/14 [00:16<00:27,  3.08s/it]identification trials:  43%|████▎     | 6/14 [00:23<00:36,  4.53s/it]identification trials:  50%|█████     | 7/14 [00:24<00:22,  3.20s/it]identification trials:  57%|█████▋    | 8/14 [00:31<00:27,  4.52s/it]identification trials:  64%|██████▍   | 9/14 [00:31<00:16,  3.25s/it]identification trials:  71%|███████▏  | 10/14 [00:39<00:18,  4.51s/it]identification trials:  79%|███████▊  | 11/14 [00:39<00:09,  3.27s/it]identification trials:  86%|████████▌ | 12/14 [00:47<00:09,  4.51s/it]identification trials:  93%|█████████▎| 13/14 [00:47<00:03,  3.30s/it]identification trials: 100%|██████████| 14/14 [00:54<00:00,  4.52s/it]identification trials: 100%|██████████| 14/14 [00:54<00:00,  3.92s/it]
-Saved 14 trials to ../plots/smoke2/multi_identification_trials_two_concepts.pt
-
-============================================================
-EXPERIENCE 10 -- IDENTIFICATION (concept_plus_random)
-============================================================
-n_real=1, n_random=1
-identification trials:   0%|          | 0/14 [00:00<?, ?it/s]identification trials:   7%|▋         | 1/14 [00:00<00:06,  2.13it/s]identification trials:  14%|█▍        | 2/14 [00:07<00:54,  4.51s/it]identification trials:  21%|██▏       | 3/14 [00:08<00:29,  2.69s/it]identification trials:  29%|██▊       | 4/14 [00:15<00:45,  4.53s/it]identification trials:  36%|███▌      | 5/14 [00:16<00:27,  3.08s/it]identification trials:  43%|████▎     | 6/14 [00:23<00:36,  4.53s/it]identification trials:  50%|█████     | 7/14 [00:24<00:22,  3.22s/it]identification trials:  57%|█████▋    | 8/14 [00:31<00:27,  4.53s/it]identification trials:  64%|██████▍   | 9/14 [00:31<00:16,  3.26s/it]identification trials:  71%|███████▏  | 10/14 [00:39<00:18,  4.52s/it]identification trials:  79%|███████▊  | 11/14 [00:39<00:09,  3.25s/it]identification trials:  86%|████████▌ | 12/14 [00:46<00:08,  4.50s/it]identification trials:  93%|█████████▎| 13/14 [00:47<00:03,  3.28s/it]identification trials: 100%|██████████| 14/14 [00:54<00:00,  4.51s/it]identification trials: 100%|██████████| 14/14 [00:54<00:00,  3.91s/it]
-Saved 14 trials to ../plots/smoke2/multi_identification_trials_concept_plus_random.pt
-
-============================================================
-EXPERIENCE 10 -- IDENTIFICATION (sham)
-============================================================
-n_real=0, n_random=0
-identification trials:   0%|          | 0/14 [00:00<?, ?it/s]identification trials:   7%|▋         | 1/14 [00:00<00:06,  1.93it/s]identification trials:  14%|█▍        | 2/14 [00:07<00:54,  4.52s/it]identification trials:  21%|██▏       | 3/14 [00:08<00:29,  2.69s/it]identification trials:  29%|██▊       | 4/14 [00:15<00:45,  4.52s/it]identification trials:  36%|███▌      | 5/14 [00:16<00:27,  3.08s/it]identification trials:  43%|████▎     | 6/14 [00:23<00:36,  4.52s/it]identification trials:  50%|█████     | 7/14 [00:24<00:22,  3.21s/it]identification trials:  57%|█████▋    | 8/14 [00:31<00:27,  4.52s/it]identification trials:  64%|██████▍   | 9/14 [00:31<00:16,  3.26s/it]identification trials:  71%|███████▏  | 10/14 [00:39<00:18,  4.51s/it]identification trials:  79%|███████▊  | 11/14 [00:39<00:09,  3.29s/it]identification trials:  86%|████████▌ | 12/14 [00:47<00:09,  4.52s/it]identification trials:  93%|█████████▎| 13/14 [00:47<00:03,  3.29s/it]identification trials: 100%|██████████| 14/14 [00:54<00:00,  4.51s/it]identification trials: 100%|██████████| 14/14 [00:54<00:00,  3.92s/it]
-Saved 14 trials to ../plots/smoke2/multi_identification_trials_sham.pt
-=== layer_ordering.py (alphas 1-7) ===
-Loading model...
-Model loaded!
-
-============================================================
-EXPERIENCE 11 -- LAYER-DEPTH ORDERING
-============================================================
-Alphas: [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
-Trials: 1
-Label assignments: ['shallow_is_a', 'shallow_is_b']
-ordering trials:   0%|          | 0/14 [00:00<?, ?it/s]ordering trials:   7%|▋         | 1/14 [00:05<01:15,  5.84s/it]ordering trials:  14%|█▍        | 2/14 [00:05<00:29,  2.48s/it]ordering trials:  21%|██▏       | 3/14 [00:06<00:15,  1.43s/it]ordering trials:  29%|██▊       | 4/14 [00:06<00:09,  1.10it/s]ordering trials:  36%|███▌      | 5/14 [00:07<00:08,  1.06it/s]ordering trials:  43%|████▎     | 6/14 [00:08<00:07,  1.04it/s]ordering trials:  50%|█████     | 7/14 [00:08<00:05,  1.23it/s]ordering trials:  57%|█████▋    | 8/14 [00:08<00:03,  1.64it/s]ordering trials:  64%|██████▍   | 9/14 [00:09<00:02,  2.04it/s]ordering trials:  71%|███████▏  | 10/14 [00:09<00:02,  1.80it/s]ordering trials:  79%|███████▊  | 11/14 [00:10<00:02,  1.45it/s]ordering trials:  86%|████████▌ | 12/14 [00:11<00:01,  1.27it/s]ordering trials:  93%|█████████▎| 13/14 [00:12<00:00,  1.18it/s]ordering trials: 100%|██████████| 14/14 [00:13<00:00,  1.12it/s]ordering trials: 100%|██████████| 14/14 [00:13<00:00,  1.01it/s]
-
-Saved 14 trials to ../plots/smoke2/layer_ordering_trials.pt
-=== modulators.py (alphas 1-7) ===
