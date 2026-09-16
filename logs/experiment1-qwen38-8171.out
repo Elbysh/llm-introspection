@@ -1,0 +1,40 @@
+========================================================================
+EXPERIMENT 1: 2AFC LOCALIZATION, ALPHA- AND Z-MATCHED PSYCHOMETRICS
+========================================================================
+Model:       Qwen/Qwen3.8-27B
+Calibration: /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment_0_calibration_qwen38_27b_scramble (config=configs/experiment_0_calibration/qwen38_27b_scramble.yaml, estimator=sd)
+Layers:      [3]
+Families:    ['concept', 'scrambled', 'random']
+Matchings:   ['alpha', 'z']
+Alpha doses: [8.0, 16.0]
+z doses:     [40.96]
+Output:      /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/scram-smoke
+Pairs:       5 (largest token-length gap 0)
+Forward passes: 1320 perturbed + 20 sham
+Directions:  11 rebuilt and matched to their calibrated norms
+Model loaded.
+Answer token ids: A=357 ('ĠA'), B=417 ('ĠB')
+Prompt tail: 'end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nThe answer is'
+Perturbed spans: [' The sun sets behind the mountains.', ' The river flows to the sea.']
+Running 20 shams...
+
+Saved 1340 trials to /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/scram-smoke/trials.csv
+Saved summary to /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/scram-smoke/summary.json
+
+Thresholds (blank when 75% is not bracketed in the tested range):
+ layer    family  matching    metric  acc@peak  threshold75              bracket
+     3   concept     alpha       raw      100%                                  
+     3   concept     alpha  adjusted       99%                                  
+     3   concept         z       raw       82%                                  
+     3   concept         z  adjusted       74%                                  
+     3    random     alpha       raw      100%                           [8, 16]
+     3    random     alpha  adjusted       95%                           [8, 16]
+     3    random         z       raw       60%                                  
+     3    random         z  adjusted       62%                                  
+     3 scrambled     alpha       raw      100%                           [8, 16]
+     3 scrambled     alpha  adjusted       99%                                  
+     3 scrambled         z       raw       72%                                  
+     3 scrambled         z  adjusted       73%                                  
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/scram-smoke/curves_layer3.png
+
+EXPERIMENT COMPLETE

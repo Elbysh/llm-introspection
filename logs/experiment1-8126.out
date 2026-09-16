@@ -1,0 +1,13 @@
+========================================================================
+EXPERIMENT 1: 2AFC LOCALIZATION, ALPHA- AND Z-MATCHED PSYCHOMETRICS
+========================================================================
+Model:       meta-llama/Llama-3.1-8B-Instruct
+Calibration: /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment_0_calibration (config=configs/experiment_0_calibration/development_full.yaml, estimator=sd)
+Layers:      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+Families:    ['concept', 'random', 'noise', 'dropout']
+Matchings:   ['alpha', 'z']
+Alpha doses: [0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0]
+z doses:     [0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.64, 1.28, 2.56, 5.12, 10.24, 20.48]
+Output:      /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/full32
+Pairs:       5 (largest token-length gap 0)
+Forward passes: 309760 perturbed + 20 sham

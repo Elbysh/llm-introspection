@@ -1,0 +1,520 @@
+=== Stage 1/4: fixed-random direction bank ===
+Fixed-random bank already present, skipping
+=== Stage 2/4: concept vectors ===
+All Experiment 0 concept vectors already exist
+=== Stage 3/4: material plan ===
+{
+  "config_sha256": "20ce1ea5fcca57d325888769d1466763fb24adf56ffd488694fdd5d5dc54773b",
+  "direction_counts_by_decoder_block": {
+    "0": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "1": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "10": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "11": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "12": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "13": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "14": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "15": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "16": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "17": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "18": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "19": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "2": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "20": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "21": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "22": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "23": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "24": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "25": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "26": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "27": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "28": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "29": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "3": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "30": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "31": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "32": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "33": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "34": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "35": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "36": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "37": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "38": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "39": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "4": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "40": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "41": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "42": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "43": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "44": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "45": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "46": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "47": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "48": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "49": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "5": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "50": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "51": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "52": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "53": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "54": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "55": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "56": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "57": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "58": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "59": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "6": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "60": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "61": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "62": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "63": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "7": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "8": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    },
+    "9": {
+      "concept": 10,
+      "fixed_random": 10,
+      "renewed_noise": 616,
+      "scrambled_concept": 10
+    }
+  },
+  "direction_counts_by_family": {
+    "concept": 640,
+    "fixed_random": 640,
+    "renewed_noise": 39424,
+    "scrambled_concept": 640
+  },
+  "experiment_id": "experiment_0_natural_directional_scale",
+  "model_name": "Qwen/Qwen3.8-27B",
+  "model_revision": "main",
+  "n_contexts": 100,
+  "n_directions": 41344,
+  "n_observations": 616,
+  "n_sentences": 100,
+  "point_weighting": "equal_token",
+  "position_policy": "all_sentence_tokens",
+  "presentation_context": "isolated_sentence_development",
+  "protocol_status": "development",
+  "protocol_version": "2026-09-10",
+  "tokenizer_class": "Qwen2Tokenizer",
+  "tokenizer_revision": "main",
+  "torch_version": "2.14.0+cu130"
+}
+=== Stage 4/4: calibration ===
+Disabled optional PyTorch Triton-native kernels
+Steps 1-2 — natural contexts: 8/100
+Steps 1-2 — natural contexts: 16/100
+Steps 1-2 — natural contexts: 24/100
+Steps 1-2 — natural contexts: 32/100
+Steps 1-2 — natural contexts: 40/100
+Steps 1-2 — natural contexts: 48/100
+Steps 1-2 — natural contexts: 56/100
+Steps 1-2 — natural contexts: 64/100
+Steps 1-2 — natural contexts: 72/100
+Steps 1-2 — natural contexts: 80/100
+Steps 1-2 — natural contexts: 88/100
+Steps 1-2 — natural contexts: 96/100
+Steps 1-2 — natural contexts: 100/100
+Steps 3, 4 and 6 — decoder block 0: 646 directions
+Steps 3, 4 and 6 — decoder block 1: 646 directions
+Steps 3, 4 and 6 — decoder block 2: 646 directions
+Steps 3, 4 and 6 — decoder block 3: 646 directions
+Steps 3, 4 and 6 — decoder block 4: 646 directions
+Steps 3, 4 and 6 — decoder block 5: 646 directions
+Steps 3, 4 and 6 — decoder block 6: 646 directions
+Steps 3, 4 and 6 — decoder block 7: 646 directions
+Steps 3, 4 and 6 — decoder block 8: 646 directions
+Steps 3, 4 and 6 — decoder block 9: 646 directions
+Steps 3, 4 and 6 — decoder block 10: 646 directions
+Steps 3, 4 and 6 — decoder block 11: 646 directions
+Steps 3, 4 and 6 — decoder block 12: 646 directions
+Steps 3, 4 and 6 — decoder block 13: 646 directions
+Steps 3, 4 and 6 — decoder block 14: 646 directions
+Steps 3, 4 and 6 — decoder block 15: 646 directions
+Steps 3, 4 and 6 — decoder block 16: 646 directions
+Steps 3, 4 and 6 — decoder block 17: 646 directions
+Steps 3, 4 and 6 — decoder block 18: 646 directions
+Steps 3, 4 and 6 — decoder block 19: 646 directions
+Steps 3, 4 and 6 — decoder block 20: 646 directions
+Steps 3, 4 and 6 — decoder block 21: 646 directions
+Steps 3, 4 and 6 — decoder block 22: 646 directions
+Steps 3, 4 and 6 — decoder block 23: 646 directions
+Steps 3, 4 and 6 — decoder block 24: 646 directions
+Steps 3, 4 and 6 — decoder block 25: 646 directions
+Steps 3, 4 and 6 — decoder block 26: 646 directions
+Steps 3, 4 and 6 — decoder block 27: 646 directions
+Steps 3, 4 and 6 — decoder block 28: 646 directions
+Steps 3, 4 and 6 — decoder block 29: 646 directions
+Steps 3, 4 and 6 — decoder block 30: 646 directions
+Steps 3, 4 and 6 — decoder block 31: 646 directions
+Steps 3, 4 and 6 — decoder block 32: 646 directions
+Steps 3, 4 and 6 — decoder block 33: 646 directions
+Steps 3, 4 and 6 — decoder block 34: 646 directions
+Steps 3, 4 and 6 — decoder block 35: 646 directions
+Steps 3, 4 and 6 — decoder block 36: 646 directions
+Steps 3, 4 and 6 — decoder block 37: 646 directions
+Steps 3, 4 and 6 — decoder block 38: 646 directions
+Steps 3, 4 and 6 — decoder block 39: 646 directions
+Steps 3, 4 and 6 — decoder block 40: 646 directions
+Steps 3, 4 and 6 — decoder block 41: 646 directions
+Steps 3, 4 and 6 — decoder block 42: 646 directions
+Steps 3, 4 and 6 — decoder block 43: 646 directions
+Steps 3, 4 and 6 — decoder block 44: 646 directions
+Steps 3, 4 and 6 — decoder block 45: 646 directions
+Steps 3, 4 and 6 — decoder block 46: 646 directions
+Steps 3, 4 and 6 — decoder block 47: 646 directions
+Steps 3, 4 and 6 — decoder block 48: 646 directions
+Steps 3, 4 and 6 — decoder block 49: 646 directions
+Steps 3, 4 and 6 — decoder block 50: 646 directions
+Steps 3, 4 and 6 — decoder block 51: 646 directions
+Steps 3, 4 and 6 — decoder block 52: 646 directions
+Steps 3, 4 and 6 — decoder block 53: 646 directions
+Steps 3, 4 and 6 — decoder block 54: 646 directions
+Steps 3, 4 and 6 — decoder block 55: 646 directions
+Steps 3, 4 and 6 — decoder block 56: 646 directions
+Steps 3, 4 and 6 — decoder block 57: 646 directions
+Steps 3, 4 and 6 — decoder block 58: 646 directions
+Steps 3, 4 and 6 — decoder block 59: 646 directions
+Steps 3, 4 and 6 — decoder block 60: 646 directions
+Steps 3, 4 and 6 — decoder block 61: 646 directions
+Steps 3, 4 and 6 — decoder block 62: 646 directions
+Steps 3, 4 and 6 — decoder block 63: 646 directions
+{
+  "config_sha256": "20ce1ea5fcca57d325888769d1466763fb24adf56ffd488694fdd5d5dc54773b",
+  "contexts_sha256": "2c06b77e2bf45c53601975909fc77699ad4a2fa239711fc0323c46ace94dfcec",
+  "directions_sha256": "4b27409329057066849cfb675889fa279d46408d3b5742a9897fa57936767ea2",
+  "dose_conversion_included": false,
+  "experiment_id": "experiment_0_natural_directional_scale",
+  "git_commit": "bf3ccf74a2c19e2287ca44dcfb5bba6d961afd4a",
+  "model_dtype": "bfloat16",
+  "model_name": "Qwen/Qwen3.8-27B",
+  "n_contexts": 100,
+  "n_directions": 41344,
+  "n_observations": 616,
+  "n_records": 41344,
+  "observations_sha256": "77afb102262a8254a17150b2b95387b8104ba4adac697ffadbabda089f8682fc",
+  "plan_manifest_sha256": "d7d37259ba3d4c3dc0b38e4919daa42479ce9f2902df59a43187ff6bdc8440a4",
+  "projection_dtype": "float32",
+  "projections_file": "projections.npz",
+  "protocol_status": "development",
+  "protocol_version": "2026-09-10",
+  "requested_model_revision": "main",
+  "requested_tokenizer_revision": "main",
+  "resolved_model_revision": null,
+  "resolved_tokenizer_revision": null,
+  "statistics_file": "directional_scales.json",
+  "torch_version": "2.14.0+cu130"
+}

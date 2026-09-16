@@ -1,5 +1,10 @@
 results/experiment_0_calibration/*.npz filter=lfs diff=lfs merge=lfs -text
+results/experiment4/**/*.png filter=lfs diff=lfs merge=lfs -text
+results/experiment4/**/summary.json filter=lfs diff=lfs merge=lfs -text
 *.sh text eol=lf
 *.sbatch text eol=lf
 results/experiment_5_text_induction/**/*.png filter=lfs diff=lfs merge=lfs -text
 results/experiment_5_text_induction/**/trials.jsonl filter=lfs diff=lfs merge=lfs -text
+results/**/trials.csv filter=lfs diff=lfs merge=lfs -text
+results/**/directional_scales.csv filter=lfs diff=lfs merge=lfs -text
+results/**/directional_scales.json filter=lfs diff=lfs merge=lfs -text

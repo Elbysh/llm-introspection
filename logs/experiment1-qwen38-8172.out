@@ -1,0 +1,53 @@
+========================================================================
+EXPERIMENT 1: 2AFC LOCALIZATION, ALPHA- AND Z-MATCHED PSYCHOMETRICS
+========================================================================
+Model:       Qwen/Qwen3.8-27B
+Calibration: /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment_0_calibration_qwen38_27b_scramble (config=configs/experiment_0_calibration/qwen38_27b_scramble.yaml, estimator=sd)
+Layers:      [3, 6]
+Families:    ['concept', 'scrambled', 'random']
+Matchings:   ['alpha', 'z']
+Alpha doses: [0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0]
+z doses:     [0.64, 1.28, 2.56, 5.12, 10.24, 20.48, 40.96, 81.92, 163.84, 327.68, 655.36]
+Output:      /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/scram-shallow
+Pairs:       5 (largest token-length gap 0)
+Forward passes: 18480 perturbed + 20 sham
+Directions:  22 rebuilt and matched to their calibrated norms
+Model loaded.
+Answer token ids: A=357 ('ĠA'), B=417 ('ĠB')
+Prompt tail: 'end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nThe answer is'
+Perturbed spans: [' The sun sets behind the mountains.', ' The river flows to the sea.']
+Running 20 shams...
+
+Saved 18500 trials to /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/scram-shallow/trials.csv
+Saved summary to /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/scram-shallow/summary.json
+
+Thresholds (blank when 75% is not bracketed in the tested range):
+ layer    family  matching    metric  acc@peak  threshold75              bracket
+     3   concept     alpha       raw      100%        6.344               [4, 8]
+     3   concept     alpha  adjusted       99%         8.37               [4, 8]
+     3   concept         z       raw       88%                      [1.28, 2.56]
+     3   concept         z  adjusted       85%                      [0.64, 1.28]
+     3    random     alpha       raw      100%        25.45              [8, 16]
+     3    random     alpha  adjusted       95%                           [8, 16]
+     3    random         z       raw       97%                        [41, 81.9]
+     3    random         z  adjusted       89%        201.5           [41, 81.9]
+     3 scrambled     alpha       raw      100%                           [8, 16]
+     3 scrambled     alpha  adjusted       99%        35.16               [4, 8]
+     3 scrambled         z       raw       99%                        [41, 81.9]
+     3 scrambled         z  adjusted       98%                        [41, 81.9]
+     6   concept     alpha       raw       99%        11.44              [8, 16]
+     6   concept     alpha  adjusted       95%                           [8, 16]
+     6   concept         z       raw       98%                      [2.56, 5.12]
+     6   concept         z  adjusted       92%                      [2.56, 5.12]
+     6    random     alpha       raw       92%                          [16, 32]
+     6    random     alpha  adjusted       87%                          [16, 32]
+     6    random         z       raw       93%        186.8          [81.9, 164]
+     6    random         z  adjusted       81%                       [81.9, 164]
+     6 scrambled     alpha       raw       90%                          [16, 32]
+     6 scrambled     alpha  adjusted       84%                           [8, 16]
+     6 scrambled         z       raw       82%                       [81.9, 164]
+     6 scrambled         z  adjusted       78%                        [41, 81.9]
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/scram-shallow/curves_layer3.png
+Saved /raid/home/students/gegout_tho/sujet_15/llm-introspection/results/experiment1/scram-shallow/curves_layer6.png
+
+EXPERIMENT COMPLETE
