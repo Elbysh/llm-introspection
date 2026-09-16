@@ -1,0 +1,4381 @@
+{
+  "experiment": 2,
+  "source_run_name": "experiment_2_presence",
+  "extraction": "Only summary.cells and trials.csv; original protocol IDs retained below. These are historical results, not a new v3 inference run.",
+  "calibration_sha256": "584e02fd9974986a2137f8b8ee243c29eca74f5d99ffa077cc1b0b6570dd8762",
+  "layers": [
+    {
+      "layer_directory": "layer_0",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "7acefb1dfa09576935d2a3cfa8fe4f28b16905ffdf6a88868a43e5d320d1fddf",
+        "manifest.json": "33483b9838facd8919aac11a68a1f2830e86484bd3775fd111add3228dbde3a7",
+        "trials.csv": "8f160e3a987a40a86680210ed0064096a5e9469914de5bb946739a0f46f0e327"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "b31120f18634b9487756823aa24c55015daa242093d3c5752c7093de76d394e2",
+        "manifest.json": "3a31f64a627bc08dcb65b9c53740490ec6b5b7fc04f6390037c9fa1f587a1893",
+        "trials.csv": "8f160e3a987a40a86680210ed0064096a5e9469914de5bb946739a0f46f0e327"
+      }
+    },
+    {
+      "layer_directory": "layer_1",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "ed66800aacc42f19e95c16d48c0a8adbf200d22730de2e7bce18cf3c914abd3a",
+        "manifest.json": "a0e22182fdff612969c0bf233d1578a24ca80e376546e08d20803d40a9ac568c",
+        "trials.csv": "6b75f4fd59bc4bf37c64885ac0e10b68267cd0b4c81421c97d85912e06fcc8f3"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "c0f4970745fa340c6ad44285143bb340165d11bc59b8d91d546ee6ea60d38572",
+        "manifest.json": "64faae61ea49a2aa0b336eb9c5c3c45d8c59c99354f895245682ea756d64f30e",
+        "trials.csv": "6b75f4fd59bc4bf37c64885ac0e10b68267cd0b4c81421c97d85912e06fcc8f3"
+      }
+    },
+    {
+      "layer_directory": "layer_10",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "d211271cece0d5b5e61f0dd7eebb91fd718fcda83d43bb0166a8baaaf3f1002d",
+        "manifest.json": "15f2e8ed9715eeda47280aca42e60d4306334d2828ed41087b9cc3d7bb466723",
+        "trials.csv": "5adaf3f052cf0728a2c182cb043337f9e317c90f1ccbbb6b7c5ea9ac0ee4b8ba"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "c4e658e534ddc820376f4f8d637b7a532de5e7fc3e3150e44af6f891e7669abd",
+        "manifest.json": "87df0b92100a8b4e308c0d7e5f49cf8d50f81e97187a707fc1ba36efd3ab31ef",
+        "trials.csv": "5adaf3f052cf0728a2c182cb043337f9e317c90f1ccbbb6b7c5ea9ac0ee4b8ba"
+      }
+    },
+    {
+      "layer_directory": "layer_11",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "c976d37ae4bf1cb6fac13b870b2516768613ba1e354b456e604a566aa8b27ad2",
+        "manifest.json": "1f5a22a8bdcbc56525124bd707599512e2186bd671ce74eebe71586751bca39e",
+        "trials.csv": "207f374e4c02092bcce310b2696017e2ac9cf3a88a9bfe11ba9e7fc3df976cf2"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "24abd00bf207a233959a1727cc4cde40555256d55ae831852f8d26c017dafbe9",
+        "manifest.json": "28bcc5e741cec6bde499a95418779cf752e5867fd339e03bca9d794d471dabf8",
+        "trials.csv": "207f374e4c02092bcce310b2696017e2ac9cf3a88a9bfe11ba9e7fc3df976cf2"
+      }
+    },
+    {
+      "layer_directory": "layer_12",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "1261a13166b5a4d76b409b94e9315cc393110f1954deec4795bd7328ef689325",
+        "manifest.json": "9dbc2333476fff25c536c9b74ea5daa63ac1d664a28b1431a90691486af519ab",
+        "trials.csv": "bd1d4da831754dd47d6a29d9404caacf2704859804b2338381e54e89a2a9a264"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "3957c17bc1197dcfd741d11d6b155242ef7f4f184dfb36e3f966b58bdebcf2f1",
+        "manifest.json": "a8767cb31b26ebe1f59b60f5be3fca673f13aa8d6629a682685ffc518f344f08",
+        "trials.csv": "bd1d4da831754dd47d6a29d9404caacf2704859804b2338381e54e89a2a9a264"
+      }
+    },
+    {
+      "layer_directory": "layer_13",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "8f6ca050bed16684d0e89bb1cb7e6e61111a1cd93eeb4f57e55aef927d0aa6ff",
+        "manifest.json": "2e8e1e91bc64764fbea673a98b726d8d102f498a475c19c2a3a83d0097a7f291",
+        "trials.csv": "3009a00af56f4057a900cd1b4332782b917c992ea2397d1828b7426f7e7bfbdd"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "de73ff2b74ec78a4c249429b1a39273461896e60f89b6df01c2543fa5f5957fe",
+        "manifest.json": "b986740236eff1a2b2702b1c41a0fcc62ee08441e46e025a95b5a68bd6c59d55",
+        "trials.csv": "3009a00af56f4057a900cd1b4332782b917c992ea2397d1828b7426f7e7bfbdd"
+      }
+    },
+    {
+      "layer_directory": "layer_14",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "3d47ee7c472ee80c2a12da0044c975b555cdfddd2d9ffd9ac84abda69461d0cc",
+        "manifest.json": "85532ead5c18bf1744a3a72a4193d7c2b9611c225b143481f9b953040901ffe9",
+        "trials.csv": "ef367968a8c7c6a8c13570d24e2174f2abd28ee7aa16c148a96a100a2a7d1a70"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "76e33910694314a1c3bd6a5edf1260cddf320c1fa83b26a33aec0664470d7cd6",
+        "manifest.json": "f0be10bc7bbcd85aba0590e3e9641450a3e1af392565ffaeb42a31c78e596136",
+        "trials.csv": "ef367968a8c7c6a8c13570d24e2174f2abd28ee7aa16c148a96a100a2a7d1a70"
+      }
+    },
+    {
+      "layer_directory": "layer_15",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "49a00f3710db5f49198d8aef9a7666f8b4432100337f29a72acf914f3a84396d",
+        "manifest.json": "7c6f272e828aabbf19b661b81cdc6ef66db66661309a5aaad15101f39593569c",
+        "trials.csv": "a63ac9015a36916008498006e3df28a8724adf7f63940dc0aa71169d1484e187"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "da9e0b795e2419a5e777c986bc9185c4deb3fcc0496629f8206f0e0191ac81fd",
+        "manifest.json": "25dd320cb6b93964a843feaaf0f31b1699e1a0e427a33ec491cebb61b2436a8a",
+        "trials.csv": "a63ac9015a36916008498006e3df28a8724adf7f63940dc0aa71169d1484e187"
+      }
+    },
+    {
+      "layer_directory": "layer_16",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "479ea4079d86d5b0e78bb6888b9dcedef77c99c0e6957a6ff5f4383169a287f8",
+        "manifest.json": "bccacc005a69eb3e1651587b3886460fe5117930e0c8cd6be68eb74fdd5ab181",
+        "trials.csv": "fc3500c46168d379ac34525273b4a007fab829040e4df5153b950871ef34a55a"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "f000ccb3b83a3e8fdc900f248208d2e83a3649b548a1197af560c7ccdedea6dd",
+        "manifest.json": "49da33751e9e599c8e6d5b197f6813271499dd340732fee6763af9dbff7c7241",
+        "trials.csv": "fc3500c46168d379ac34525273b4a007fab829040e4df5153b950871ef34a55a"
+      }
+    },
+    {
+      "layer_directory": "layer_17",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "5d2ea70422be83dcfe90f13621b32c35e47146287675cd920cbe11fbee535226",
+        "manifest.json": "47335f17739153eae32d6978c1487801fb5063a6b99b60b1a309f6661ceec2af",
+        "trials.csv": "3f8cca38c00bef077076e29c60cc687eaf87f0b5ba39053113437f44c6d884d0"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "392bb74aa9a72e7c3ef40bfe9b30506b215825a8cb21e707fe5fd74d28ad2b9a",
+        "manifest.json": "38208c77013383b24e9aab3b16c678d5229724bdd3fb4fc33df40d8883e5dbaf",
+        "trials.csv": "3f8cca38c00bef077076e29c60cc687eaf87f0b5ba39053113437f44c6d884d0"
+      }
+    },
+    {
+      "layer_directory": "layer_18",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "8adc7571e10a8ba3b123032db570348b0aecc4cb4eaf6acc820e3442176c3682",
+        "manifest.json": "c2c937a9c0a5c66910064c5793ce12de790a69b460ba20127b9cbcd088afd08e",
+        "trials.csv": "1edd9ba2007496c811743278ca31e9367790e524c6fc533a93980e944a80fe54"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "8e8118863d1c42ef77f01b3955e2a2e2bd38319de3c8bc04b2fd16a21bfb9428",
+        "manifest.json": "af8d80c9594f842a513841966522a552e3094df67696c45fb6c6b59b61aadbfd",
+        "trials.csv": "1edd9ba2007496c811743278ca31e9367790e524c6fc533a93980e944a80fe54"
+      }
+    },
+    {
+      "layer_directory": "layer_19",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "7e2b5b7d869c2dfd62e8db7b58d45af2d0c7b6e24389093db3c10f75d103d977",
+        "manifest.json": "1a04adb7a7b9bd31238f7eb7ee87cb9a8150d2deef0b5d7c44860cc71a290289",
+        "trials.csv": "7cc287be291e28971459a788f0b935babb63bd77f10d366645fd0955eee1559b"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "babea5ac581262fe73cff7cef38b3bf41241dc2f01d02b5714390f784dfd765d",
+        "manifest.json": "c599500066563fb402f0ca600ee99e60a35e86f9070c1101c29a5924ce1e8a37",
+        "trials.csv": "7cc287be291e28971459a788f0b935babb63bd77f10d366645fd0955eee1559b"
+      }
+    },
+    {
+      "layer_directory": "layer_2",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "62e4f4d2e67c55505232155f554a4e42880b345f7da377fcb4e0ed78e60e758c",
+        "manifest.json": "057c83803f9222508dce10bf524c136c14a669c26c6ce159299f993109bf1e2a",
+        "trials.csv": "c41a5fc65cabd26b5eb9664c5f813bab3d0df80e1012144f9d1d063917349ba8"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "b8fcd62d4b586ce01df1c2949a8fc0905ae09af774bce7e40d8196159288294d",
+        "manifest.json": "585a3e0746a9f81a70ff60134bf8867e64876cb64d6d6de7d2cc066237262368",
+        "trials.csv": "c41a5fc65cabd26b5eb9664c5f813bab3d0df80e1012144f9d1d063917349ba8"
+      }
+    },
+    {
+      "layer_directory": "layer_20",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "f08eecaff5899bfa568efc182e0a5242467b0a5052426a6833fad6ffd8a8f679",
+        "manifest.json": "fc14b57ee609837b5d945cd80599136a74fedaa493ca7c71c17457e3df482d5e",
+        "trials.csv": "3cedc9882c86e496ce51fea4bb0e645bc8e4ecf3c2b35461ee80b2e235a47854"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "9a163b8914d43e4ee0dc2187c02b7ffe3bd2b211178288617fb4519c4bd47272",
+        "manifest.json": "714c73f546cc5ad11b3a4f6e8a44af8145cf560cc6a7f6551fe6eef7ab0ca5d0",
+        "trials.csv": "3cedc9882c86e496ce51fea4bb0e645bc8e4ecf3c2b35461ee80b2e235a47854"
+      }
+    },
+    {
+      "layer_directory": "layer_21",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "445b02574ef4128c44c31b3ad03fd9b5194abc2a4a43aa646ba20d29423f6dfd",
+        "manifest.json": "24da00fe7b0c671e81a77b3be53f36632b537ad169afb705ce2790b5a56e1706",
+        "trials.csv": "e29a528235bcd745d02d2097a9fb53de9e79e4dde8f1f56a3d52b919f4cc8c6a"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "eb39bd81a5c56578255ab584779183ea6ca8dae8ff189fe12a68da07b5231032",
+        "manifest.json": "e83877fa6579c2bb66ed6ce9ecb30af7fff655919f0d46fd4ab8c42e2fdcc391",
+        "trials.csv": "e29a528235bcd745d02d2097a9fb53de9e79e4dde8f1f56a3d52b919f4cc8c6a"
+      }
+    },
+    {
+      "layer_directory": "layer_22",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "8d829a7302f72b0b45b6cd95d109bc8b652bf29e403421b34cca1e7650c5db88",
+        "manifest.json": "d176bab00d6df15a43a8fab0cf9390a7bbedfa2219cffa2f473a2e1826f519d4",
+        "trials.csv": "467ade3f59276228a337a7a61afb4efc28af5747522d80d84824202cd0c7222a"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "b572cf9ac083f5ac8761df0294f26986349337c7e983835046fa0e15ccc7be9d",
+        "manifest.json": "c0907b107e5aba79364f8ff7cd30d5c8331dd79a57aa0574699a2598824bd54c",
+        "trials.csv": "467ade3f59276228a337a7a61afb4efc28af5747522d80d84824202cd0c7222a"
+      }
+    },
+    {
+      "layer_directory": "layer_23",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "fdb037f339166c5fefbf90b75814f561b666aa701ac49c80eb1c8094481a2b53",
+        "manifest.json": "c983aeea03231ac8a6cd2eb3a5c49003d01b575e587527cfa8674ee73cab2f8a",
+        "trials.csv": "703e60d1cb45ac8feaff08fc69c3b2ca9990865d97d699bf74e8ba2be53fcb44"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "bf5b0b9aaf811e34d9fc63168df642a03b889f065e7fdbb7cbd5636ccb417c66",
+        "manifest.json": "c992e8649f495db620111260e1b4a83ed91b3b5ae58683b453f26ea9ecae1a2d",
+        "trials.csv": "703e60d1cb45ac8feaff08fc69c3b2ca9990865d97d699bf74e8ba2be53fcb44"
+      }
+    },
+    {
+      "layer_directory": "layer_24",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "4398f92156ca62eaa8d2e71dd58a11be91bc1d545d521892746cab25e721506f",
+        "manifest.json": "1e65abde16dce367c039e60987d245de44eafb813eb6ceca99c1c194dc4ba34f",
+        "trials.csv": "29bb2e464ae6977f3a1ea43a20d5175fe4b48f448cac00c0f31011a3682d4ec7"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "affb02d02eff20ebf967de09d64cd8270f7534b02f45e3ed03a12ae49a285cfb",
+        "manifest.json": "26436664930aa7609b4ec717f7e7f5d3f8cf706e9dd0552aa6b60a302272432f",
+        "trials.csv": "29bb2e464ae6977f3a1ea43a20d5175fe4b48f448cac00c0f31011a3682d4ec7"
+      }
+    },
+    {
+      "layer_directory": "layer_25",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "69944e84ffa3b4106daea3d7b3bec574aefef2e7abc35a45096d2d7aa182ab3d",
+        "manifest.json": "ed0de8b6ca1a33380c163cc949d25981fc13ceac0dc590be23cd5cd350083e10",
+        "trials.csv": "9be3b42a62d22a578979291fbd4edf8b3a0f67d527b865dddbea19f5eab2d21f"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "f6aec2fba930e053df582d6159528c1d75b8b18e8bdda38ba5a3ef766b9f68e5",
+        "manifest.json": "a886efb00947f5c0c3de95c17e3ebec2b73ce7aa2bd1770a1542d7c9f598fead",
+        "trials.csv": "9be3b42a62d22a578979291fbd4edf8b3a0f67d527b865dddbea19f5eab2d21f"
+      }
+    },
+    {
+      "layer_directory": "layer_26",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "4d3ab93f4be5ee4e3046f9cea5a3ad123c8836921cc0e3b7c848b39c999650d7",
+        "manifest.json": "0cb3e67a1fe99f1eec1656c79f45440adac6d45909dca0d144c095607e9f9160",
+        "trials.csv": "8538e38657c33668f31eef14c25fbd8228653c927417b4ffe0202f8d226aa22b"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "44daf32efbb79e869477fbee77e5cb9913353b43cfdd5ceb1d968575a66e77d7",
+        "manifest.json": "20a26694a94fd76c42f0a380634321bacfdf6147de9d10f24988ab8f43754c94",
+        "trials.csv": "8538e38657c33668f31eef14c25fbd8228653c927417b4ffe0202f8d226aa22b"
+      }
+    },
+    {
+      "layer_directory": "layer_27",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "b5042f3df8c54480c591af93311db0283ab6d60995facda5bbd01ab34c05fb3a",
+        "manifest.json": "7f05f7e42e165314cd966d791360c7d7b68ba032b16385c7e0ad9e2e7087a995",
+        "trials.csv": "1852afb31cbd4f00104f6b97b314d2520023e2328363e7a6e8693b72995c1548"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "70e05e34239b38c3cc0be88d44667ebb05c4675d36cf2f202acf4eb749a5ec7f",
+        "manifest.json": "4ab59cbb08f496d234d93079b11c435e9ef72b2074c191f98deaec04abbbc77d",
+        "trials.csv": "1852afb31cbd4f00104f6b97b314d2520023e2328363e7a6e8693b72995c1548"
+      }
+    },
+    {
+      "layer_directory": "layer_28",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "9bafc0b422445c304ef6b82ce131228e2fcfde3d9fe1e59c04d02f6bec13748f",
+        "manifest.json": "368aa47b03c48666d8d31315a83a295fea16339a2dc904b9ae1c952e46341aa9",
+        "trials.csv": "a1961dc79124f3dfaa0a5fe914125829613f5109edeca021140d3ee782efc1f0"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "f1ff3ca174edead05bde2fbfcaf46c6fee17bb8723e08e57037e2788d20a5752",
+        "manifest.json": "4ed7a1c74b2fc872a5c738bca531ce968f35d296e9d5f96da95f6e2b97d6ed1c",
+        "trials.csv": "a1961dc79124f3dfaa0a5fe914125829613f5109edeca021140d3ee782efc1f0"
+      }
+    },
+    {
+      "layer_directory": "layer_29",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "ebdb8c5c5f1b96929418d4c88a7172d8015317b9e348ac1ba66ff729b28c73db",
+        "manifest.json": "b0f31d86c690e264159c90af2045b6ee6b9a0c91c7443f4a7169faa570d34b05",
+        "trials.csv": "59ef96d3c4097b77c6c4b7a999a3bdee392f6970e78e2b189c807e249944bbf1"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "8ca5e94d7515d0f57d2a0737acb7e09bc05cecce436c48d1776f1fa0a7ecf8ce",
+        "manifest.json": "ea3919a2e51aa4e183dc64299658df6ee5dc1b240ea52b2c2f023ba8c9f6230f",
+        "trials.csv": "59ef96d3c4097b77c6c4b7a999a3bdee392f6970e78e2b189c807e249944bbf1"
+      }
+    },
+    {
+      "layer_directory": "layer_3",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "6c8d0af039f4c757f2638cbd1c3b3ed4e9c44fdaa4cc84d904c13fd1ad08f3dc",
+        "manifest.json": "fb0cc75f001d1143c1cd47fdcc62a6abc363d40cb3551e1d91e97504441f9849",
+        "trials.csv": "ebbd8491b5c0da60d5c3430a69135eb1986c43b4521d7f77274a6c4a874ecda4"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "9edc401b51087c0651190acc9317ef18f1e49840e356ead9d4ee3828601671f4",
+        "manifest.json": "946d0e664c4aa874ba0c5dcbab911fa3fe9e412473246e626d2517107ea9c136",
+        "trials.csv": "ebbd8491b5c0da60d5c3430a69135eb1986c43b4521d7f77274a6c4a874ecda4"
+      }
+    },
+    {
+      "layer_directory": "layer_30",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "feff6d113dff26f86be8c6b24bb88c12010bddabb2524b1ab151dd7591277b47",
+        "manifest.json": "f0574cc93fb6f26dfa3cdf766d03e35a31623cc64eb0068b02cee8f69607ec89",
+        "trials.csv": "f927b466728ae94c2012b8dcac86b8e4ebf132bf74baa524cc8d06df401baf27"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "102d19f102e67efb2d1e54831a83cf93a32a10e21912d85f4fd02a2969bee3d2",
+        "manifest.json": "313ae60d86331fa1a8d87db40f2d3aee7a51eb370c98c0541a7d7e574e124247",
+        "trials.csv": "f927b466728ae94c2012b8dcac86b8e4ebf132bf74baa524cc8d06df401baf27"
+      }
+    },
+    {
+      "layer_directory": "layer_4",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "bfc58735b2452a31291fc3b6c3153e9360bf2d8244bbddb41361092fc0ce0f13",
+        "manifest.json": "876f6864292cfc008dbe9b9bc874af09d4411032e216d0dbcb4a1db42bb9f8f8",
+        "trials.csv": "635fbdaa0392b2e02710dfa080e77e9b3f1f94b378be080f33c9754b5347a0a6"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "e0490d65e0e612147821fec630240338325342a6e39d467a15d0b4befb653e92",
+        "manifest.json": "1d8c9830cf08f2621debc1ebc6632e987c7b4d0b9bf9ab20dfc43d41f0b332f5",
+        "trials.csv": "635fbdaa0392b2e02710dfa080e77e9b3f1f94b378be080f33c9754b5347a0a6"
+      }
+    },
+    {
+      "layer_directory": "layer_5",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "3026c9b6a6fc6e2d5604324f6716cd1db0a0b43e289ababe214b508a699ffc2e",
+        "manifest.json": "8787fe885194adc935f1bfd95f286f4ddd8b7c565b3b3df376392dd7b9e42e32",
+        "trials.csv": "85cf6cb067b77f82adc8ed6e49003482a79f8f60248383c88fb912023c32ef7f"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "b306ef56ddfc981b69d57aeadc332fdde3ef0bf2eaf1cab9dfb035214eacc631",
+        "manifest.json": "1ccf4935f592cd77d402047cda45a8d498d2184c9e2a0996e30a50040eff0e11",
+        "trials.csv": "85cf6cb067b77f82adc8ed6e49003482a79f8f60248383c88fb912023c32ef7f"
+      }
+    },
+    {
+      "layer_directory": "layer_6",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "117c006b2b91a1d82d88cebb9c971b71df23a4b738894b886170a848ccaae4d3",
+        "manifest.json": "f624ecde492aab6cf5523e27c0683f2b92356736bbff7d28623d99e41fe48882",
+        "trials.csv": "a030236da4783b83e452a59b49fd7681ca9feb1c124130901c917989a9eb688d"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "9be54d405231ce76aeac0fd43cc7d124b5514f5e1b304c79876bfadefefa0a6a",
+        "manifest.json": "2685631616fbc19d877cb5415819f65df1d371d7266d7916939c328ec585a10a",
+        "trials.csv": "a030236da4783b83e452a59b49fd7681ca9feb1c124130901c917989a9eb688d"
+      }
+    },
+    {
+      "layer_directory": "layer_7",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "8ece48b1bc6bb68968654dbc844a9aeee03215be88891b35bf196a82cb1c7788",
+        "manifest.json": "b52257e3209939edddec22c72d32e5e57f3ad225eb26e2494485762e2d1d8678",
+        "trials.csv": "0d9bdffde668940042d1508bbe6109a02d340d30a46f41df3486fa527279acac"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "2683fdab4e5529f457363e019675cd4d15006efabaad5ed279a410a5cbdf8d0b",
+        "manifest.json": "07f5875dd554e2bd96ff9d33ca198d0e842523150be85933aae94b98681d2f18",
+        "trials.csv": "0d9bdffde668940042d1508bbe6109a02d340d30a46f41df3486fa527279acac"
+      }
+    },
+    {
+      "layer_directory": "layer_8",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "d9837dd253a31a9b445b65d986a8766e0ec543f05ec103edc062fc3f5b64d0c6",
+        "manifest.json": "a94e7fadcf6847dd9ffe7d737d1a9a50d802d57d0bac85c4b7f90588a9f6395b",
+        "trials.csv": "9c33c7f17ecd6810b76fb0ededa35b150d627a00e993e81336c5f70466726312"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "230278b2baf1886ab14addd9443f84fe20e5ec98a7f95d575f0bd1d79fa7ba46",
+        "manifest.json": "51be7f824656bc270b0f5f36837135df2816df6fae82137699a131d8d7e5fa38",
+        "trials.csv": "9c33c7f17ecd6810b76fb0ededa35b150d627a00e993e81336c5f70466726312"
+      }
+    },
+    {
+      "layer_directory": "layer_9",
+      "source_protocol_id": "experiment2-locked-presence-capability-v2",
+      "bootstrap_iterations": 1000,
+      "input_sha256": {
+        "summary.json": "ad7162eb46a8e5fa7eae21a365e4b6d42d3e749423b91f18cf00452976c85997",
+        "manifest.json": "f5371cd5db2bef3ad387d7756dc78f5480720f8e3585c134947ba2593ff91f67",
+        "trials.csv": "51deab5fae363348e369cbcd363266bc989482ae556a1b86facae5099e740660"
+      },
+      "calibration_provenance": {
+        "calibration_git_commit": "77df1c64d251bdd339b4a4cea1933328e4ae1928",
+        "config_matches_manifest": false,
+        "config_path": "/gpfs/workdir/aurouxw/llm-introspection/configs/experiment_0_calibration/development_full.yaml",
+        "config_sha256": "2ba1a665d0937043d78c3c1f0b350933ac78244bcfaa98ee73bbfdecf18f36d1",
+        "experiment_id": "experiment_0_natural_directional_scale",
+        "fixed_random_validation": "metadata_and_exact_seed_regeneration_on_load",
+        "fixed_random_vector_files": 320,
+        "fixed_random_vector_source": "/gpfs/workdir/aurouxw/llm-introspection/data/saved_vectors/llama",
+        "n_records": 20352,
+        "protocol_status": "development",
+        "protocol_version": "2026-09-10",
+        "resolved_model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "results_dir": "/gpfs/workdir/aurouxw/llm-introspection/results/experiment_0_calibration"
+      },
+      "detection_design": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "tokenizer_revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "seed": 20260908,
+        "pairs": [
+          {
+            "pair_id": 0,
+            "sentence_x": "The sun sets behind the mountains.",
+            "sentence_y": "The river flows to the sea.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 1,
+            "sentence_x": "A bird flies over the lake.",
+            "sentence_y": "The child plays in the park.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 2,
+            "sentence_x": "The train arrives at noon.",
+            "sentence_y": "A flower blooms in spring.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 3,
+            "sentence_x": "The chef prepares a meal.",
+            "sentence_y": "A musician plays the piano.",
+            "token_length_gap": 0
+          },
+          {
+            "pair_id": 4,
+            "sentence_x": "She reads a book quietly.",
+            "sentence_y": "He walks along the beach.",
+            "token_length_gap": 0
+          }
+        ],
+        "concepts": [
+          "Dust",
+          "Satellites",
+          "Trumpets",
+          "Origami",
+          "Illusions",
+          "fibonacci_numbers",
+          "recursion",
+          "betrayal",
+          "appreciation",
+          "shutdown"
+        ],
+        "dose_grid": {
+          "alpha": [
+            0.25,
+            0.5,
+            1.0,
+            2.0,
+            4.0,
+            8.0,
+            16.0,
+            32.0,
+            64.0,
+            128.0
+          ],
+          "z_mad": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ],
+          "z_sd": [
+            0.01,
+            0.02,
+            0.04,
+            0.08,
+            0.16,
+            0.32,
+            0.64,
+            1.28,
+            2.56,
+            5.12,
+            10.24,
+            20.48
+          ]
+        },
+        "label_orders": [
+          "AB",
+          "BA"
+        ],
+        "mappings": [
+          "XY",
+          "YX"
+        ],
+        "response_protocol": {
+          "assistant_prefix": "Answer:",
+          "decision": "argmax restricted to the single-token X/Y choices",
+          "unconstrained_global_argmax": "recorded as a diagnostic only"
+        },
+        "answer_token_ids": {
+          "X": 1630,
+          "Y": 816
+        },
+        "implementation_sha256": "31206d510e7de4b17b60eb032ece5f1560c91735db3b37db1076203e00d88f8f",
+        "dropout_norm_source": "trial"
+      },
+      "detection_only_input_sha256": {
+        "summary.json": "8a37deb99b1e0c3e2da6c9a359e0358da39f59a61c48cc8ede4d7e8b27e1133d",
+        "manifest.json": "cdaa364c555f405a215896cb39d664762c18319730b39b380ccbdfdcf7cf2ed1",
+        "trials.csv": "51deab5fae363348e369cbcd363266bc989482ae556a1b86facae5099e740660"
+      }
+    }
+  ],
+  "bootstrap_note": "Stored crossed-bootstrap intervals are copied unchanged. Clean-control intervals are recomputed with 2000 pair-cluster draws, seed 20260914.",
+  "local_cleanup": "Capability-task files and fields were deleted after export. input_sha256 identifies original pre-cleanup inputs; detection_only_input_sha256 identifies retained detection-only inputs. Detection trials and cell values are unchanged; original protocol IDs are historical provenance."
+}

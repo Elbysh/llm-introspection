@@ -1,0 +1,19 @@
+#!/bin/bash
+# Submit the three Experiment 0 stages with afterok dependencies.
+set -euo pipefail
+
+RUN_NAME=${1:-development_full}
+CONFIG="configs/experiment_0_calibration/${RUN_NAME}.yaml"
+if [[ ! -f "${CONFIG}" ]]; then
+  echo "Missing configuration: ${CONFIG}" >&2
+  exit 2
+fi
+mkdir -p logs
+
+VECTORS_ID=$(sbatch --parsable jobs/experiment_0_calibration/01_prepare_concept_vectors.sbatch "${CONFIG}")
+PLAN_ID=$(sbatch --parsable --dependency="afterok:${VECTORS_ID}" jobs/experiment_0_calibration/02_prepare_material_plan.sbatch "${CONFIG}")
+RUN_ID=$(sbatch --parsable --dependency="afterok:${PLAN_ID}" jobs/experiment_0_calibration/03_run_experiment_0.sbatch "${CONFIG}")
+
+echo "Experiment 0 concept vectors: ${VECTORS_ID}"
+echo "Experiment 0 plan: ${PLAN_ID} (afterok:${VECTORS_ID})"
+echo "Experiment 0 calibration: ${RUN_ID} (afterok:${PLAN_ID})"

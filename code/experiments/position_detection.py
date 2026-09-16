@@ -26,6 +26,7 @@ from collections import defaultdict
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from all_prompts import LOCALIZATION_SENTENCES
+from gaussian_dropout_hooks import apply_perturbation
 
 # Config
 LAYERS = [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30]
@@ -146,7 +147,7 @@ def load_vector(concept, layer, vec_type='avg'):
 
 
 @torch.inference_mode()
-def run_position_detection(model, tokenizer, concept, layers, strengths, num_trials=10, vec_type='avg', max_new_tokens=100, control_question=None):
+def run_position_detection(model, tokenizer, concept, layers, strengths, num_trials=10, vec_type='avg', max_new_tokens=100, control_question=None, perturbation_type="concept", sigma_mode="absolute"):
     """
     Run position-specific detection experiment.
     
@@ -173,21 +174,24 @@ def run_position_detection(model, tokenizer, concept, layers, strengths, num_tri
     print(f"{'='*60}\n", flush=True)
     
     for layer in layers:
-        # Load vector for this layer
-        try:
-            vector = load_vector(concept, layer, vec_type)
-        except FileNotFoundError as e:
-            print(f"  Skipping layer {layer}: {e}", flush=True)
-            continue
-        
-        # Normalize vector
-        if isinstance(vector, torch.Tensor):
-            vector = vector.to(dtype=model_dtype, device=device)
+        if perturbation_type != "concept":
+            vector = None
         else:
-            vector = torch.tensor(vector, dtype=model_dtype, device=device)
-        vector = vector / torch.norm(vector, p=2)
-        if vector.dim() == 1:
-            vector = vector.unsqueeze(0).unsqueeze(0)
+            # Load vector for this layer
+            try:
+                vector = load_vector(concept, layer, vec_type)
+            except FileNotFoundError as e:
+                print(f"  Skipping layer {layer}: {e}", flush=True)
+                continue
+
+            # Normalize vector
+            if isinstance(vector, torch.Tensor):
+                vector = vector.to(dtype=model_dtype, device=device)
+            else:
+                vector = torch.tensor(vector, dtype=model_dtype, device=device)
+            vector = vector / torch.norm(vector, p=2)
+            if vector.dim() == 1:
+                vector = vector.unsqueeze(0).unsqueeze(0)
         
         for strength in strengths:
             print(f"\n  Layer {layer}, Strength {strength}:", flush=True)
@@ -209,17 +213,20 @@ def run_position_detection(model, tokenizer, concept, layers, strengths, num_tri
                 encoding = {k: v.to(device) for k, v in encoding.items()}
                 input_length = encoding['input_ids'].shape[1]
                 
-                # STEP 1: Forward pass WITH injection at sentence 1 to build KV cache
-                handle = model.model.layers[layer].register_forward_hook(
-                    make_position_injection_hook(sent1_range[0], sent1_range[1], vector, strength)
-                )
-                
-                # Build KV cache with injection
-                with torch.no_grad():
+                # STEP 1: Forward pass WITH perturbation at sentence 1 to build KV cache
+                if perturbation_type == "concept":
+                    perturbation = apply_perturbation(
+                        model, layer, [(sent1_range, strength)],
+                        kind="concept", vector=vector)
+                else:
+                    perturbation = apply_perturbation(
+                        model, layer, [(sent1_range, strength)],
+                        kind=perturbation_type, seed=trial_idx, sigma_mode=sigma_mode)
+
+                # Build KV cache with perturbation (hooks removed on context exit)
+                with torch.no_grad(), perturbation:
                     outputs_with_injection = model(**encoding, use_cache=True)
                     past_kv = outputs_with_injection.past_key_values
-                
-                handle.remove()
                 
                 # STEP 2: Compute logit difference WITHOUT injection during generation
                 # The KV cache contains the injected representation from sentence 1
@@ -233,6 +240,16 @@ def run_position_detection(model, tokenizer, concept, layers, strengths, num_tri
                 # The KV cache already contains all prompt tokens with injection
                 # To get logits for NEXT token, we do a forward pass on the last token
                 # using the past_kv, but WITHOUT the injection hook (already removed)
+                # NOTE (known bug, deliberately not changed): past_kv above already contains
+                # every prompt token, including this one, so re-feeding it makes the model
+                # score a prompt whose final token is DUPLICATED and read the logits one
+                # position further on. It shifts dL by +0.139 +/- 0.121 vs. a plain forward
+                # pass -- enough to move adjusted accuracy ~30 points. Left as-is so the
+                # completed sweeps stay comparable; the baseline in
+                # code/analysis/compute_detection_baseline.py replicates it (--protocol
+                # match_sweep) so the adjustment is at least self-consistent. Fixing this
+                # means re-running every detection sweep, so it is left alone deliberately
+                # rather than silently corrected.
                 last_token_id = encoding['input_ids'][0, -1:].unsqueeze(0).to(device)  # Shape: [1, 1]
                 
                 with torch.no_grad():
@@ -273,8 +290,15 @@ def run_position_detection(model, tokenizer, concept, layers, strengths, num_tri
     return dict(results)
 
 
-def save_results(results, concept, output_dir):
-    """Save results to file."""
+def save_results(results, concept, output_dir, layers=None, strengths=None, num_trials=None,
+                 perturbation_type='concept', sigma_mode=None):
+    """
+    Save results to file.
+
+    The grid actually swept is recorded, not the module-level LAYERS/STRENGTHS defaults --
+    those are only fallbacks, and writing them made the metadata of every --layers /
+    --strengths run disagree with its own data.
+    """
     output_path = Path(output_dir) / f'position_detection_{concept}.pt'
     
     # Convert results to serializable format
@@ -285,9 +309,11 @@ def save_results(results, concept, output_dir):
     torch.save({
         'results': serializable_results,
         'concept': concept,
-        'layers': LAYERS,
-        'strengths': STRENGTHS,
-        'num_sentence_variations': NUM_SENTENCE_VARIATIONS,
+        'layers': layers if layers is not None else LAYERS,
+        'strengths': strengths if strengths is not None else STRENGTHS,
+        'num_sentence_variations': num_trials if num_trials is not None else NUM_SENTENCE_VARIATIONS,
+        'perturbation_type': perturbation_type,
+        'sigma_mode': sigma_mode if perturbation_type == 'gaussian' else None,
     }, output_path)
     
     print(f"\nSaved results to {output_path}", flush=True)
@@ -295,7 +321,10 @@ def save_results(results, concept, output_dir):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--concept', type=str, default='Dust', help='Concept to test (or "all")')
+    parser.add_argument('--concepts', type=str, nargs='+', default=['Dust'],
+                       help='Concepts to test. Use "all" for all concepts. Use "random" for random directions.')
+    parser.add_argument("--num_vectors", type=int, default=1,
+                       help='Number of random vectors to use.')
     parser.add_argument('--layers', type=int, nargs='+', default=LAYERS, help='Layers to test')
     parser.add_argument('--strengths', type=float, nargs='+', default=STRENGTHS, help='Strengths to test')
     parser.add_argument('--num_trials', type=int, default=10, help='Trials per condition')
@@ -303,7 +332,25 @@ def main():
     parser.add_argument('--output_dir', type=str, default='plots', help='Output directory')
     parser.add_argument('--max_new_tokens', type=int, default=100, help='Max tokens to generate')
     parser.add_argument('--control_question', type=str, default=None, help='Control question (e.g., "Can humans breathe underwater without equipment?")')
+    parser.add_argument('--perturbation_type', type=str, default='concept',
+                       choices=['concept', 'gaussian', 'dropout'],
+                       help='"concept" (default): additive concept-vector injection on the '
+                            'decoder-layer output. "gaussian"/"dropout": perturb the attention and '
+                            'MLP outputs at sentence 1 with additive Gaussian noise / rescaled '
+                            'dropout, resampled per trial. --strengths values are then interpreted '
+                            'as sigma (gaussian) or the dropout rate p in [0, 1) (dropout), and no '
+                            'saved vectors are needed.')
+    parser.add_argument('--sigma_mode', type=str, default='absolute', choices=['absolute', 'relative'],
+                       help='Gaussian noise scale (only used for --perturbation_type gaussian): '
+                            '"absolute" uses sigma directly (protocol default); "relative" '
+                            'multiplies sigma by the per-token RMS of the sublayer output.')
     args = parser.parse_args()
+    
+    # Fail fast rather than deep inside the sweep
+    if args.perturbation_type == 'dropout':
+        bad = [s for s in args.strengths if not 0.0 <= s < 1.0]
+        if bad:
+            parser.error(f"dropout rates must be in [0, 1), got {bad}")
     
     # Load model
     print("Loading model...", flush=True)
@@ -319,10 +366,16 @@ def main():
     print(f"Model loaded: {model_name}", flush=True)
     
     # Determine concepts to test
-    if args.concept == 'all':
+    if args.perturbation_type != 'concept':
+        concepts = [args.perturbation_type]
+    elif 'all' in args.concepts:
         concepts = ALL_CONCEPTS
+    elif 'random' in args.concepts:
+        concepts = [f'random_s{i}' for i in range(args.num_vectors)]
     else:
-        concepts = [args.concept]
+        concepts = args.concepts
+
+    
     
     all_results = {}
     
@@ -338,14 +391,20 @@ def main():
             num_trials=args.num_trials,
             vec_type=args.vec_type,
             max_new_tokens=args.max_new_tokens,
-            control_question=args.control_question
+            control_question=args.control_question,
+            perturbation_type=args.perturbation_type,
+            sigma_mode=args.sigma_mode
         )
         
-        save_results(results, concept, args.output_dir)
+        save_results(results, concept, args.output_dir,
+                     layers=args.layers, strengths=args.strengths,
+                     num_trials=args.num_trials,
+                     perturbation_type=args.perturbation_type,
+                     sigma_mode=args.sigma_mode)
         all_results[concept] = results
     
     # If running all concepts, also save aggregated results
-    if args.concept == 'all':
+    if 'all' in args.concepts and args.perturbation_type == 'concept':
         # Aggregate results
         aggregated = defaultdict(lambda: {'logit_diff': [], 'logit_yes': [], 'logit_no': []})
         
